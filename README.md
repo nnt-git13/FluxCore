@@ -6,15 +6,15 @@
 <p align="center"><em>A case study in building a five-stage FPGA processor for sparse computation</em></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/ISA-RV32I-0f766e" alt="RV32I">
+  <img src="https://img.shields.io/badge/ISA-RV32IMXFlux-0f766e" alt="RV32IM + XFlux">
   <img src="https://img.shields.io/badge/Pipeline-5%20stage-334155" alt="5 stage pipeline">
   <img src="https://img.shields.io/badge/FPGA-Zybo%20Z7--20-0f766e" alt="Zybo Z7-20">
   <img src="https://img.shields.io/badge/Vivado-2023.1-334155" alt="Vivado 2023.1">
 </p>
 
-FluxCore is a handwritten SystemVerilog processor case study: a small, inspectable five-stage RISC-V core being shaped into a sparse-computation sidecar for FPGA systems. The current artifact is not a marketing model or simulator-only design. It includes synthesizable RTL, unit and integration benches, a BRAM-backed SoC top, Zybo Z7-20 constraints, Vivado synthesis/implementation scripts, and saved timing/utilization reports.
+FluxCore is a handwritten SystemVerilog processor case study: a small, inspectable five-stage RISC-V core being shaped into a sparse-computation sidecar for FPGA systems and a living study vehicle for computer architecture. The current artifact is not a marketing model or simulator-only design. It includes synthesizable RTL, unit and integration benches, a BRAM-backed SoC top, Zybo Z7-20 constraints, Vivado synthesis/implementation scripts, and saved timing/utilization reports.
 
-The long-term target is a highly specialized processor for irregular sparse kernels such as CSR SpMV and PCG: keep the simple in-order pipeline, then add the memory behavior, scratchpad/control surface, and custom sparse instructions that matter for those workloads.
+The long-term target has two tracks: keep the baseline core simple enough to reason about while adding the memory behavior, scratchpad/control surface, and custom sparse instructions that matter for CSR SpMV and PCG; then add measured architecture variants for the broader processor topics in computer organization and quantitative architecture.
 
 ---
 
@@ -54,10 +54,13 @@ The current design has moved beyond infrastructure. Implemented and tested compo
 | Area | Current status |
 |---|---|
 | ISA baseline | RV32I decode/execute coverage, M-mode CSR subset, ECALL/MRET path |
+| RV32M extension | MUL/MULH/MULHU/MULHSU (single-cycle), DIV/DIVU/REM/REMU (33-cycle restoring divider) |
+| XFlux custom ISA | XLIDX/XABS/XMIN/XMAX/XCLZ in CUSTOM_0 opcode space (sparse/scientific helpers) |
 | Pipeline | Five-stage IF/ID/EX/MEM/WB, in-order, single-issue |
-| Hazards | EX/MEM and MEM/WB forwarding, load-use stall, branch/JAL/JALR redirects |
+| Hazards | EX/MEM and MEM/WB forwarding, load-use stall, branch/JAL/JALR redirects, mul/div full-freeze stall |
 | Register file | 32 x 32-bit, async read, sync write, hardwired x0 |
 | Memory | BRAM instruction memory, byte-enabled BRAM data memory |
+| Counters | `mcycle` and `minstret` machine counters for CPI/runtime measurement |
 | FPGA top | `fluxcore_soc` standalone `clk` + `rst` synthesis top |
 | Reset | External button synchronized into the core clock domain |
 | Debug visibility | Retire and exception signals preserved for later ILA hookup |
@@ -87,7 +90,7 @@ Writeback
 | Property | Value |
 |---|---|
 | Pipeline | Five-stage, in-order, single-issue |
-| Baseline ISA | RV32I |
+| ISA | RV32I + RV32M + XFlux (CUSTOM_0) |
 | Privileged subset | Machine-mode CSR/trap/return subset |
 | Implementation | Handwritten SystemVerilog |
 | Simulation | Questa-oriented testbenches |
@@ -95,7 +98,27 @@ Writeback
 | Initial memory | BRAM instruction and data memories |
 | Current FPGA clock target | 50 MHz constraint on Zybo Z7 system clock input |
 
-FluxCore is not intended to become out-of-order, superscalar, GPU-like, or a fixed-function sparse matrix engine. The point of the case study is to keep the processor small enough to reason about while specializing the memory and instruction interface around sparse workloads.
+### ISA Coverage
+
+| Instruction group | Opcodes | Status | Notes |
+|---|---|---|---|
+| RV32I ALU | ADD/SUB/AND/OR/XOR/SLL/SRL/SRA/SLT/SLTU + I-type forms | Implemented | Full decode and execute |
+| RV32I load/store | LW/LH/LB/LHU/LBU/SW/SH/SB | Implemented | Byte-enabled BRAM path |
+| RV32I branch | BEQ/BNE/BLT/BGE/BLTU/BGEU | Implemented | Redirect in decode stage |
+| RV32I jump | JAL/JALR | Implemented | Link register writeback |
+| RV32I upper immediate | LUI/AUIPC | Implemented | |
+| RV32I system | ECALL/MRET | Implemented | M-mode trap flow |
+| RV32I CSR | CSRRW/CSRRS/CSRRC + I-type forms | Implemented | `mstatus`, `mepc`, `mcause`, `mcycle`, `minstret` |
+| RV32M multiply | MUL/MULH/MULHU/MULHSU | Implemented | Single-cycle combinational, no stall |
+| RV32M divide | DIV/DIVU/REM/REMU | Implemented | 33-cycle iterative restoring divider, full-freeze stall |
+| XFlux XLIDX | `xlidx rd, rs1, rs2` — load word at rs1 + rs2×4 | Implemented | CUSTOM_0, treated as scaled-index load |
+| XFlux XABS | `xabs rd, rs1` — signed absolute value | Implemented | CUSTOM_0 |
+| XFlux XMIN | `xmin rd, rs1, rs2` — signed minimum | Implemented | CUSTOM_0 |
+| XFlux XMAX | `xmax rd, rs1, rs2` — signed maximum | Implemented | CUSTOM_0 |
+| XFlux XCLZ | `xclz rd, rs1` — count leading zeros | Implemented | CUSTOM_0 |
+| XFlux XMACC | `xmacc rd, rs1, rs2` — fused multiply-accumulate | Reserved | Pending 3rd register read port; FUNCT3=101 reserved |
+
+The default `fluxcore_soc` remains a small in-order, single-issue baseline. Broader topics such as branch prediction, multithreading, superscalar issue, out-of-order execution, virtual memory, and coherence belong in named experimental variants with separate tests and reports. The point is to preserve a known-good baseline while turning the repository into a measured architecture case study.
 
 ### Memory and Cache Work
 
@@ -119,13 +142,15 @@ Latest routed `fluxcore_soc` result on Zybo Z7-20 (`xc7z020clg400-1`) with Vivad
 
 | Metric | Routed result |
 |---|---:|
-| Slice LUTs | 2,625 / 53,200 = 4.93% |
-| Slice registers | 1,871 / 106,400 = 1.76% |
+| Slice LUTs | 3,313 / 53,200 = 6.23% |
+| Slice registers | 2,003 / 106,400 = 1.88% |
 | Block RAM tiles | 2.5 / 140 = 1.79% |
 | DSPs | 0 |
-| Route status | 4,008 / 4,008 routable nets fully routed |
-| Timing | WNS 4.143 ns, TNS 0.000 ns |
+| Route status | 4,844 / 4,844 routable nets fully routed |
+| Timing | WNS 3.780 ns, TNS 0.000 ns |
 | Timing checks | all `check_timing` categories clean |
+| Bitstream | generated at `build/vivado/fluxcore_soc.bit` |
+| Bitstream DRC | 2 warnings, 0 errors |
 
 Standalone optional cache synthesis:
 
@@ -144,6 +169,7 @@ Primary reports:
 - `reports/implementation/fluxcore_soc_utilization_route.rpt`
 - `reports/implementation/fluxcore_soc_timing_summary_route.rpt`
 - `reports/implementation/fluxcore_soc_check_timing_route.rpt`
+- `reports/implementation/fluxcore_soc_drc_bitstream.rpt`
 - `reports/synthesis/direct_mapped_cache_utilization_synth.rpt`
 - `reports/synthesis/direct_mapped_cache_timing_summary_synth.rpt`
 
@@ -211,6 +237,7 @@ make lui-auipc-test
 make ecall-mret-test
 make bram-imem-test
 make bram-dmem-test
+make rv32m-test
 ```
 
 ---
@@ -247,6 +274,7 @@ FluxCore/
 
 Near-term work:
 
+- use `mcycle` and `minstret` in benchmark programs to report cycles, retired instructions, and CPI
 - load a real bare-metal program into IMEM before bitstream generation
 - program the Zybo Z7-20 and inspect retire/exception probes with ILA
 - add a real IMEM initialization path for bare-metal programs
@@ -254,12 +282,21 @@ Near-term work:
 - add end-to-end byte/halfword load/store tests
 - decide where the optional cache enters the future memory interface
 
+Architecture-study direction:
+
+- long-latency scoreboard experiments (div already full-freeze stalls; scoreboard is the next step)
+- branch prediction with misprediction counters
+- integrated I-cache/D-cache and scratchpad variants
+- fine-grained multithreading and nonblocking memory
+- superscalar and out-of-order variants as later, separately measured studies
+- virtual-memory/TLB and multicore/coherence experiments after the baseline memory system matures
+
 Sparse-compute direction:
 
 - AXI-Lite control registers from PS to FluxCore
 - program/data loading path from the ARM PS
 - scratchpad and streaming memory experiments
-- XFlux sparse instructions for index/value traversal
+- XFlux XMACC fused multiply-accumulate (pending 3rd register read port)
 - performance counters for sparse-kernel attribution
 - CSR SpMV and PCG microbenchmarks
 

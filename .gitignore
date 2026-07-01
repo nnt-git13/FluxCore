@@ -1,0 +1,105 @@
+# Build outputs (all generated content lands here)
+build/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# pytest cache
+.pytest_cache/
+
+# Type-checking caches
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyright/
+.ruff_cache/
+
+# Coverage outputs
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Questa work libraries and transcripts
+work/
+vsim.wlf
+transcript
+modelsim.ini
+*.vstf
+
+# Waveform databases
+*.vcd
+*.fst
+*.ghw
+*.wlf
+*.evcd
+
+# Vivado generated files
+*.xpr
+*.xsa
+*.bit
+*.ltx
+*.mcs
+*.prm
+*.runs/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.gen/
+*.srcs/
+vivado_*.log
+vivado_*.jou
+vivado.log
+vivado.jou
+*.str
+.Xil/
+webtalk*.xml
+tight_setup_hold_pins.txt
+
+# Yosys generated artifacts
+*.blif
+*.json
+*.aig
+synth_*.v
+synth_*.sv
+
+# Compiled software artifacts
+*.elf
+*.bin
+*.hex
+*.mem
+*.o
+*.a
+*.dis
+*.map
+
+# Generated benchmark outputs
+reports/benchmarks/raw/
+
+# Local tool and board configuration (user-specific, not committed)
+config/tools.local.mk
+config/board.local.mk
+
+# Editor and OS artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/settings.json
+
+# NOTE: reports/ subdirectories (simulation/, synthesis/, implementation/, benchmarks/)
+# are source-controlled for curated, reproducible summaries. Only raw build/
+# outputs are ignored above.

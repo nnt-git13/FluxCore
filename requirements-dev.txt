@@ -1,0 +1,13 @@
+# FluxCore development dependencies
+# Install with: pip install -r requirements-dev.txt
+#
+# Version ranges are pinned to compatible minor versions.
+# Exact patch versions are not pinned to allow security updates.
+# Update this file intentionally when changing tooling.
+#
+# NOTE: cocotb is not included. Questa SystemVerilog testbenches are the
+# primary simulation path. cocotb may be added in a later milestone.
+
+pytest>=7.4,<9
+ruff>=0.4,<1
+mypy>=1.8,<2

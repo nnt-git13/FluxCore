@@ -1,0 +1,117 @@
+`default_nettype none
+
+// fetch_unit — IF stage PC register and next-PC select.
+//
+// Role in the pipeline:
+//   This is the entire IF stage. It drives the instruction memory address
+//   and produces the IF/ID payload for the if_id_reg to latch.
+//
+// Instruction memory interface:
+//   fetch_addr_o is the CURRENT PC (combinatorial from registered pc_q).
+//   fetch_addr_next_o is the NEXT PC (fully combinatorial, before the next
+//   posedge). BRAM instruction memory should use fetch_addr_next_o as its
+//   address input so that its registered output is ready in the same cycle
+//   that the pipeline expects the instruction (= the cycle when pc_q is the
+//   current PC). Simulation testbenches use the combinatorial imem model and
+//   can ignore fetch_addr_next_o.
+//
+//   It expects instr_i to settle combinatorially in the same cycle as
+//   fetch_addr_o (either combinatorial ROM for simulation, or BRAM output
+//   registered one cycle earlier via fetch_addr_next_o for synthesis).
+//   The if_id_o payload is formed combinatorially and latched by if_id_reg.
+//
+// Next-PC priority:
+//   1. rst=1              → RESET_VECTOR  (synchronous, highest priority)
+//   2. redirect_valid_i=1 → redirect_target_i  (overrides stall)
+//   3. stall_i=1          → hold PC       (no change)
+//   4. else               → PC + 4
+//
+// Redirect overrides stall because a branch/jump resolved in EX needs the
+// front-of-pipe to restart regardless of any load-use stall in flight.
+//
+// JALR bit-0 clearing:
+//   The EX stage is responsible for masking bit 0 of the JALR target before
+//   asserting redirect_valid_i. This module does not modify redirect_target_i.
+//
+// Valid signal:
+//   if_id_o.valid is always 1. The pipeline control unit flushes the if_id_reg
+//   (using its flush_i port) to insert bubbles; the fetch unit itself is not
+//   responsible for producing invalid payloads.
+
+module fetch_unit
+    import fluxcore_pkg::*;
+    import rv32_isa_pkg::*;
+    import pipeline_pkg::*;
+#(
+    // Reset vector: byte address of the first instruction to fetch.
+    // Override at integration time to match the memory map.
+    parameter word_t RESET_VECTOR = 32'h0000_0000
+)
+(
+    input  wire logic           clk,
+    input  wire logic           rst,
+
+    // Stall from pipeline control: hold PC and re-present the same fetch.
+    input  wire logic           stall_i,
+
+    // Redirect from EX stage: a branch taken or JAL/JALR resolved target.
+    // Asserted for exactly one cycle; the target is already aligned and final.
+    input  wire logic           redirect_valid_i,
+    input  wire word_t          redirect_target_i,
+
+    // Instruction memory read port.
+    // fetch_addr_o: current PC (combinatorial from pc_q); drives imem address
+    //   for simulation (combinatorial ROM model) and the if_id payload PC.
+    // fetch_addr_next_o: next PC (combinatorial); for BRAM synthesis — feed
+    //   this to the BRAM address so the registered output is ready when the
+    //   pipeline needs it (one cycle later, when fetch_addr_o = this address).
+    // instr_i must be valid combinatorially in the same cycle as fetch_addr_o.
+    output word_t          fetch_addr_o,
+    output word_t          fetch_addr_next_o,
+    input  wire instr_t         instr_i,
+
+    // Output to if_id_reg (latched by if_id_reg on the next rising edge).
+    output if_id_payload_t if_id_o
+);
+
+    word_t pc_q;
+    word_t next_pc_s;
+
+    // -----------------------------------------------------------------------
+    // Next-PC combinatorial select
+    // -----------------------------------------------------------------------
+    always_comb begin
+        if (rst)
+            next_pc_s = RESET_VECTOR;
+        else if (redirect_valid_i)
+            next_pc_s = redirect_target_i;
+        else if (!stall_i)
+            next_pc_s = pc_q + 32'd4;
+        else
+            next_pc_s = pc_q;
+    end
+
+    // -----------------------------------------------------------------------
+    // PC register
+    // -----------------------------------------------------------------------
+    always_ff @(posedge clk)
+        pc_q <= next_pc_s;
+
+    // -----------------------------------------------------------------------
+    // Fetch addresses
+    // -----------------------------------------------------------------------
+    assign fetch_addr_o      = pc_q;       // current PC (combinatorial)
+    assign fetch_addr_next_o = next_pc_s;  // next PC (for BRAM prefetch)
+
+    // -----------------------------------------------------------------------
+    // IF/ID payload (combinational, latched by if_id_reg on the next edge)
+    // -----------------------------------------------------------------------
+    always_comb begin
+        if_id_o.valid = 1'b1;
+        if_id_o.pc    = pc_q;
+        if_id_o.instr = instr_i;
+    end
+
+endmodule : fetch_unit
+
+`default_nettype wire

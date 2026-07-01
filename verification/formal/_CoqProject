@@ -1,0 +1,7 @@
+-R . FluxCore
+
+FluxCoreTypes.v
+FluxCoreISA.v
+FluxCorePipeline.v
+PipelineCorrectness.v
+FluxCoreSPMV.v

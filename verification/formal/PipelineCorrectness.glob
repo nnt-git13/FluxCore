@@ -1,0 +1,477 @@
+DIGEST 9a88b79235538ec01a1fc0bdd0e93784
+FFluxCore.PipelineCorrectness
+R1139:1160 FluxCore.FluxCoreTypes <> <> lib
+R1178:1197 FluxCore.FluxCoreISA <> <> lib
+R1215:1239 FluxCore.FluxCorePipeline <> <> lib
+R1269:1274 Stdlib.ZArith.ZArith <> <> lib
+R1304:1307 Stdlib.Bool.Bool <> <> lib
+R1337:1340 Stdlib.Lists.List <> <> lib
+R1350:1362 Stdlib.Lists.List ListNotations <> mod
+R1392:1394 Stdlib.micromega.Lia <> <> lib
+def 2770:2784 <> pipeline_isa_rf
+R2791:2800 FluxCore.FluxCorePipeline <> pipe_state rec
+binder 2787:2787 <> s:1
+R2805:2811 FluxCore.FluxCoreTypes <> regfile def
+R2899:2902 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R2889:2897 FluxCore.FluxCorePipeline <> inf_valid proj
+R2881:2885 FluxCore.FluxCorePipeline <> ps_wb proj
+R2878:2878 FluxCore.PipelineCorrectness <> s:1 var
+R2914:2923 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R2906:2910 FluxCore.FluxCorePipeline <> ps_wb proj
+R2903:2903 FluxCore.PipelineCorrectness <> s:1 var
+R3008:3012 FluxCore.FluxCorePipeline <> ps_rf proj
+R3005:3005 FluxCore.PipelineCorrectness <> s:1 var
+R2935:2942 FluxCore.FluxCoreTypes <> rf_write def
+R2947:2951 FluxCore.FluxCorePipeline <> ps_rf proj
+R2944:2944 FluxCore.PipelineCorrectness <> s:1 var
+R2965:2970 FluxCore.FluxCorePipeline <> inf_rd proj
+R2957:2961 FluxCore.FluxCorePipeline <> ps_wb proj
+R2954:2954 FluxCore.PipelineCorrectness <> s:1 var
+R2984:2993 FluxCore.FluxCorePipeline <> inf_result proj
+R2976:2980 FluxCore.FluxCorePipeline <> ps_wb proj
+R2973:2973 FluxCore.PipelineCorrectness <> s:1 var
+binder 2862:2866 <> rf_wb:2
+R3085:3088 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R3075:3083 FluxCore.FluxCorePipeline <> inf_valid proj
+R3066:3071 FluxCore.FluxCorePipeline <> ps_mem proj
+R3063:3063 FluxCore.PipelineCorrectness <> s:1 var
+R3101:3110 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R3092:3097 FluxCore.FluxCorePipeline <> ps_mem proj
+R3089:3089 FluxCore.PipelineCorrectness <> s:1 var
+R3186:3190 FluxCore.PipelineCorrectness <> rf_wb:2 var
+R3120:3127 FluxCore.FluxCoreTypes <> rf_write def
+R3129:3133 FluxCore.PipelineCorrectness <> rf_wb:2 var
+R3147:3152 FluxCore.FluxCorePipeline <> inf_rd proj
+R3138:3143 FluxCore.FluxCorePipeline <> ps_mem proj
+R3135:3135 FluxCore.PipelineCorrectness <> s:1 var
+R3167:3176 FluxCore.FluxCorePipeline <> inf_result proj
+R3158:3163 FluxCore.FluxCorePipeline <> ps_mem proj
+R3155:3155 FluxCore.PipelineCorrectness <> s:1 var
+prf 3926:3956 <> fwd_read_equals_pipeline_isa_rf
+R3972:3981 FluxCore.FluxCorePipeline <> pipe_state rec
+binder 3968:3968 <> s:3
+R3990:3990 Corelib.Numbers.BinNums <> Z ind
+binder 3985:3986 <> rs:4
+R4011:4013 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3998:4005 FluxCore.FluxCorePipeline <> fwd_read def
+R4007:4007 FluxCore.PipelineCorrectness <> s:3 var
+R4009:4010 FluxCore.PipelineCorrectness <> rs:4 var
+R4014:4020 FluxCore.FluxCoreTypes <> rf_read def
+R4023:4037 FluxCore.PipelineCorrectness <> pipeline_isa_rf def
+R4039:4039 FluxCore.PipelineCorrectness <> s:3 var
+R4042:4043 FluxCore.PipelineCorrectness <> rs:4 var
+prf 5079:5090 <> fwd_mem_wins
+binder 5101:5101 <> s:5
+binder 5103:5104 <> rs:6
+R5141:5148 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5133:5136 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5123:5131 FluxCore.FluxCorePipeline <> inf_valid proj
+R5114:5119 FluxCore.FluxCorePipeline <> ps_mem proj
+R5111:5111 FluxCore.PipelineCorrectness <> s:5 var
+R5137:5140 Corelib.Init.Datatypes <> true constr
+R5179:5186 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5172:5174 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5161:5170 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R5152:5157 FluxCore.FluxCorePipeline <> ps_mem proj
+R5149:5149 FluxCore.PipelineCorrectness <> s:5 var
+R5175:5178 Corelib.Init.Datatypes <> true constr
+R5215:5222 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5206:5212 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5199:5204 FluxCore.FluxCorePipeline <> inf_rd proj
+R5190:5195 FluxCore.FluxCorePipeline <> ps_mem proj
+R5187:5187 FluxCore.PipelineCorrectness <> s:5 var
+R5213:5214 FluxCore.PipelineCorrectness <> rs:6 var
+R5230:5237 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5225:5228 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R5223:5224 FluxCore.PipelineCorrectness <> rs:6 var
+R5251:5253 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5238:5245 FluxCore.FluxCorePipeline <> fwd_read def
+R5247:5247 FluxCore.PipelineCorrectness <> s:5 var
+R5249:5250 FluxCore.PipelineCorrectness <> rs:6 var
+R5266:5275 FluxCore.FluxCorePipeline <> inf_result proj
+R5257:5262 FluxCore.FluxCorePipeline <> ps_mem proj
+R5254:5254 FluxCore.PipelineCorrectness <> s:5 var
+R5326:5333 FluxCore.FluxCorePipeline <> fwd_read def
+R5361:5370 Stdlib.ZArith.BinInt Z eqb_refl thm
+R5361:5370 Stdlib.ZArith.BinInt Z eqb_refl thm
+R5361:5370 Stdlib.ZArith.BinInt Z eqb_refl thm
+R5381:5389 Stdlib.ZArith.BinInt Z eqb_neq thm
+R5381:5389 Stdlib.ZArith.BinInt Z eqb_neq thm
+prf 5590:5600 <> fwd_wb_wins
+binder 5611:5611 <> s:7
+binder 5613:5614 <> rs:8
+R5767:5817 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5654:5654 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5758:5761 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5740:5743 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R5704:5713 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R5739:5739 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R5677:5680 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R5667:5675 FluxCore.FluxCorePipeline <> inf_valid proj
+R5658:5663 FluxCore.FluxCorePipeline <> ps_mem proj
+R5655:5655 FluxCore.PipelineCorrectness <> s:7 var
+R5693:5702 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R5684:5689 FluxCore.FluxCorePipeline <> ps_mem proj
+R5681:5681 FluxCore.PipelineCorrectness <> s:7 var
+R5733:5736 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R5726:5731 FluxCore.FluxCorePipeline <> inf_rd proj
+R5717:5722 FluxCore.FluxCorePipeline <> ps_mem proj
+R5714:5714 FluxCore.PipelineCorrectness <> s:7 var
+R5737:5738 FluxCore.PipelineCorrectness <> rs:8 var
+R5744:5747 Corelib.Init.Datatypes <> negb def
+R5752:5755 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R5750:5751 FluxCore.PipelineCorrectness <> rs:8 var
+R5762:5766 Corelib.Init.Datatypes <> false constr
+R5847:5854 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5839:5842 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5829:5837 FluxCore.FluxCorePipeline <> inf_valid proj
+R5821:5825 FluxCore.FluxCorePipeline <> ps_wb proj
+R5818:5818 FluxCore.PipelineCorrectness <> s:7 var
+R5843:5846 Corelib.Init.Datatypes <> true constr
+R5884:5891 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5877:5879 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5866:5875 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R5858:5862 FluxCore.FluxCorePipeline <> ps_wb proj
+R5855:5855 FluxCore.PipelineCorrectness <> s:7 var
+R5880:5883 Corelib.Init.Datatypes <> true constr
+R5919:5926 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5910:5916 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5903:5908 FluxCore.FluxCorePipeline <> inf_rd proj
+R5895:5899 FluxCore.FluxCorePipeline <> ps_wb proj
+R5892:5892 FluxCore.PipelineCorrectness <> s:7 var
+R5917:5918 FluxCore.PipelineCorrectness <> rs:8 var
+R5934:5941 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5929:5932 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R5927:5928 FluxCore.PipelineCorrectness <> rs:8 var
+R5955:5957 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5942:5949 FluxCore.FluxCorePipeline <> fwd_read def
+R5951:5951 FluxCore.PipelineCorrectness <> s:7 var
+R5953:5954 FluxCore.PipelineCorrectness <> rs:8 var
+R5969:5978 FluxCore.FluxCorePipeline <> inf_result proj
+R5961:5965 FluxCore.FluxCorePipeline <> ps_wb proj
+R5958:5958 FluxCore.PipelineCorrectness <> s:7 var
+R6034:6041 FluxCore.FluxCorePipeline <> fwd_read def
+R6085:6094 Stdlib.ZArith.BinInt Z eqb_refl thm
+R6085:6094 Stdlib.ZArith.BinInt Z eqb_refl thm
+R6085:6094 Stdlib.ZArith.BinInt Z eqb_refl thm
+R6105:6113 Stdlib.ZArith.BinInt Z eqb_neq thm
+R6105:6113 Stdlib.ZArith.BinInt Z eqb_neq thm
+prf 6255:6272 <> fwd_rf_fallthrough
+binder 6283:6283 <> s:9
+binder 6285:6286 <> rs:10
+R6406:6413 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6293:6293 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6397:6400 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6379:6382 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6343:6352 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6378:6378 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6316:6319 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6306:6314 FluxCore.FluxCorePipeline <> inf_valid proj
+R6297:6302 FluxCore.FluxCorePipeline <> ps_mem proj
+R6294:6294 FluxCore.PipelineCorrectness <> s:9 var
+R6332:6341 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R6323:6328 FluxCore.FluxCorePipeline <> ps_mem proj
+R6320:6320 FluxCore.PipelineCorrectness <> s:9 var
+R6372:6375 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R6365:6370 FluxCore.FluxCorePipeline <> inf_rd proj
+R6356:6361 FluxCore.FluxCorePipeline <> ps_mem proj
+R6353:6353 FluxCore.PipelineCorrectness <> s:9 var
+R6376:6377 FluxCore.PipelineCorrectness <> rs:10 var
+R6383:6386 Corelib.Init.Datatypes <> negb def
+R6391:6394 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R6389:6390 FluxCore.PipelineCorrectness <> rs:10 var
+R6401:6405 Corelib.Init.Datatypes <> false constr
+R6524:6531 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6414:6414 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6515:6518 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6497:6500 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6462:6471 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6496:6496 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6436:6439 Corelib.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R6426:6434 FluxCore.FluxCorePipeline <> inf_valid proj
+R6418:6422 FluxCore.FluxCorePipeline <> ps_wb proj
+R6415:6415 FluxCore.PipelineCorrectness <> s:9 var
+R6451:6460 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R6443:6447 FluxCore.FluxCorePipeline <> ps_wb proj
+R6440:6440 FluxCore.PipelineCorrectness <> s:9 var
+R6490:6493 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R6483:6488 FluxCore.FluxCorePipeline <> inf_rd proj
+R6475:6479 FluxCore.FluxCorePipeline <> ps_wb proj
+R6472:6472 FluxCore.PipelineCorrectness <> s:9 var
+R6494:6495 FluxCore.PipelineCorrectness <> rs:10 var
+R6501:6504 Corelib.Init.Datatypes <> negb def
+R6509:6512 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R6507:6508 FluxCore.PipelineCorrectness <> rs:10 var
+R6519:6523 Corelib.Init.Datatypes <> false constr
+R6545:6547 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6532:6539 FluxCore.FluxCorePipeline <> fwd_read def
+R6541:6541 FluxCore.PipelineCorrectness <> s:9 var
+R6543:6544 FluxCore.PipelineCorrectness <> rs:10 var
+R6548:6554 FluxCore.FluxCoreTypes <> rf_read def
+R6559:6563 FluxCore.FluxCorePipeline <> ps_rf proj
+R6556:6556 FluxCore.PipelineCorrectness <> s:9 var
+R6566:6567 FluxCore.PipelineCorrectness <> rs:10 var
+R6610:6617 FluxCore.FluxCorePipeline <> fwd_read def
+def 7300:7317 <> pipe_fwd_invariant
+R7324:7333 FluxCore.FluxCorePipeline <> pipe_state rec
+binder 7320:7320 <> s:11
+R7345:7353 FluxCore.FluxCoreISA <> isa_state rec
+binder 7337:7341 <> isa_s:12
+binder 7375:7376 <> rs:13
+R7392:7394 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7379:7386 FluxCore.FluxCorePipeline <> fwd_read def
+R7388:7388 FluxCore.PipelineCorrectness <> s:11 var
+R7390:7391 FluxCore.PipelineCorrectness <> rs:13 var
+R7395:7401 FluxCore.FluxCoreTypes <> rf_read def
+R7410:7415 FluxCore.FluxCoreISA <> isa_rf proj
+R7403:7407 FluxCore.PipelineCorrectness <> isa_s:12 var
+R7418:7419 FluxCore.PipelineCorrectness <> rs:13 var
+prf 7525:7543 <> pipe_init_invariant
+R7547:7564 FluxCore.PipelineCorrectness <> pipe_fwd_invariant def
+R7566:7574 FluxCore.FluxCorePipeline <> pipe_init def
+R7576:7583 FluxCore.FluxCoreISA <> isa_init def
+R7602:7619 FluxCore.PipelineCorrectness <> pipe_fwd_invariant def
+R7622:7630 FluxCore.FluxCorePipeline <> pipe_init def
+R7633:7640 FluxCore.FluxCoreISA <> isa_init def
+R7662:7669 FluxCore.FluxCorePipeline <> fwd_read def
+prf 7978:7997 <> pipe_exec_mem_result
+binder 8008:8008 <> s:14
+binder 8010:8014 <> isa_s:15
+binder 8016:8016 <> i:16
+R8049:8056 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R8023:8040 FluxCore.PipelineCorrectness <> pipe_fwd_invariant def
+R8042:8042 FluxCore.PipelineCorrectness <> s:14 var
+R8044:8048 FluxCore.PipelineCorrectness <> isa_s:15 var
+R8151:8158 Corelib.Init.Logic <> ::type_scope:x_'\/'_x not
+R8094:8102 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8083:8092 FluxCore.FluxCorePipeline <> inf_result proj
+R8074:8079 FluxCore.FluxCorePipeline <> ps_mem proj
+R8058:8066 FluxCore.FluxCorePipeline <> pipe_exec def
+R8068:8068 FluxCore.PipelineCorrectness <> s:14 var
+R8070:8070 FluxCore.PipelineCorrectness <> i:16 var
+R8103:8109 FluxCore.FluxCoreTypes <> rf_read def
+R8131:8136 FluxCore.FluxCoreISA <> isa_rf proj
+R8112:8119 FluxCore.FluxCoreISA <> isa_step def
+R8121:8125 FluxCore.PipelineCorrectness <> isa_s:15 var
+R8127:8127 FluxCore.PipelineCorrectness <> i:16 var
+R8140:8147 FluxCore.FluxCorePipeline <> instr_rd def
+R8149:8149 FluxCore.PipelineCorrectness <> i:16 var
+R8176:8178 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8159:8173 FluxCore.FluxCorePipeline <> instr_writes_rd def
+R8175:8175 FluxCore.PipelineCorrectness <> i:16 var
+R8179:8183 Corelib.Init.Datatypes <> false constr
+prf 8892:8911 <> pipeline_alu_correct
+R8930:8933 Corelib.Init.Datatypes <> list ind
+R8935:8939 FluxCore.FluxCoreISA <> instr ind
+binder 8923:8926 <> prog:17
+R8948:8956 FluxCore.FluxCoreISA <> isa_state rec
+binder 8943:8944 <> s0:18
+R9144:9148 FluxCore.FluxCorePipeline <> ps_rf proj
+R9144:9148 FluxCore.FluxCorePipeline <> ps_rf proj
+R9144:9148 FluxCore.FluxCorePipeline <> ps_rf proj
+R9167:9172 FluxCore.FluxCorePipeline <> ps_mem proj
+R9167:9172 FluxCore.FluxCorePipeline <> ps_mem proj
+R9192:9196 FluxCore.FluxCorePipeline <> ps_wb proj
+R9192:9196 FluxCore.FluxCorePipeline <> ps_wb proj
+R9157:9162 FluxCore.FluxCoreISA <> isa_rf proj
+R9153:9154 FluxCore.PipelineCorrectness <> s0:18 var
+R9177:9188 FluxCore.FluxCorePipeline <> inflight_nop def
+R9201:9212 FluxCore.FluxCorePipeline <> inflight_nop def
+binder 9130:9136 <> pipe_s0:19
+binder 9231:9232 <> rs:20
+R9287:9293 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9239:9245 FluxCore.FluxCoreTypes <> rf_read def
+R9278:9282 FluxCore.FluxCorePipeline <> ps_rf proj
+R9248:9261 FluxCore.FluxCorePipeline <> pipe_exec_full def
+R9263:9269 FluxCore.PipelineCorrectness <> pipe_s0:19 var
+R9271:9274 FluxCore.PipelineCorrectness <> prog:17 var
+R9285:9286 FluxCore.PipelineCorrectness <> rs:20 var
+R9294:9300 FluxCore.FluxCoreTypes <> rf_read def
+R9321:9326 FluxCore.FluxCoreISA <> isa_rf proj
+R9303:9309 FluxCore.FluxCoreISA <> isa_run def
+R9311:9312 FluxCore.PipelineCorrectness <> s0:18 var
+R9314:9317 FluxCore.PipelineCorrectness <> prog:17 var
+R9329:9330 FluxCore.PipelineCorrectness <> rs:20 var
+def 10352:10362 <> add_correct
+binder 10373:10374 <> rf:21
+binder 10376:10377 <> rd:22
+binder 10379:10381 <> rs1:23
+binder 10383:10385 <> rs2:24
+R10399:10406 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R10394:10397 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R10392:10393 FluxCore.PipelineCorrectness <> rd:22 var
+R10419:10419 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R10446:10446 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R10420:10426 FluxCore.FluxCoreISA <> Ialu_rr constr
+R10428:10434 FluxCore.FluxCoreISA <> ALU_ADD constr
+R10436:10437 FluxCore.PipelineCorrectness <> rd:22 var
+R10439:10441 FluxCore.PipelineCorrectness <> rs1:23 var
+R10443:10445 FluxCore.PipelineCorrectness <> rs2:24 var
+binder 10411:10414 <> prog:25
+R10470:10475 FluxCore.FluxCoreISA <> isa_rf proj
+R10470:10475 FluxCore.FluxCoreISA <> isa_rf proj
+R10470:10475 FluxCore.FluxCoreISA <> isa_rf proj
+R10485:10490 FluxCore.FluxCoreISA <> isa_pc proj
+R10485:10490 FluxCore.FluxCoreISA <> isa_pc proj
+R10480:10481 FluxCore.PipelineCorrectness <> rf:21 var
+binder 10459:10460 <> s0:26
+R10544:10550 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10507:10513 FluxCore.FluxCoreTypes <> rf_read def
+R10534:10539 FluxCore.FluxCoreISA <> isa_rf proj
+R10516:10522 FluxCore.FluxCoreISA <> isa_run def
+R10524:10525 FluxCore.PipelineCorrectness <> s0:26 var
+R10527:10530 FluxCore.PipelineCorrectness <> prog:25 var
+R10542:10543 FluxCore.PipelineCorrectness <> rd:22 var
+R10551:10558 FluxCore.FluxCoreISA <> alu_eval def
+R10560:10566 FluxCore.FluxCoreISA <> ALU_ADD constr
+R10569:10575 FluxCore.FluxCoreTypes <> rf_read def
+R10577:10578 FluxCore.PipelineCorrectness <> rf:21 var
+R10580:10582 FluxCore.PipelineCorrectness <> rs1:23 var
+R10586:10592 FluxCore.FluxCoreTypes <> rf_read def
+R10594:10595 FluxCore.PipelineCorrectness <> rf:21 var
+R10597:10599 FluxCore.PipelineCorrectness <> rs2:24 var
+R10665:10671 FluxCore.FluxCoreISA <> isa_run def
+R10674:10681 FluxCore.FluxCoreISA <> isa_step def
+R10699:10716 FluxCore.FluxCoreTypes <> rf_write_read_same thm
+R10699:10716 FluxCore.FluxCoreTypes <> rf_write_read_same thm
+def 11025:11041 <> fwd_one_cycle_gap
+binder 11052:11053 <> rf:27
+R11062:11067 FluxCore.FluxCoreISA <> alu_op ind
+binder 11056:11058 <> op1:28
+R11087:11087 Corelib.Numbers.BinNums <> Z ind
+binder 11071:11073 <> rd1:29
+binder 11075:11078 <> rs1a:30
+binder 11080:11083 <> rs1b:31
+R11137:11142 FluxCore.FluxCoreISA <> alu_op ind
+binder 11131:11133 <> op2:32
+R11157:11157 Corelib.Numbers.BinNums <> Z ind
+binder 11146:11148 <> rd2:33
+binder 11150:11153 <> rs2b:34
+R11173:11180 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R11168:11171 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R11165:11167 FluxCore.PipelineCorrectness <> rd1:29 var
+R11195:11202 FluxCore.FluxCoreISA <> alu_eval def
+R11204:11206 FluxCore.PipelineCorrectness <> op1:28 var
+R11209:11215 FluxCore.FluxCoreTypes <> rf_read def
+R11217:11218 FluxCore.PipelineCorrectness <> rf:27 var
+R11220:11223 FluxCore.PipelineCorrectness <> rs1a:30 var
+R11227:11233 FluxCore.FluxCoreTypes <> rf_read def
+R11235:11236 FluxCore.PipelineCorrectness <> rf:27 var
+R11238:11241 FluxCore.PipelineCorrectness <> rs1b:31 var
+binder 11185:11186 <> v1:35
+R11341:11349 FluxCore.FluxCorePipeline <> inf_valid proj
+R11341:11349 FluxCore.FluxCorePipeline <> inf_valid proj
+R11341:11349 FluxCore.FluxCorePipeline <> inf_valid proj
+R11380:11389 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R11380:11389 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R11420:11425 FluxCore.FluxCorePipeline <> inf_rd proj
+R11420:11425 FluxCore.FluxCorePipeline <> inf_rd proj
+R11455:11464 FluxCore.FluxCorePipeline <> inf_result proj
+R11455:11464 FluxCore.FluxCorePipeline <> inf_result proj
+R11354:11357 Corelib.Init.Datatypes <> true constr
+R11394:11397 Corelib.Init.Datatypes <> true constr
+R11430:11432 FluxCore.PipelineCorrectness <> rd1:29 var
+R11469:11470 FluxCore.PipelineCorrectness <> v1:35 var
+binder 11328:11332 <> s_mem:36
+R11499:11503 FluxCore.FluxCorePipeline <> ps_rf proj
+R11499:11503 FluxCore.FluxCorePipeline <> ps_rf proj
+R11499:11503 FluxCore.FluxCorePipeline <> ps_rf proj
+R11513:11518 FluxCore.FluxCorePipeline <> ps_mem proj
+R11513:11518 FluxCore.FluxCorePipeline <> ps_mem proj
+R11531:11535 FluxCore.FluxCorePipeline <> ps_wb proj
+R11531:11535 FluxCore.FluxCorePipeline <> ps_wb proj
+R11508:11509 FluxCore.PipelineCorrectness <> rf:27 var
+R11523:11527 FluxCore.PipelineCorrectness <> s_mem:36 var
+R11540:11551 FluxCore.FluxCorePipeline <> inflight_nop def
+binder 11486:11491 <> s_pipe:37
+R11632:11634 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11613:11620 FluxCore.FluxCorePipeline <> fwd_read def
+R11622:11627 FluxCore.PipelineCorrectness <> s_pipe:37 var
+R11629:11631 FluxCore.PipelineCorrectness <> rd1:29 var
+R11635:11636 FluxCore.PipelineCorrectness <> v1:35 var
+R11719:11730 FluxCore.PipelineCorrectness <> fwd_mem_wins thm
+R11719:11730 FluxCore.PipelineCorrectness <> fwd_mem_wins thm
+def 12043:12059 <> fwd_two_cycle_gap
+binder 12070:12071 <> rf:38
+binder 12073:12075 <> op1:39
+binder 12077:12079 <> rd1:40
+binder 12081:12084 <> rs1a:41
+binder 12086:12089 <> rs1b:42
+binder 12091:12101 <> v_mem_other:43
+binder 12103:12114 <> rd_mem_other:44
+R12129:12136 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R12124:12127 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R12121:12123 FluxCore.PipelineCorrectness <> rd1:40 var
+R12156:12223 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R12149:12152 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R12137:12148 FluxCore.PipelineCorrectness <> rd_mem_other:44 var
+R12153:12155 FluxCore.PipelineCorrectness <> rd1:40 var
+R12237:12244 FluxCore.FluxCoreISA <> alu_eval def
+R12246:12248 FluxCore.PipelineCorrectness <> op1:39 var
+R12251:12257 FluxCore.FluxCoreTypes <> rf_read def
+R12259:12260 FluxCore.PipelineCorrectness <> rf:38 var
+R12262:12265 FluxCore.PipelineCorrectness <> rs1a:41 var
+R12269:12275 FluxCore.FluxCoreTypes <> rf_read def
+R12277:12278 FluxCore.PipelineCorrectness <> rf:38 var
+R12280:12283 FluxCore.PipelineCorrectness <> rs1b:42 var
+binder 12228:12229 <> v1:45
+R12309:12317 FluxCore.FluxCorePipeline <> inf_valid proj
+R12309:12317 FluxCore.FluxCorePipeline <> inf_valid proj
+R12309:12317 FluxCore.FluxCorePipeline <> inf_valid proj
+R12348:12357 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R12348:12357 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R12387:12392 FluxCore.FluxCorePipeline <> inf_rd proj
+R12387:12392 FluxCore.FluxCorePipeline <> inf_rd proj
+R12434:12443 FluxCore.FluxCorePipeline <> inf_result proj
+R12434:12443 FluxCore.FluxCorePipeline <> inf_result proj
+R12323:12326 Corelib.Init.Datatypes <> true constr
+R12362:12365 Corelib.Init.Datatypes <> true constr
+R12401:12412 FluxCore.PipelineCorrectness <> rd_mem_other:44 var
+R12448:12458 FluxCore.PipelineCorrectness <> v_mem_other:43 var
+binder 12297:12301 <> s_mem:46
+R12486:12494 FluxCore.FluxCorePipeline <> inf_valid proj
+R12486:12494 FluxCore.FluxCorePipeline <> inf_valid proj
+R12486:12494 FluxCore.FluxCorePipeline <> inf_valid proj
+R12525:12534 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R12525:12534 FluxCore.FluxCorePipeline <> inf_rd_wen proj
+R12564:12569 FluxCore.FluxCorePipeline <> inf_rd proj
+R12564:12569 FluxCore.FluxCorePipeline <> inf_rd proj
+R12602:12611 FluxCore.FluxCorePipeline <> inf_result proj
+R12602:12611 FluxCore.FluxCorePipeline <> inf_result proj
+R12500:12503 Corelib.Init.Datatypes <> true constr
+R12539:12542 Corelib.Init.Datatypes <> true constr
+R12578:12580 FluxCore.PipelineCorrectness <> rd1:40 var
+R12616:12617 FluxCore.PipelineCorrectness <> v1:45 var
+binder 12474:12477 <> s_wb:47
+R12646:12650 FluxCore.FluxCorePipeline <> ps_rf proj
+R12646:12650 FluxCore.FluxCorePipeline <> ps_rf proj
+R12646:12650 FluxCore.FluxCorePipeline <> ps_rf proj
+R12660:12665 FluxCore.FluxCorePipeline <> ps_mem proj
+R12660:12665 FluxCore.FluxCorePipeline <> ps_mem proj
+R12678:12682 FluxCore.FluxCorePipeline <> ps_wb proj
+R12678:12682 FluxCore.FluxCorePipeline <> ps_wb proj
+R12655:12656 FluxCore.PipelineCorrectness <> rf:38 var
+R12670:12674 FluxCore.PipelineCorrectness <> s_mem:46 var
+R12687:12690 FluxCore.PipelineCorrectness <> s_wb:47 var
+binder 12633:12638 <> s_pipe:48
+R12721:12723 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12702:12709 FluxCore.FluxCorePipeline <> fwd_read def
+R12711:12716 FluxCore.PipelineCorrectness <> s_pipe:48 var
+R12718:12720 FluxCore.PipelineCorrectness <> rd1:40 var
+R12724:12725 FluxCore.PipelineCorrectness <> v1:45 var
+R12830:12837 FluxCore.FluxCorePipeline <> fwd_read def
+R12968:12968 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12988:12991 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12981:12984 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R12992:12996 Corelib.Init.Datatypes <> false constr
+R12968:12968 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12988:12991 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12981:12984 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R12992:12996 Corelib.Init.Datatypes <> false constr
+R13010:13018 Stdlib.ZArith.BinInt Z eqb_neq thm
+R13010:13018 Stdlib.ZArith.BinInt Z eqb_neq thm
+R13125:13134 Stdlib.ZArith.BinInt Z eqb_refl thm
+R13125:13134 Stdlib.ZArith.BinInt Z eqb_refl thm
+R13125:13134 Stdlib.ZArith.BinInt Z eqb_refl thm
+R13145:13153 Stdlib.ZArith.BinInt Z eqb_neq thm
+R13145:13153 Stdlib.ZArith.BinInt Z eqb_neq thm

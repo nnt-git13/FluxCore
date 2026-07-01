@@ -1,0 +1,394 @@
+DIGEST 6ec6444204e43b7d8d68378a657b81ae
+FFluxCore.FluxCoreISA
+R1131:1152 FluxCore.FluxCoreTypes <> <> lib
+R1182:1187 Stdlib.ZArith.ZArith <> <> lib
+R1217:1220 Stdlib.Bool.Bool <> <> lib
+R1250:1253 Stdlib.Lists.List <> <> lib
+R1263:1275 Stdlib.Lists.List ListNotations <> mod
+R1305:1307 Stdlib.micromega.Lia <> <> lib
+ind 1609:1614 <> alu_op
+constr 1662:1668 <> ALU_ADD
+constr 1674:1680 <> ALU_SUB
+constr 1686:1692 <> ALU_AND
+constr 1698:1703 <> ALU_OR
+constr 1709:1715 <> ALU_XOR
+constr 1721:1727 <> ALU_SLL
+constr 1763:1769 <> ALU_SRL
+constr 1805:1811 <> ALU_SRA
+constr 1850:1856 <> ALU_SLT
+constr 1900:1907 <> ALU_SLTU
+constr 1952:1961 <> ALU_COPY_B
+constr 2049:2056 <> ALU_XABS
+constr 2098:2105 <> ALU_XMIN
+constr 2146:2153 <> ALU_XMAX
+constr 2194:2201 <> ALU_XCLZ
+scheme 1609:1614 <> alu_op_rect
+scheme 1609:1614 <> alu_op_ind
+scheme 1609:1614 <> alu_op_rec
+scheme 1609:1614 <> alu_op_sind
+def 2504:2511 <> alu_eval
+R2519:2524 FluxCore.FluxCoreISA <> alu_op ind
+binder 2514:2515 <> op:3
+R2534:2534 Corelib.Numbers.BinNums <> Z ind
+binder 2528:2528 <> a:4
+binder 2530:2530 <> b:5
+R2539:2539 Corelib.Numbers.BinNums <> Z ind
+R2552:2553 FluxCore.FluxCoreISA <> op:3 var
+R2564:2570 FluxCore.FluxCoreISA <> ALU_ADD constr
+R2578:2583 FluxCore.FluxCoreTypes <> wrap32 def
+R2587:2589 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R2586:2586 FluxCore.FluxCoreISA <> a:4 var
+R2590:2590 FluxCore.FluxCoreISA <> b:5 var
+R2597:2603 FluxCore.FluxCoreISA <> ALU_SUB constr
+R2611:2616 FluxCore.FluxCoreTypes <> wrap32 def
+R2620:2622 Stdlib.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R2619:2619 FluxCore.FluxCoreISA <> a:4 var
+R2623:2623 FluxCore.FluxCoreISA <> b:5 var
+R2630:2636 FluxCore.FluxCoreISA <> ALU_AND constr
+R2644:2649 Stdlib.ZArith.BinInt Z land def
+R2651:2651 FluxCore.FluxCoreISA <> a:4 var
+R2653:2653 FluxCore.FluxCoreISA <> b:5 var
+R2659:2664 FluxCore.FluxCoreISA <> ALU_OR constr
+R2673:2677 Stdlib.ZArith.BinInt Z lor def
+R2680:2680 FluxCore.FluxCoreISA <> a:4 var
+R2682:2682 FluxCore.FluxCoreISA <> b:5 var
+R2688:2694 FluxCore.FluxCoreISA <> ALU_XOR constr
+R2702:2707 Stdlib.ZArith.BinInt Z lxor def
+R2709:2709 FluxCore.FluxCoreISA <> a:4 var
+R2711:2711 FluxCore.FluxCoreISA <> b:5 var
+R2717:2723 FluxCore.FluxCoreISA <> ALU_SLL constr
+R2731:2736 FluxCore.FluxCoreTypes <> wrap32 def
+R2739:2746 Stdlib.ZArith.BinInt Z shiftl def
+R2748:2748 FluxCore.FluxCoreISA <> a:4 var
+R2751:2755 FluxCore.FluxCoreTypes <> shamt def
+R2757:2757 FluxCore.FluxCoreISA <> b:5 var
+R2765:2771 FluxCore.FluxCoreISA <> ALU_SRL constr
+R2779:2786 Stdlib.ZArith.BinInt Z shiftr def
+R2788:2788 FluxCore.FluxCoreISA <> a:4 var
+R2791:2795 FluxCore.FluxCoreTypes <> shamt def
+R2797:2797 FluxCore.FluxCoreISA <> b:5 var
+R2804:2810 FluxCore.FluxCoreISA <> ALU_SRA constr
+R2818:2823 FluxCore.FluxCoreTypes <> wrap32 def
+R2826:2833 Stdlib.ZArith.BinInt Z shiftr def
+R2836:2846 FluxCore.FluxCoreTypes <> to_signed32 def
+R2848:2848 FluxCore.FluxCoreISA <> a:4 var
+R2852:2856 FluxCore.FluxCoreTypes <> shamt def
+R2858:2858 FluxCore.FluxCoreISA <> b:5 var
+R2866:2872 FluxCore.FluxCoreISA <> ALU_SLT constr
+R2896:2899 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R2883:2893 FluxCore.FluxCoreTypes <> to_signed32 def
+R2895:2895 FluxCore.FluxCoreISA <> a:4 var
+R2900:2910 FluxCore.FluxCoreTypes <> to_signed32 def
+R2912:2912 FluxCore.FluxCoreISA <> b:5 var
+R2932:2939 FluxCore.FluxCoreISA <> ALU_SLTU constr
+R2950:2953 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R2949:2949 FluxCore.FluxCoreISA <> a:4 var
+R2954:2954 FluxCore.FluxCoreISA <> b:5 var
+R2974:2983 FluxCore.FluxCoreISA <> ALU_COPY_B constr
+R2988:2988 FluxCore.FluxCoreISA <> b:5 var
+R2994:3001 FluxCore.FluxCoreISA <> ALU_XABS constr
+R3012:3015 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R3011:3011 FluxCore.FluxCoreISA <> a:4 var
+R3045:3045 FluxCore.FluxCoreISA <> a:4 var
+R3023:3028 FluxCore.FluxCoreTypes <> wrap32 def
+R3031:3035 Stdlib.ZArith.BinInt Z opp def
+R3037:3037 FluxCore.FluxCoreISA <> a:4 var
+R3051:3058 FluxCore.FluxCoreISA <> ALU_XMIN constr
+R3081:3084 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R3068:3078 FluxCore.FluxCoreTypes <> to_signed32 def
+R3080:3080 FluxCore.FluxCoreISA <> a:4 var
+R3085:3095 FluxCore.FluxCoreTypes <> to_signed32 def
+R3097:3097 FluxCore.FluxCoreISA <> b:5 var
+R3111:3111 FluxCore.FluxCoreISA <> b:5 var
+R3104:3104 FluxCore.FluxCoreISA <> a:4 var
+R3117:3124 FluxCore.FluxCoreISA <> ALU_XMAX constr
+R3147:3150 Stdlib.ZArith.BinInt <> ::Z_scope:x_'>?'_x not
+R3134:3144 FluxCore.FluxCoreTypes <> to_signed32 def
+R3146:3146 FluxCore.FluxCoreISA <> a:4 var
+R3151:3161 FluxCore.FluxCoreTypes <> to_signed32 def
+R3163:3163 FluxCore.FluxCoreISA <> b:5 var
+R3177:3177 FluxCore.FluxCoreISA <> b:5 var
+R3170:3170 FluxCore.FluxCoreISA <> a:4 var
+R3183:3190 FluxCore.FluxCoreISA <> ALU_XCLZ constr
+R3370:3372 Corelib.Init.Datatypes <> nat ind
+binder 3366:3366 <> k:7
+R3380:3380 Corelib.Numbers.BinNums <> Z ind
+binder 3376:3376 <> v:8
+R3385:3385 Corelib.Numbers.BinNums <> Z ind
+R3404:3404 FluxCore.FluxCoreISA <> k:7 var
+R3421:3421 Corelib.Init.Datatypes <> O constr
+R3432:3440 Stdlib.ZArith.BinInt Z testbit def
+R3442:3442 FluxCore.FluxCoreISA <> v:8 var
+R3470:3470 Corelib.Init.Datatypes <> S constr
+R3481:3489 Stdlib.ZArith.BinInt Z testbit def
+R3491:3491 FluxCore.FluxCoreISA <> v:8 var
+R3494:3501 Stdlib.ZArith.BinInt Z of_nat def
+R3504:3504 Corelib.Init.Datatypes <> S constr
+R3580:3588 FluxCore.FluxCoreISA <> clz_inner:9 var
+R3593:3593 FluxCore.FluxCoreISA <> v:8 var
+R3537:3539 Stdlib.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R3540:3547 Stdlib.ZArith.BinInt Z of_nat def
+R3550:3550 Corelib.Init.Datatypes <> S constr
+binder 3355:3363 <> clz_inner:11
+R3616:3624 FluxCore.FluxCoreISA <> clz_inner:11 var
+R3633:3633 FluxCore.FluxCoreISA <> a:4 var
+ind 4040:4044 <> instr
+constr 4096:4102 <> Ialu_rr
+constr 4221:4227 <> Ialu_ri
+constr 4319:4322 <> Inop
+R4111:4116 FluxCore.FluxCoreISA <> alu_op ind
+binder 4106:4107 <> op:14
+R4133:4133 Corelib.Numbers.BinNums <> Z ind
+binder 4120:4121 <> rd:15
+binder 4123:4125 <> rs1:16
+binder 4127:4129 <> rs2:17
+R4236:4241 FluxCore.FluxCoreISA <> alu_op ind
+binder 4231:4232 <> op:18
+R4254:4254 Corelib.Numbers.BinNums <> Z ind
+binder 4245:4246 <> rd:19
+binder 4248:4250 <> rs1:20
+R4264:4264 Corelib.Numbers.BinNums <> Z ind
+binder 4258:4260 <> imm:21
+scheme 4040:4044 <> instr_rect
+scheme 4040:4044 <> instr_ind
+scheme 4040:4044 <> instr_rec
+scheme 4040:4044 <> instr_sind
+rec 4578:4586 <> isa_state
+proj 4615:4620 <> isa_rf
+proj 4636:4641 <> isa_pc
+R4624:4630 FluxCore.FluxCoreTypes <> regfile def
+R4645:4645 Corelib.Numbers.BinNums <> Z ind
+def 4664:4671 <> isa_init
+R4675:4683 FluxCore.FluxCoreISA <> isa_state rec
+R4693:4698 FluxCore.FluxCoreISA <> isa_rf proj
+R4693:4698 FluxCore.FluxCoreISA <> isa_rf proj
+R4693:4698 FluxCore.FluxCoreISA <> isa_rf proj
+R4713:4718 FluxCore.FluxCoreISA <> isa_pc proj
+R4713:4718 FluxCore.FluxCoreISA <> isa_pc proj
+R4703:4709 FluxCore.FluxCoreTypes <> rf_init def
+def 4812:4819 <> isa_step
+R4826:4834 FluxCore.FluxCoreISA <> isa_state rec
+binder 4822:4822 <> s:25
+R4842:4846 FluxCore.FluxCoreISA <> instr ind
+binder 4838:4838 <> i:26
+R4851:4859 FluxCore.FluxCoreISA <> isa_state rec
+R4872:4872 FluxCore.FluxCoreISA <> i:26 var
+R4883:4889 FluxCore.FluxCoreISA <> Ialu_rr constr
+R4928:4934 FluxCore.FluxCoreTypes <> rf_read def
+R4939:4944 FluxCore.FluxCoreISA <> isa_rf proj
+R4936:4936 FluxCore.FluxCoreISA <> s:25 var
+binder 4918:4918 <> a:28
+R4974:4980 FluxCore.FluxCoreTypes <> rf_read def
+R4985:4990 FluxCore.FluxCoreISA <> isa_rf proj
+R4982:4982 FluxCore.FluxCoreISA <> s:25 var
+binder 4964:4964 <> b:29
+R5020:5027 FluxCore.FluxCoreISA <> alu_eval def
+R5032:5032 FluxCore.FluxCoreISA <> a:28 var
+R5034:5034 FluxCore.FluxCoreISA <> b:29 var
+binder 5010:5015 <> result:30
+R5048:5053 FluxCore.FluxCoreISA <> isa_rf proj
+R5048:5053 FluxCore.FluxCoreISA <> isa_rf proj
+R5048:5053 FluxCore.FluxCoreISA <> isa_rf proj
+R5097:5102 FluxCore.FluxCoreISA <> isa_pc proj
+R5097:5102 FluxCore.FluxCoreISA <> isa_pc proj
+R5058:5065 FluxCore.FluxCoreTypes <> rf_write def
+R5070:5075 FluxCore.FluxCoreISA <> isa_rf proj
+R5067:5067 FluxCore.FluxCoreISA <> s:25 var
+R5081:5086 FluxCore.FluxCoreISA <> result:30 var
+R5117:5119 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R5110:5115 FluxCore.FluxCoreISA <> isa_pc proj
+R5107:5107 FluxCore.FluxCoreISA <> s:25 var
+R5129:5135 FluxCore.FluxCoreISA <> Ialu_ri constr
+R5174:5180 FluxCore.FluxCoreTypes <> rf_read def
+R5185:5190 FluxCore.FluxCoreISA <> isa_rf proj
+R5182:5182 FluxCore.FluxCoreISA <> s:25 var
+binder 5164:5164 <> a:31
+R5220:5227 FluxCore.FluxCoreISA <> alu_eval def
+R5232:5232 FluxCore.FluxCoreISA <> a:31 var
+binder 5210:5215 <> result:32
+R5250:5255 FluxCore.FluxCoreISA <> isa_rf proj
+R5250:5255 FluxCore.FluxCoreISA <> isa_rf proj
+R5250:5255 FluxCore.FluxCoreISA <> isa_rf proj
+R5299:5304 FluxCore.FluxCoreISA <> isa_pc proj
+R5299:5304 FluxCore.FluxCoreISA <> isa_pc proj
+R5260:5267 FluxCore.FluxCoreTypes <> rf_write def
+R5272:5277 FluxCore.FluxCoreISA <> isa_rf proj
+R5269:5269 FluxCore.FluxCoreISA <> s:25 var
+R5283:5288 FluxCore.FluxCoreISA <> result:32 var
+R5319:5321 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R5312:5317 FluxCore.FluxCoreISA <> isa_pc proj
+R5309:5309 FluxCore.FluxCoreISA <> s:25 var
+R5331:5334 FluxCore.FluxCoreISA <> Inop constr
+R5348:5353 FluxCore.FluxCoreISA <> isa_rf proj
+R5348:5353 FluxCore.FluxCoreISA <> isa_rf proj
+R5348:5353 FluxCore.FluxCoreISA <> isa_rf proj
+R5378:5383 FluxCore.FluxCoreISA <> isa_pc proj
+R5378:5383 FluxCore.FluxCoreISA <> isa_pc proj
+R5361:5366 FluxCore.FluxCoreISA <> isa_rf proj
+R5358:5358 FluxCore.FluxCoreISA <> s:25 var
+R5398:5400 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R5391:5396 FluxCore.FluxCoreISA <> isa_pc proj
+R5388:5388 FluxCore.FluxCoreISA <> s:25 var
+def 5494:5500 <> isa_run
+R5507:5515 FluxCore.FluxCoreISA <> isa_state rec
+binder 5503:5503 <> s:33
+R5526:5529 Corelib.Init.Datatypes <> list ind
+R5531:5535 FluxCore.FluxCoreISA <> instr ind
+binder 5519:5522 <> prog:34
+R5540:5548 FluxCore.FluxCoreISA <> isa_state rec
+R5561:5564 FluxCore.FluxCoreISA <> prog:34 var
+R5575:5577 Corelib.Init.Datatypes <> nil constr
+R5585:5585 FluxCore.FluxCoreISA <> s:33 var
+R5592:5595 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5601:5607 FluxCore.FluxCoreISA <> isa_run:35 def
+R5610:5617 FluxCore.FluxCoreISA <> isa_step def
+R5619:5619 FluxCore.FluxCoreISA <> s:33 var
+prf 5932:5942 <> isa_run_app
+binder 5953:5953 <> s:37
+binder 5955:5956 <> p1:38
+binder 5958:5959 <> p2:39
+R5986:5988 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5966:5972 FluxCore.FluxCoreISA <> isa_run def
+R5974:5974 FluxCore.FluxCoreISA <> s:37 var
+R5979:5982 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5977:5978 FluxCore.FluxCoreISA <> p1:38 var
+R5983:5984 FluxCore.FluxCoreISA <> p2:39 var
+R5989:5995 FluxCore.FluxCoreISA <> isa_run def
+R5998:6004 FluxCore.FluxCoreISA <> isa_run def
+R6006:6006 FluxCore.FluxCoreISA <> s:37 var
+R6008:6009 FluxCore.FluxCoreISA <> p1:38 var
+R6012:6013 FluxCore.FluxCoreISA <> p2:39 var
+prf 6203:6219 <> isa_run_singleton
+binder 6230:6230 <> s:40
+binder 6232:6232 <> i:41
+R6252:6254 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6239:6245 FluxCore.FluxCoreISA <> isa_run def
+R6247:6247 FluxCore.FluxCoreISA <> s:40 var
+R6249:6249 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6251:6251 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6250:6250 FluxCore.FluxCoreISA <> i:41 var
+R6255:6262 FluxCore.FluxCoreISA <> isa_step def
+R6264:6264 FluxCore.FluxCoreISA <> s:40 var
+R6266:6266 FluxCore.FluxCoreISA <> i:41 var
+prf 6362:6381 <> isa_nop_rf_unchanged
+binder 6392:6392 <> s:42
+R6425:6427 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6418:6423 FluxCore.FluxCoreISA <> isa_rf proj
+R6400:6407 FluxCore.FluxCoreISA <> isa_step def
+R6409:6409 FluxCore.FluxCoreISA <> s:42 var
+R6411:6414 FluxCore.FluxCoreISA <> Inop constr
+R6431:6436 FluxCore.FluxCoreISA <> isa_rf proj
+R6428:6428 FluxCore.FluxCoreISA <> s:42 var
+prf 6567:6588 <> isa_rr_x0_rd_unchanged
+binder 6599:6599 <> s:43
+binder 6601:6602 <> op:44
+binder 6604:6606 <> rs1:45
+binder 6608:6610 <> rs2:46
+R6661:6663 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6654:6659 FluxCore.FluxCoreISA <> isa_rf proj
+R6618:6625 FluxCore.FluxCoreISA <> isa_step def
+R6627:6627 FluxCore.FluxCoreISA <> s:43 var
+R6630:6636 FluxCore.FluxCoreISA <> Ialu_rr constr
+R6638:6639 FluxCore.FluxCoreISA <> op:44 var
+R6643:6645 FluxCore.FluxCoreISA <> rs1:45 var
+R6647:6649 FluxCore.FluxCoreISA <> rs2:46 var
+R6667:6672 FluxCore.FluxCoreISA <> isa_rf proj
+R6664:6664 FluxCore.FluxCoreISA <> s:43 var
+R6722:6729 FluxCore.FluxCoreTypes <> rf_write def
+prf 6836:6857 <> isa_ri_x0_rd_unchanged
+binder 6868:6868 <> s:47
+binder 6870:6871 <> op:48
+binder 6873:6875 <> rs1:49
+binder 6877:6879 <> imm:50
+R6930:6932 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6923:6928 FluxCore.FluxCoreISA <> isa_rf proj
+R6887:6894 FluxCore.FluxCoreISA <> isa_step def
+R6896:6896 FluxCore.FluxCoreISA <> s:47 var
+R6899:6905 FluxCore.FluxCoreISA <> Ialu_ri constr
+R6907:6908 FluxCore.FluxCoreISA <> op:48 var
+R6912:6914 FluxCore.FluxCoreISA <> rs1:49 var
+R6916:6918 FluxCore.FluxCoreISA <> imm:50 var
+R6936:6941 FluxCore.FluxCoreISA <> isa_rf proj
+R6933:6933 FluxCore.FluxCoreISA <> s:47 var
+R6991:6998 FluxCore.FluxCoreTypes <> rf_write def
+prf 7111:7123 <> isa_rr_result
+binder 7134:7134 <> s:51
+binder 7136:7137 <> op:52
+binder 7139:7140 <> rd:53
+binder 7142:7144 <> rs1:54
+binder 7146:7148 <> rs2:55
+R7162:7169 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R7157:7160 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R7155:7156 FluxCore.FluxCoreISA <> rd:53 var
+R7226:7232 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7170:7176 FluxCore.FluxCoreTypes <> rf_read def
+R7216:7221 FluxCore.FluxCoreISA <> isa_rf proj
+R7179:7186 FluxCore.FluxCoreISA <> isa_step def
+R7188:7188 FluxCore.FluxCoreISA <> s:51 var
+R7191:7197 FluxCore.FluxCoreISA <> Ialu_rr constr
+R7199:7200 FluxCore.FluxCoreISA <> op:52 var
+R7202:7203 FluxCore.FluxCoreISA <> rd:53 var
+R7205:7207 FluxCore.FluxCoreISA <> rs1:54 var
+R7209:7211 FluxCore.FluxCoreISA <> rs2:55 var
+R7224:7225 FluxCore.FluxCoreISA <> rd:53 var
+R7233:7240 FluxCore.FluxCoreISA <> alu_eval def
+R7242:7243 FluxCore.FluxCoreISA <> op:52 var
+R7246:7252 FluxCore.FluxCoreTypes <> rf_read def
+R7257:7262 FluxCore.FluxCoreISA <> isa_rf proj
+R7254:7254 FluxCore.FluxCoreISA <> s:51 var
+R7265:7267 FluxCore.FluxCoreISA <> rs1:54 var
+R7271:7277 FluxCore.FluxCoreTypes <> rf_read def
+R7282:7287 FluxCore.FluxCoreISA <> isa_rf proj
+R7279:7279 FluxCore.FluxCoreISA <> s:51 var
+R7290:7292 FluxCore.FluxCoreISA <> rs2:55 var
+R7348:7365 FluxCore.FluxCoreTypes <> rf_write_read_same thm
+R7348:7365 FluxCore.FluxCoreTypes <> rf_write_read_same thm
+prf 7508:7525 <> isa_rr_independent
+binder 7536:7536 <> s:56
+R7545:7550 FluxCore.FluxCoreISA <> alu_op ind
+binder 7539:7541 <> op1:57
+R7570:7570 Corelib.Numbers.BinNums <> Z ind
+binder 7554:7556 <> rd1:58
+binder 7558:7561 <> rs1a:59
+binder 7563:7566 <> rs1b:60
+R7617:7622 FluxCore.FluxCoreISA <> alu_op ind
+binder 7611:7613 <> op2:61
+R7642:7642 Corelib.Numbers.BinNums <> Z ind
+binder 7626:7628 <> rd2:62
+binder 7630:7633 <> rs2a:63
+binder 7635:7638 <> rs2b:64
+R7658:7661 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R7653:7656 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R7650:7652 FluxCore.FluxCoreISA <> rd1:58 var
+R7670:7673 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R7665:7668 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R7662:7664 FluxCore.FluxCoreISA <> rd2:62 var
+R7684:7691 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R7677:7680 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R7674:7676 FluxCore.FluxCoreISA <> rd1:58 var
+R7681:7683 FluxCore.FluxCoreISA <> rd2:62 var
+R7702:7709 FluxCore.FluxCoreISA <> isa_step def
+R7711:7711 FluxCore.FluxCoreISA <> s:56 var
+R7714:7720 FluxCore.FluxCoreISA <> Ialu_rr constr
+R7722:7724 FluxCore.FluxCoreISA <> op1:57 var
+R7726:7728 FluxCore.FluxCoreISA <> rd1:58 var
+R7730:7733 FluxCore.FluxCoreISA <> rs1a:59 var
+R7735:7738 FluxCore.FluxCoreISA <> rs1b:60 var
+binder 7696:7697 <> s1:65
+R7771:7777 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7748:7754 FluxCore.FluxCoreTypes <> rf_read def
+R7760:7765 FluxCore.FluxCoreISA <> isa_rf proj
+R7756:7757 FluxCore.FluxCoreISA <> s1:65 var
+R7768:7770 FluxCore.FluxCoreISA <> rd1:58 var
+R7778:7785 FluxCore.FluxCoreISA <> alu_eval def
+R7787:7789 FluxCore.FluxCoreISA <> op1:57 var
+R7792:7798 FluxCore.FluxCoreTypes <> rf_read def
+R7803:7808 FluxCore.FluxCoreISA <> isa_rf proj
+R7800:7800 FluxCore.FluxCoreISA <> s:56 var
+R7811:7814 FluxCore.FluxCoreISA <> rs1a:59 var
+R7818:7824 FluxCore.FluxCoreTypes <> rf_read def
+R7829:7834 FluxCore.FluxCoreISA <> isa_rf proj
+R7826:7826 FluxCore.FluxCoreISA <> s:56 var
+R7837:7840 FluxCore.FluxCoreISA <> rs1b:60 var
+R7924:7936 FluxCore.FluxCoreISA <> isa_rr_result thm
+R7924:7936 FluxCore.FluxCoreISA <> isa_rr_result thm

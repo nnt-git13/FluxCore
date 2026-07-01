@@ -1,0 +1,62 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
+| Date         : Tue Jun 30 04:58:20 2026
+| Host         : lnx-141209 running 64-bit Ubuntu 24.04.4 LTS
+| Command      : report_drc -file /home/lnx-141209/Desktop/FluxCore/reports/implementation/fluxcore_soc_drc_bitstream.rpt
+| Design       : fluxcore_soc
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Fully Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Report DRC
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: checkpoint_fluxcore_soc_route
+      Design limits: <entire design considered>
+           Ruledeck: default
+             Max violations: <unlimited>
+             Violations found: 2
++-----------+----------+--------------------+------------+
+| Rule      | Severity | Description        | Violations |
++-----------+----------+--------------------+------------+
+| RTSTAT-10 | Warning  | No routable loads  | 1          |
+| ZPS7-1    | Warning  | PS7 block required | 1          |
++-----------+----------+--------------------+------------+
+
+2. REPORT DETAILS
+-----------------
+RTSTAT-10#1 Warning
+No routable loads  
+32 net(s) have no routable loads. The problem bus(es) and/or net(s) are u_cpu/u_mem_wb_reg/retire_o[instr][0],
+u_cpu/u_mem_wb_reg/retire_o[instr][10],
+u_cpu/u_mem_wb_reg/retire_o[instr][11],
+u_cpu/u_mem_wb_reg/retire_o[instr][13],
+u_cpu/u_mem_wb_reg/retire_o[instr][14],
+u_cpu/u_mem_wb_reg/retire_o[instr][15],
+u_cpu/u_mem_wb_reg/retire_o[instr][1],
+u_cpu/u_mem_wb_reg/retire_o[instr][2],
+u_cpu/u_mem_wb_reg/retire_o[instr][3],
+u_cpu/u_mem_wb_reg/retire_o[instr][4],
+u_cpu/u_mem_wb_reg/retire_o[instr][5],
+u_cpu/u_mem_wb_reg/retire_o[instr][6],
+u_cpu/u_mem_wb_reg/retire_o[instr][7],
+u_cpu/u_mem_wb_reg/retire_o[instr][8],
+u_cpu/u_mem_wb_reg/retire_o[instr][9]
+ (the first 15 of 32 listed nets/buses).
+Related violations: <none>
+
+ZPS7-1#1 Warning
+PS7 block required  
+The PS7 cell must be used in this Zynq design in order to enable correct default configuration.
+Related violations: <none>
+
+

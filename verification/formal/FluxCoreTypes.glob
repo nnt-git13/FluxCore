@@ -1,0 +1,178 @@
+DIGEST 6b50c9c6114af6ca09df9b0c57d318c4
+FFluxCore.FluxCoreTypes
+R897:902 Stdlib.ZArith.ZArith <> <> lib
+R932:934 Stdlib.micromega.Lia <> <> lib
+def 1214:1222 <> WORD_SIZE
+R1228:1228 Corelib.Numbers.BinNums <> Z ind
+def 1270:1278 <> HALF_WORD
+R1284:1284 Corelib.Numbers.BinNums <> Z ind
+def 1371:1376 <> wrap32
+R1383:1383 Corelib.Numbers.BinNums <> Z ind
+binder 1379:1379 <> n:1
+R1388:1388 Corelib.Numbers.BinNums <> Z ind
+R1394:1398 Stdlib.ZArith.BinInt <> ::Z_scope:x_'mod'_x not
+R1393:1393 FluxCore.FluxCoreTypes <> n:1 var
+R1399:1407 FluxCore.FluxCoreTypes <> WORD_SIZE def
+prf 1417:1428 <> wrap32_range
+binder 1439:1439 <> n:2
+R1443:1446 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<'_x not
+R1455:1457 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<'_x not
+R1447:1452 FluxCore.FluxCoreTypes <> wrap32 def
+R1454:1454 FluxCore.FluxCoreTypes <> n:2 var
+R1447:1452 FluxCore.FluxCoreTypes <> wrap32 def
+R1454:1454 FluxCore.FluxCoreTypes <> n:2 var
+R1458:1466 FluxCore.FluxCoreTypes <> WORD_SIZE def
+R1494:1499 FluxCore.FluxCoreTypes <> wrap32 def
+R1502:1510 FluxCore.FluxCoreTypes <> WORD_SIZE def
+R1521:1535 Stdlib.ZArith.BinInt Z mod_pos_bound thm
+R1521:1535 Stdlib.ZArith.BinInt Z mod_pos_bound thm
+def 1644:1654 <> to_signed32
+R1661:1661 Corelib.Numbers.BinNums <> Z ind
+binder 1657:1657 <> w:3
+R1666:1666 Corelib.Numbers.BinNums <> Z ind
+R1677:1680 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<?'_x not
+R1676:1676 FluxCore.FluxCoreTypes <> w:3 var
+R1681:1689 FluxCore.FluxCoreTypes <> HALF_WORD def
+R1704:1706 Stdlib.ZArith.BinInt <> ::Z_scope:x_'-'_x not
+R1703:1703 FluxCore.FluxCoreTypes <> w:3 var
+R1707:1715 FluxCore.FluxCoreTypes <> WORD_SIZE def
+R1696:1696 FluxCore.FluxCoreTypes <> w:3 var
+def 1817:1821 <> shamt
+R1828:1828 Corelib.Numbers.BinNums <> Z ind
+binder 1824:1824 <> n:4
+R1833:1833 Corelib.Numbers.BinNums <> Z ind
+R1839:1843 Stdlib.ZArith.BinInt <> ::Z_scope:x_'mod'_x not
+R1838:1838 FluxCore.FluxCoreTypes <> n:4 var
+prf 1855:1865 <> shamt_range
+binder 1876:1876 <> n:5
+R1880:1883 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<'_x not
+R1891:1893 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<='_x_'<'_x not
+R1884:1888 FluxCore.FluxCoreTypes <> shamt def
+R1890:1890 FluxCore.FluxCoreTypes <> n:5 var
+R1884:1888 FluxCore.FluxCoreTypes <> shamt def
+R1890:1890 FluxCore.FluxCoreTypes <> n:5 var
+R1921:1925 FluxCore.FluxCoreTypes <> shamt def
+R1934:1948 Stdlib.ZArith.BinInt Z mod_pos_bound thm
+R1934:1948 Stdlib.ZArith.BinInt Z mod_pos_bound thm
+def 2414:2420 <> regfile
+R2433:2436 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R2432:2432 Corelib.Numbers.BinNums <> Z ind
+R2437:2437 Corelib.Numbers.BinNums <> Z ind
+def 2452:2458 <> rf_init
+R2462:2468 FluxCore.FluxCoreTypes <> regfile def
+def 2557:2563 <> rf_read
+R2571:2577 FluxCore.FluxCoreTypes <> regfile def
+binder 2566:2567 <> rf:6
+R2587:2587 Corelib.Numbers.BinNums <> Z ind
+binder 2581:2583 <> idx:7
+R2592:2592 Corelib.Numbers.BinNums <> Z ind
+R2605:2608 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R2602:2604 FluxCore.FluxCoreTypes <> idx:7 var
+R2623:2624 FluxCore.FluxCoreTypes <> rf:6 var
+R2626:2628 FluxCore.FluxCoreTypes <> idx:7 var
+def 2755:2762 <> rf_write
+R2770:2776 FluxCore.FluxCoreTypes <> regfile def
+binder 2765:2766 <> rf:8
+R2786:2786 Corelib.Numbers.BinNums <> Z ind
+binder 2780:2782 <> idx:9
+R2794:2794 Corelib.Numbers.BinNums <> Z ind
+binder 2790:2790 <> v:10
+R2799:2805 FluxCore.FluxCoreTypes <> regfile def
+R2818:2821 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R2815:2817 FluxCore.FluxCoreTypes <> idx:9 var
+binder 2843:2843 <> j:11
+R2852:2855 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R2851:2851 FluxCore.FluxCoreTypes <> j:11 var
+R2856:2858 FluxCore.FluxCoreTypes <> idx:9 var
+R2872:2873 FluxCore.FluxCoreTypes <> rf:8 var
+R2875:2875 FluxCore.FluxCoreTypes <> j:11 var
+R2865:2865 FluxCore.FluxCoreTypes <> v:10 var
+R2829:2830 FluxCore.FluxCoreTypes <> rf:8 var
+prf 3159:3175 <> rf_x0_always_zero
+binder 3186:3187 <> rf:12
+R3202:3204 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3190:3196 FluxCore.FluxCoreTypes <> rf_read def
+R3198:3199 FluxCore.FluxCoreTypes <> rf:12 var
+R3232:3238 FluxCore.FluxCoreTypes <> rf_read def
+prf 3345:3359 <> rf_write_x0_nop
+binder 3370:3371 <> rf:13
+binder 3373:3373 <> v:14
+binder 3375:3377 <> idx:15
+R3409:3411 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3380:3386 FluxCore.FluxCoreTypes <> rf_read def
+R3389:3396 FluxCore.FluxCoreTypes <> rf_write def
+R3398:3399 FluxCore.FluxCoreTypes <> rf:13 var
+R3403:3403 FluxCore.FluxCoreTypes <> v:14 var
+R3406:3408 FluxCore.FluxCoreTypes <> idx:15 var
+R3412:3418 FluxCore.FluxCoreTypes <> rf_read def
+R3420:3421 FluxCore.FluxCoreTypes <> rf:13 var
+R3423:3425 FluxCore.FluxCoreTypes <> idx:15 var
+R3463:3469 FluxCore.FluxCoreTypes <> rf_read def
+R3472:3479 FluxCore.FluxCoreTypes <> rf_write def
+prf 3587:3604 <> rf_write_read_same
+binder 3615:3616 <> rf:16
+binder 3618:3620 <> idx:17
+binder 3622:3622 <> v:18
+R3637:3644 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3632:3635 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R3629:3631 FluxCore.FluxCoreTypes <> idx:17 var
+R3676:3678 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3645:3651 FluxCore.FluxCoreTypes <> rf_read def
+R3654:3661 FluxCore.FluxCoreTypes <> rf_write def
+R3663:3664 FluxCore.FluxCoreTypes <> rf:16 var
+R3666:3668 FluxCore.FluxCoreTypes <> idx:17 var
+R3670:3670 FluxCore.FluxCoreTypes <> v:18 var
+R3673:3675 FluxCore.FluxCoreTypes <> idx:17 var
+R3679:3679 FluxCore.FluxCoreTypes <> v:18 var
+R3721:3727 FluxCore.FluxCoreTypes <> rf_read def
+R3730:3737 FluxCore.FluxCoreTypes <> rf_write def
+R3755:3758 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R3755:3758 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R3815:3822 Stdlib.ZArith.BinInt Z eqb_eq thm
+R3815:3822 Stdlib.ZArith.BinInt Z eqb_eq thm
+R4010:4019 Stdlib.ZArith.BinInt Z eqb_refl thm
+R4010:4019 Stdlib.ZArith.BinInt Z eqb_refl thm
+R4010:4019 Stdlib.ZArith.BinInt Z eqb_refl thm
+prf 4119:4137 <> rf_write_read_other
+binder 4148:4149 <> rf:19
+binder 4151:4153 <> idx:20
+binder 4155:4157 <> idy:21
+binder 4159:4159 <> v:22
+R4176:4183 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R4169:4172 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R4166:4168 FluxCore.FluxCoreTypes <> idx:20 var
+R4173:4175 FluxCore.FluxCoreTypes <> idy:21 var
+R4215:4217 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4184:4190 FluxCore.FluxCoreTypes <> rf_read def
+R4193:4200 FluxCore.FluxCoreTypes <> rf_write def
+R4202:4203 FluxCore.FluxCoreTypes <> rf:19 var
+R4205:4207 FluxCore.FluxCoreTypes <> idx:20 var
+R4209:4209 FluxCore.FluxCoreTypes <> v:22 var
+R4212:4214 FluxCore.FluxCoreTypes <> idy:21 var
+R4218:4224 FluxCore.FluxCoreTypes <> rf_read def
+R4226:4227 FluxCore.FluxCoreTypes <> rf:19 var
+R4229:4231 FluxCore.FluxCoreTypes <> idy:21 var
+R4277:4283 FluxCore.FluxCoreTypes <> rf_read def
+R4286:4293 FluxCore.FluxCoreTypes <> rf_write def
+R4311:4314 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R4311:4314 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R4487:4487 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4498:4501 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4491:4494 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R4502:4506 Corelib.Init.Datatypes <> false constr
+R4487:4487 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4498:4501 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4491:4494 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R4502:4506 Corelib.Init.Datatypes <> false constr
+R4523:4527 Corelib.Init.Logic <> proj2 thm
+R4530:4538 Stdlib.ZArith.BinInt Z eqb_neq thm
+R4523:4527 Corelib.Init.Logic <> proj2 thm
+R4530:4538 Stdlib.ZArith.BinInt Z eqb_neq thm
+R4615:4618 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+R4615:4618 Stdlib.ZArith.BinInt <> ::Z_scope:x_'=?'_x not
+prf 4870:4884 <> rf_read_x0_zero
+binder 4895:4896 <> rf:23
+R4911:4913 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4899:4905 FluxCore.FluxCoreTypes <> rf_read def
+R4907:4908 FluxCore.FluxCoreTypes <> rf:23 var
+R4941:4947 FluxCore.FluxCoreTypes <> rf_read def
