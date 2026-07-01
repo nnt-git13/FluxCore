@@ -55,20 +55,20 @@
 //   LH x8, 4(x0)         0x00401403
 //   LHU x9, 4(x0)        0x00405483
 //
-// Expected retirements (NOP = ADDI x0, x0, 0 → writes_rd=1, rd_addr=0):
+// Expected retirements (NOP = ADDI x0, x0, 0 → rd_wen=0; x0 is never written):
 //   [0]  ADDI x1=255     rd_wen=1  rd_addr=1   rd_data=0x0000_00FF
 //   [1]  SB x1           rd_wen=0
-//   [2]  NOP             rd_wen=1  rd_addr=0   rd_data=0x0000_0000
+//   [2]  NOP             rd_wen=0
 //   [3]  LB x2           rd_wen=1  rd_addr=2   rd_data=0xFFFF_FFFF
 //   [4]  LBU x3          rd_wen=1  rd_addr=3   rd_data=0x0000_00FF
 //   [5]  ADDI x4=127     rd_wen=1  rd_addr=4   rd_data=0x0000_007F
 //   [6]  SB x4           rd_wen=0
-//   [7]  NOP             rd_wen=1  rd_addr=0   rd_data=0x0000_0000
+//   [7]  NOP             rd_wen=0
 //   [8]  LB x5           rd_wen=1  rd_addr=5   rd_data=0x0000_007F
 //   [9]  LBU x6          rd_wen=1  rd_addr=6   rd_data=0x0000_007F
 //   [10] ADDI x7=-1      rd_wen=1  rd_addr=7   rd_data=0xFFFF_FFFF
 //   [11] SH x7           rd_wen=0
-//   [12] NOP             rd_wen=1  rd_addr=0   rd_data=0x0000_0000
+//   [12] NOP             rd_wen=0
 //   [13] LH x8           rd_wen=1  rd_addr=8   rd_data=0xFFFF_FFFF
 //   [14] LHU x9          rd_wen=1  rd_addr=9   rd_data=0x0000_FFFF
 
@@ -253,21 +253,21 @@ module tb_byte_halfword;
         // --- Byte write 0xFF at addr 0 ---
         chk(0, 1, 1, 32'h0000_00FF, "ADDI x1=0xFF");
         chk(1, 0, 0, '0,            "SB x1→byte[0]");
-        chk(2, 1, 0, 32'h0000_0000, "NOP (ADDI x0)");
+        chk(2, 0, 0, 32'h0000_0000, "NOP (ADDI x0)");
         chk(3, 1, 2, 32'hFFFF_FFFF, "LB x2: sign_ext(0xFF)=0xFFFFFFFF");
         chk(4, 1, 3, 32'h0000_00FF, "LBU x3: zero_ext(0xFF)=0x000000FF");
 
         // --- Byte write 0x7F at addr 1 ---
         chk(5, 1, 4, 32'h0000_007F, "ADDI x4=0x7F");
         chk(6, 0, 0, '0,            "SB x4→byte[1]");
-        chk(7, 1, 0, 32'h0000_0000, "NOP");
+        chk(7, 0, 0, 32'h0000_0000, "NOP");
         chk(8, 1, 5, 32'h0000_007F, "LB x5: sign_ext(0x7F)=0x0000007F (positive)");
         chk(9, 1, 6, 32'h0000_007F, "LBU x6: zero_ext(0x7F)=0x0000007F");
 
         // --- Halfword write 0xFFFF at byte addr 4 ---
         chk(10, 1, 7, 32'hFFFF_FFFF, "ADDI x7=-1 (0xFFFFFFFF)");
         chk(11, 0, 0, '0,             "SH x7→half[2] (byte 4-5)");
-        chk(12, 1, 0, 32'h0000_0000,  "NOP");
+        chk(12, 0, 0, 32'h0000_0000,  "NOP");
         chk(13, 1, 8, 32'hFFFF_FFFF,  "LH x8: sign_ext(0xFFFF)=0xFFFFFFFF");
         chk(14, 1, 9, 32'h0000_FFFF,  "LHU x9: zero_ext(0xFFFF)=0x0000FFFF");
 

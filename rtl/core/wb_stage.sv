@@ -108,7 +108,7 @@ module wb_stage
         retire_o.valid        = mem_wb_i.valid & ~mem_wb_i.exception.valid & ~stall_i;
         retire_o.pc           = mem_wb_i.pc;
         retire_o.instr        = mem_wb_i.instr;
-        retire_o.rd_wen       = mem_wb_i.rd_wen;
+        retire_o.rd_wen       = mem_wb_i.rd_wen & (mem_wb_i.rd_addr != '0);
         retire_o.rd_addr      = mem_wb_i.rd_addr;
         retire_o.rd_data      = rd_data_s;
         retire_o.mem_valid    = 1'b0;  // not tracked in this vertical slice

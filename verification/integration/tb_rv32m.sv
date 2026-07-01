@@ -79,9 +79,9 @@
 //   [16] DIV  x13       rd=13 data=0x8000_0000  (INT_MIN/-1 overflow)
 //   [17] REM  x14       rd=14 data=0x0000_0000  (INT_MIN/-1 overflow)
 //
-// Cycle budget: 200 cycles
-//   Pipeline fill: 4. 10 base cycles. 6 DIV × 33 stall = 198 stall cycles.
-//   Drain: 5. Comfortable margin within 200 cycles — use 250.
+// Cycle budget:
+//   Pipeline fill: 4. 18 base cycles. 8 DIV/REM × 33 stall = 264 stall cycles.
+//   Drain: 5. Total = 291. Use 350 for comfortable margin.
 
 `timescale 1ns / 1ps
 `default_nettype none
@@ -217,13 +217,12 @@ module tb_rv32m;
         repeat (3) @(posedge clk);
         @(negedge clk); rst = 0;
 
-        // 250-cycle budget:
-        //   4 fill + 18 base + 6 DIV×33 stall + 5 drain = 225; 250 is safe.
-        repeat (250) @(posedge clk);
+        // 350-cycle budget: 4 fill + 18 base + 8 DIV/REM×33 stall + 5 drain = 291.
+        repeat (350) @(posedge clk);
         #1;
 
         if (retire_cnt < 18)
-            $fatal(1, "[RV32M] FAIL only %0d retirements in 250 cycles (expected >= 18)",
+            $fatal(1, "[RV32M] FAIL only %0d retirements in 350 cycles (expected >= 18)",
                    retire_cnt);
 
         // --- Setup ---

@@ -100,6 +100,13 @@ fi
 mkdir -p "$ABS_BUILD_DIR"
 cd "$ABS_BUILD_DIR"
 
+# Expose the repository's build/sw tree so $readmemh("build/sw/...") in testbenches
+# resolves correctly when xsim runs from this build directory.
+if [[ -d "$REPO_ROOT/build/sw" ]]; then
+    mkdir -p build
+    ln -sfn "$REPO_ROOT/build/sw" build/sw 2>/dev/null || true
+fi
+
 XVLOG_VER=$("$XVLOG" --version 2>&1 | head -1)
 echo "============================================================"
 echo "xsim_run: $TOP"

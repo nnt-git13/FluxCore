@@ -121,12 +121,28 @@ module fluxcore_top
     word_t muldiv_result_s;
     logic  muldiv_busy_s;   // busy_q|start_i — drives muldiv_stall_i
     logic  muldiv_idle_s;   // ~busy_q (registered) — no combinational loop
-    // start_i: one-cycle pulse, generated from muldiv_idle_s (~busy_q, registered)
-    // rather than ~muldiv_busy_s to avoid: start→busy_o→muldiv_busy_s→~busy_s→start.
+    // start_i: one-cycle pulse. div_started_q prevents re-triggering: when the
+    // 33-cycle divider finishes (busy_q→0), muldiv_idle_s immediately goes 1 in
+    // the same delta, which would re-assert start_i and keep busy_o=1 forever.
+    // div_started_q stays 1 until stall_ex_s deasserts (EX stage advances) or
+    // flush_id_ex_s fires (DIV cancelled), ensuring exactly one start pulse per
+    // DIV instruction.
     logic  muldiv_start_s;
+    logic  div_started_q;
+
+    always_ff @(posedge clk) begin
+        if (rst || flush_id_ex_s)
+            div_started_q <= 1'b0;
+        else if (!stall_ex_s)
+            div_started_q <= 1'b0;
+        else if (muldiv_start_s)
+            div_started_q <= 1'b1;
+    end
+
     assign muldiv_start_s = id_ex_q.valid
                           & id_ex_q.decoded.is_long_latency
-                          & muldiv_idle_s;
+                          & muldiv_idle_s
+                          & ~div_started_q;
 
     // =========================================================================
     // IF stage — fetch unit

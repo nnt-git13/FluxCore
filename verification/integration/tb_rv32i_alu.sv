@@ -234,11 +234,6 @@ module tb_rv32i_alu;
             $fatal(1, "[ALUTEST] FAIL only %0d retirements in 50 cycles (expected >= 23)",
                    retire_cnt);
 
-        for (int _i = 0; _i < 8; _i++)
-            $display("[ALUTEST] retire[%0d] valid=%b rd_wen=%b rd=%0d rd_data=%08h",
-                     _i, retire_log[_i].valid, retire_log[_i].rd_wen,
-                     retire_log[_i].rd_addr, retire_log[_i].rd_data);
-
         // Setup
         chk( 0,  1, 32'h0000_000F, "ADDI x1=15");
         chk( 1,  2, 32'hFFFF_FFFC, "ADDI x2=-4");

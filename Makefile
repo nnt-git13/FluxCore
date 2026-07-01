@@ -915,6 +915,10 @@ sw-clean:
 clean:
 	@echo "--- Removing generated build outputs ---"
 	@rm -rf "$(BUILD_DIR)"/questa "$(BUILD_DIR)"/sw
+	@rm -rf .Xil
+	@find . -name "*.jou" -not -path "./.venv/*" -delete 2>/dev/null || true
+	@find . -name "*.pb"  -not -path "./.venv/*" -delete 2>/dev/null || true
+	@find . -type d -name "xsim.dir" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
 	@find . -type d -name "__pycache__" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
 	@find . -type d -name ".pytest_cache" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
 	@find . -type d -name ".mypy_cache"   -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true

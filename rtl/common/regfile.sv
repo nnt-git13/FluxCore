@@ -73,11 +73,24 @@ module regfile
     end
 
     // -----------------------------------------------------------------------
-    // Asynchronous read (combinational)
-    // x0 is hardwired to zero; all other registers return their stored value.
+    // Asynchronous read (combinational) with write-first bypass.
+    // x0 is hardwired to zero.
+    // When WB writes to the same register that ID is reading in the same clock
+    // cycle, NBA scheduling would otherwise expose the stale pre-write value to
+    // the ID stage.  The bypass mux returns rd_data_i directly so that
+    // id_ex_reg captures the architecturally correct value, matching the
+    // behaviour of a half-clocked or write-first distributed RAM.
     // -----------------------------------------------------------------------
-    assign rs1_data_o = (rs1_addr_i == '0) ? '0 : regs[rs1_addr_i];
-    assign rs2_data_o = (rs2_addr_i == '0) ? '0 : regs[rs2_addr_i];
+    logic rs1_bypass_s, rs2_bypass_s;
+    assign rs1_bypass_s = rd_wen_i & (rd_addr_i != '0) & (rd_addr_i == rs1_addr_i);
+    assign rs2_bypass_s = rd_wen_i & (rd_addr_i != '0) & (rd_addr_i == rs2_addr_i);
+
+    assign rs1_data_o = (rs1_addr_i == '0) ? '0 :
+                        rs1_bypass_s        ? rd_data_i :
+                                              regs[rs1_addr_i];
+    assign rs2_data_o = (rs2_addr_i == '0) ? '0 :
+                        rs2_bypass_s        ? rd_data_i :
+                                              regs[rs2_addr_i];
 
 endmodule : regfile
 
