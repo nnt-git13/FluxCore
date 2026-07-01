@@ -11,3 +11,7 @@
 pytest>=7.4,<9
 ruff>=0.4,<1
 mypy>=1.8,<2
+
+# README figure generation
+matplotlib>=3.8,<4
+Pillow>=10,<12
