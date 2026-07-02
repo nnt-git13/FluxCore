@@ -1,0 +1,48 @@
+FluxCore regression — 2026-07-02 04:59:06
+backend: verification/scripts/xsim_run.sh
+commit:  00ad93c (+ uncommitted changes)
+host:    Linux 6.17.0-35-generic
+----------------------------------------------------------------------
+PASS  isa-pkg-test                5s
+PASS  alu-test                    5s
+PASS  imm-gen-test                5s
+PASS  decoder-test                6s
+PASS  regfile-test                5s
+PASS  branch-unit-test            5s
+PASS  pipeline-pkg-test           5s
+PASS  if-id-reg-test              4s
+PASS  id-ex-reg-test              5s
+PASS  ex-mem-reg-test             5s
+PASS  mem-wb-reg-test             5s
+PASS  fetch-unit-test             5s
+PASS  execute-stage-test          5s
+PASS  mem-stage-test              5s
+PASS  wb-stage-test               5s
+PASS  pipeline-ctrl-test          5s
+PASS  forwarding-unit-test        5s
+PASS  csr-unit-test               6s
+PASS  bram-imem-test              4s
+PASS  bram-dmem-test              5s
+PASS  dcache-sim                  5s
+PASS  dcache-e2e-test             6s
+PASS  integration-test            6s
+PASS  lw-sw-test                  5s
+PASS  branch-integ-test           6s
+PASS  jal-jalr-test               6s
+PASS  lui-auipc-test              5s
+PASS  byte-halfword-test          6s
+PASS  branch-compare-test         6s
+PASS  rv32i-alu-test              5s
+PASS  rv32m-test                  6s
+PASS  ecall-mret-test             6s
+PASS  sim-hello-cpi               6s
+PASS  sim-spmv-csr                6s
+PASS  sim-csr-probe               6s
+PASS  sim-hello-uart              6s
+PASS  sim-timer-irq               5s
+PASS  sim-misalign-trap           6s
+PASS  sim-xflux                   6s
+PASS  sim-hello-cpi-dcache        6s
+PASS  sim-spmv-csr-dcache         6s
+----------------------------------------------------------------------
+TOTAL: 41/41 passed in 221s

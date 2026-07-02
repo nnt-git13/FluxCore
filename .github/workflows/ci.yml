@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verilator-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+      - name: Lint all RTL
+        run: make verilator-lint
+
+  formal:
+    runs-on: ubuntu-latest
+    container: coqorg/coq:9.1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build proofs + no-Admitted gate
+        run: |
+          sudo chown -R $(whoami) .
+          make -C verification/formal check
+
+  no-admitted-gate:
+    # Fast standalone gate: fails in seconds if an Admitted sneaks in,
+    # even before the full Coq build finishes.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash verification/scripts/check_no_admitted.sh
+
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install dev deps
+        run: make setup
+      - name: pytest + ruff + mypy
+        run: make check
+
+# Vivado xsim simulation and synthesis stay local-only (licensing/size);
+# the committed reports/simulation/regress-*.txt is the simulation evidence.

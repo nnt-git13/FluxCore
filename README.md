@@ -113,12 +113,14 @@ FluxCore implements the parts of RISC-V needed for a compact bare-metal measurem
 | RV32I ALU | ADD, SUB, AND, OR, XOR, SLL, SRL, SRA, SLT, SLTU and immediate forms |
 | RV32I memory | LW, LH, LB, LHU, LBU, SW, SH, SB |
 | Control flow | BEQ, BNE, BLT, BGE, BLTU, BGEU, JAL, JALR, LUI, AUIPC |
-| System | ECALL, MRET, CSR read/write/set/clear forms |
+| System | ECALL, EBREAK, MRET, WFI (executes as NOP), CSR read/write/set/clear forms |
 | RV32M multiply | MUL, MULH, MULHU, MULHSU |
 | RV32M divide | DIV, DIVU, REM, REMU through a 33-cycle iterative divider |
 | XFlux | XLIDX, XABS, XMIN, XMAX, XCLZ |
 
-The machine CSR subset includes `mstatus`, `mtvec`, `mscratch`, `mepc`, `mcause`, `mtval`, `mip`, `mcycle`, `mcycleh`, `minstret`, `minstreth`, and `mhartid`.
+The machine CSR set includes `mstatus`, `misa`, `mie`, `mtvec` (direct + vectored), `mcounteren`, `mcountinhibit`, `mscratch`, `mepc`, `mcause`, `mtval`, `mip`, the 64-bit `mcycle`/`minstret` counters, the Zicntr read-only shadows (`cycle`, `time`, `instret` + high halves, with `time` backed by the CLINT), and the machine-information registers (`mvendorid`, `marchid`, `mimpid`, `mconfigptr`, `mhartid`).  Accesses to unimplemented CSRs and writes to read-only CSRs raise illegal-instruction exceptions at decode.
+
+Machine interrupts are implemented end-to-end: a Spike-layout CLINT (`msip`, `mtimecmp`, `mtime` at 0x0200_0000) drives level-sensitive `mip.MTIP/MSIP`; an enabled pending interrupt tags the instruction leaving EX (never WB — stores commit at the end of MEM), traps through `mtvec` with `mepc` on the first un-executed instruction, and returns via MRET.  `sim-timer-irq` demonstrates three timer interrupts through a real C trap handler.
 
 > **Why the counters matter:** the benchmark runtime reads machine counters directly, so cycle count, retired instructions, and CPI can be collected without an operating system or external host controller.
 
@@ -174,8 +176,14 @@ The cache path is instantiated by `rtl/top/fluxcore_soc.sv` when `USE_DCACHE=1`.
 
 | Program | Workload | Correctness signal |
 |---|---|---|
-| `hello_cpi.c` | 1000-iteration arithmetic loop bracketed by counter reads | checksum `499500` |
+| `hello_cpi.c` | 1000-iteration arithmetic loop bracketed by counter reads | checksum `499500`, CPI 1.599 |
 | `spmv_csr.c` | 8×8 integer sparse matrix-vector multiply in CSR form | checksum `416` |
+| `csr_probe.c` | raw mcycle/minstret read diagnostic (guards the counter path) | monotonic raw counter values |
+| `hello_uart.c` | prints a banner over the memory-mapped UART, drives the LEDs | TB decodes "hello from fluxcore" from the TX line |
+| `timer_irq.c` | takes 3 CLINT timer interrupts through a C trap handler | checksum `3`, mcause `0x80000007` |
+| `misalign_trap.c` | JALR to a misaligned target, handler skips and resumes | checksum `1`, mcause `0`, mtval `0x102` |
+| `xflux_kernel.c` | indexed-gather clamp reduction, scalar vs XFlux (`.insn` intrinsics) | identical checksums; 1220 → 706 cycles (1.73×) |
+| `board_hello.c` | Zybo bring-up: UART banner + timer-interrupt LED counter | visual/serial, see `reports/benchmarks/board-bringup.md` |
 
 The runtime reports through a fixed memory structure:
 
@@ -212,7 +220,9 @@ Verification is organized as a progression from small, fast, local checks toward
 | Full SoC software | `sim-hello-cpi`, `sim-spmv-csr` |
 | Formal | `formal-verify` |
 
-The formal target compiles the proof set listed in `verification/formal/Makefile`: `FluxCoreTypes.v`, `FluxCoreISA.v`, `FluxCorePipeline.v`, `PipelineCorrectness.v`, and `FluxCoreSPMV.v`.
+`make regress` runs every self-checking simulation target with one command and writes a dated summary to `reports/simulation/` — a passing regression is a committed artifact, not a README claim.
+
+The formal set (`make formal-verify`) is organized ModularKoika-style under `verification/formal/` — `Common/` (word + register-file algebra), `Spec/` (sequential ISA semantics), `Impl/` (models of the forwarding pipeline and the CSR counter update), `Refine/<Module>/Top.v` (each Impl refines its Spec), and `Kernels/SPMV.v` (the SpMV CSR loop terminates with the exact dot product; instantiated on the 8×8 benchmark with checksum 416).  Everything shipped is **Qed-complete**: `verification/scripts/check_no_admitted.sh` gates the build (and CI) on zero `Admitted`/`admit`/`Axiom` outside `wip/`.  These are proofs about hand-written models of the RTL, not the SystemVerilog itself; see `verification/formal/README.md` for the precise claims.
 
 ---
 
@@ -367,12 +377,12 @@ FluxCore/
 FluxCore does **not** currently claim:
 
 - AXI/DDR or ARM Processing System host integration
-- UART or other interrupt-driven peripherals
 - an operating system, virtual memory, or multicore coherence
-- superscalar issue or out-of-order execution
+- superscalar issue or out-of-order execution (a permanent design exclusion)
 - floating-point execution
-- gather/scatter hardware or the PCG benchmark
+- RISCOF/riscv-arch-test compliance runs (planned; the CLINT already uses Spike's layout)
+- RTL-level formal (RVFI + riscv-formal is the planned bridge; the Coq proofs cover hand-written models)
 
-`XMACC` is reserved in ISA package comments but is not implemented in the current RTL. The checked-in routed reports describe the default BRAM-first configuration, not the optional D-cache configuration.
+`XMACC` is intentionally unimplemented (it needs a third register-file read port).  "FluxCC" is a de-scoped design sketch under `docs/compiler/` — all software builds with stock `riscv64-unknown-elf-gcc`, including the XFlux instructions via `.insn` intrinsics (`software/runtime/xflux.h`).  The checked-in routed reports describe the default BRAM-first configuration; the D-cache configuration is regression-tested in simulation (`sim-*-dcache`).
 
 Performance, timing, utilization, and correctness claims in this README should be backed by checked-in source, Makefile targets, or saved reports under `reports/`; generated local build logs are not treated as canonical project evidence.

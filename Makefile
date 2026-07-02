@@ -9,7 +9,7 @@
 #
 # Required: GNU Make >= 3.82
 
-.PHONY: help setup check-tools python-test lint typecheck check synth-analysis \
+.PHONY: help setup check-tools python-test lint typecheck check synth-analysis regress \
         questa-smoke pkg-test isa-pkg-test alu-test imm-gen-test decoder-test regfile-test branch-unit-test \
         pipeline-pkg-test if-id-reg-test id-ex-reg-test ex-mem-reg-test mem-wb-reg-test fetch-unit-test \
         execute-stage-test mem-stage-test wb-stage-test pipeline-ctrl-test forwarding-unit-test \
@@ -17,9 +17,11 @@
         byte-halfword-test branch-compare-test rv32m-test rv32i-alu-test dcache-e2e-test \
         csr-unit-test ecall-mret-test \
         bram-imem-test bram-dmem-test dcache-sim \
-        sim-hello-cpi sim-spmv-csr \
+        sim-hello-cpi sim-spmv-csr sim-csr-probe sim-hello-uart sim-timer-irq \
+        sim-misalign-trap sim-xflux sim-hello-cpi-dcache sim-spmv-csr-dcache \
+        verilator-lint program-board \
         formal-verify \
-        vivado-check vivado-synth vivado-cache-synth vivado-impl vivado-bitstream yosys-check clean distclean show-config \
+        vivado-check vivado-synth vivado-impl vivado-bitstream yosys-check clean distclean show-config \
         sw-hello_cpi sw-spmv sw-all sw-clean
 
 # ---------------------------------------------------------------------------
@@ -141,7 +143,6 @@ VIVADO_CHECK_TCL := $(VIVADO_DIR)/scripts/check_environment.tcl
 VIVADO_SYNTH_TCL := $(VIVADO_DIR)/scripts/synth_fluxcore_soc.tcl
 VIVADO_IMPL_TCL  := $(VIVADO_DIR)/scripts/impl_fluxcore_soc.tcl
 VIVADO_BITSTREAM_TCL := $(VIVADO_DIR)/scripts/bitstream_fluxcore_soc.tcl
-VIVADO_CACHE_SYNTH_TCL := $(VIVADO_DIR)/scripts/synth_direct_mapped_cache.tcl
 
 # ---------------------------------------------------------------------------
 # Default target
@@ -203,10 +204,15 @@ help:
 	@echo "  make sw-clean        Remove build/sw/ directory"
 	@echo "  make vivado-check    Validate Vivado startup (no project created)"
 	@echo "  make vivado-synth    Run non-project Vivado synthesis for fluxcore_soc"
-	@echo "  make vivado-cache-synth Synthesize optional direct-mapped cache block"
 	@echo "  make vivado-impl     Run opt/place/route from the synthesized checkpoint"
 	@echo "  make vivado-bitstream Generate bitstream from the routed checkpoint"
 	@echo "  make yosys-check     Print Yosys version"
+	@echo "  make regress         Run the full self-checking simulation regression"
+	@echo "  make sim-hello-uart  Console banner over the UART TX line (full SoC)"
+	@echo "  make sim-timer-irq   CLINT timer interrupts through a C trap handler"
+	@echo "  make sim-xflux       XFlux custom instructions from C (.insn intrinsics)"
+	@echo "  make verilator-lint  Lint all RTL with Verilator (CI engine)"
+	@echo "  make program-board   Program the Zybo Z7-20 over JTAG (see program-board docs)"
 	@echo "  make synth-analysis  Run CA-formula analysis on Vivado synthesis results"
 	@echo "  make formal-verify   Compile Rocq/Coq formal verification proofs (requires coqc)"
 	@echo "  make clean           Remove generated outputs inside build/"
@@ -607,6 +613,76 @@ sim-spmv-csr: $(BUILD_DIR)/sw/spmv_csr/imem.hex
 	     "sim/questa/run_unit.do" \
 	     "tb_spmv_csr"
 
+sim-csr-probe: $(BUILD_DIR)/sw/csr_probe/imem.hex
+	@echo "--- SoC benchmark simulation: csr_probe (counter diagnostic) ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_csr_probe"
+
+sim-hello-uart: $(BUILD_DIR)/sw/hello_uart/imem.hex
+	@echo "--- SoC console simulation: hello_uart (banner over TX line) ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_soc_uart"
+
+sim-timer-irq: $(BUILD_DIR)/sw/timer_irq/imem.hex
+	@echo "--- SoC interrupt simulation: timer_irq (CLINT + trap handler) ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_timer_irq"
+
+sim-misalign-trap: $(BUILD_DIR)/sw/misalign_trap/imem.hex
+	@echo "--- SoC exception simulation: misalign_trap (fetch misalignment) ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_misalign_trap"
+
+sim-xflux: $(BUILD_DIR)/sw/xflux_kernel/imem.hex
+	@echo "--- SoC benchmark simulation: xflux_kernel (custom ISA from C) ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_xflux_kernel"
+
+sim-hello-cpi-dcache: $(BUILD_DIR)/sw/hello_cpi/imem.hex
+	@echo "--- SoC benchmark simulation: hello_cpi with USE_DCACHE=1 ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_hello_cpi_dcache"
+
+sim-spmv-csr-dcache: $(BUILD_DIR)/sw/spmv_csr/imem.hex
+	@echo "--- SoC benchmark simulation: spmv_csr with USE_DCACHE=1 ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_spmv_csr_dcache"
+
 # ---------------------------------------------------------------------------
 # BRAM instruction memory unit test (1-cycle latency, sequential reads)
 # ---------------------------------------------------------------------------
@@ -780,22 +856,7 @@ vivado-synth:
 		exit 1; \
 	fi
 	@$(VIVADO) -mode batch -source "$(VIVADO_SYNTH_TCL)" \
-		-tclargs "$(FPGA_PART)" \
-		-nolog -nojournal
-
-vivado-cache-synth:
-	@echo "--- Vivado synthesis: direct_mapped_cache ---"
-	@if ! command -v $(VIVADO) > /dev/null 2>&1; then \
-		echo "ERROR: vivado not found (VIVADO=$(VIVADO))."; \
-		echo "       Install Vivado and add it to PATH, or set VIVADO in config/tools.local.mk."; \
-		exit 1; \
-	fi
-	@if [ "$(FPGA_PART)" = "UNCONFIRMED" ]; then \
-		echo "ERROR: FPGA_PART is UNCONFIRMED. Update config/board.local.mk first."; \
-		exit 1; \
-	fi
-	@$(VIVADO) -mode batch -source "$(VIVADO_CACHE_SYNTH_TCL)" \
-		-tclargs "$(FPGA_PART)" \
+		-tclargs "$(FPGA_PART)" $(if $(SW_PROG),"build/sw/$(SW_PROG)/imem.hex") \
 		-nolog -nojournal
 
 vivado-impl:
@@ -827,6 +888,42 @@ vivado-bitstream:
 		-nolog -nojournal
 
 # ---------------------------------------------------------------------------
+# Program the Zybo Z7-20 over JTAG with the generated bitstream.
+# Full flow: make sw-board_hello
+#            make vivado-synth SW_PROG=board_hello
+#            make vivado-impl && make vivado-bitstream && make program-board
+# ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Verilator lint over the full RTL (CI engine; xsim remains signoff)
+# ---------------------------------------------------------------------------
+verilator-lint:
+	@if ! command -v verilator > /dev/null 2>&1; then \
+		echo "ERROR: verilator not found. Install: sudo apt install verilator"; \
+		exit 1; \
+	fi
+	@echo "--- Verilator lint (rtl_all.f) ---"
+	@verilator --lint-only -sv -Wall -Wno-fatal \
+		-Wno-VARHIDDEN -Wno-UNUSEDSIGNAL -Wno-UNUSEDPARAM \
+		--top-module fluxcore_soc \
+		-f verification/filelists/rtl_all.f
+	@echo "verilator-lint complete."
+
+program-board:
+	@echo "--- Programming Zybo Z7-20 ---"
+	@if ! command -v $(VIVADO) > /dev/null 2>&1; then \
+		echo "ERROR: vivado not found (VIVADO=$(VIVADO))."; \
+		exit 1; \
+	fi
+	@$(VIVADO) -mode batch -source vivado/scripts/program_fluxcore_soc.tcl \
+		-nolog -nojournal
+
+# ---------------------------------------------------------------------------
+# Umbrella regression — every self-checking sim target, one dated report
+# ---------------------------------------------------------------------------
+regress:
+	@SIM_RUN="$(SIM_RUN)" bash verification/scripts/regress.sh
+
+# ---------------------------------------------------------------------------
 # Formal verification (Rocq/Coq)
 # ---------------------------------------------------------------------------
 synth-analysis:
@@ -834,11 +931,11 @@ synth-analysis:
 	@python3 synth/analysis/ca_metrics.py
 
 formal-verify:
-	@echo "--- Rocq/Coq formal verification ---"
+	@echo "--- Rocq/Coq formal verification (build + no-Admitted gate) ---"
 	@if command -v opam > /dev/null 2>&1 && opam exec -- which coqc > /dev/null 2>&1; then \
-		opam exec -- $(MAKE) -C verification/formal; \
+		opam exec -- $(MAKE) -C verification/formal check; \
 	elif command -v coqc > /dev/null 2>&1; then \
-		$(MAKE) -C verification/formal; \
+		$(MAKE) -C verification/formal check; \
 	else \
 		echo "ERROR: coqc not found. Install Rocq via opam (opam install rocq-prover) and add to PATH."; \
 		exit 1; \
@@ -900,6 +997,12 @@ endef
 
 $(eval $(call sw_bench,hello_cpi,hello_cpi.c))
 $(eval $(call sw_bench,spmv_csr,spmv_csr.c))
+$(eval $(call sw_bench,csr_probe,csr_probe.c))
+$(eval $(call sw_bench,hello_uart,hello_uart.c))
+$(eval $(call sw_bench,timer_irq,timer_irq.c))
+$(eval $(call sw_bench,misalign_trap,misalign_trap.c))
+$(eval $(call sw_bench,board_hello,board_hello.c))
+$(eval $(call sw_bench,xflux_kernel,xflux_kernel.c))
 
 sw-spmv: sw-spmv_csr
 
