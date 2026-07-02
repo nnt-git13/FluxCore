@@ -181,6 +181,7 @@ localparam funct7_t FUNCT7_SRAI    = 7'b010_0000;  // same as FUNCT7_ALT
 localparam logic [11:0] FUNCT12_ECALL  = 12'b0000_0000_0000;
 localparam logic [11:0] FUNCT12_EBREAK = 12'b0000_0000_0001;
 localparam logic [11:0] FUNCT12_MRET   = 12'b0011_0000_0010;
+localparam logic [11:0] FUNCT12_WFI    = 12'b0001_0000_0101;
 
 // ---------------------------------------------------------------------------
 // 6. Instruction format enum
@@ -397,6 +398,9 @@ typedef struct packed {
 
 // Standard M-mode CSR addresses
 localparam logic [11:0] CSR_MSTATUS   = 12'h300;
+localparam logic [11:0] CSR_MISA      = 12'h301;
+localparam logic [11:0] CSR_MCOUNTEREN = 12'h306;
+localparam logic [11:0] CSR_MCOUNTINHIBIT = 12'h320;
 localparam logic [11:0] CSR_MIE       = 12'h304;
 localparam logic [11:0] CSR_MTVEC     = 12'h305;
 localparam logic [11:0] CSR_MSCRATCH  = 12'h340;
@@ -409,6 +413,43 @@ localparam logic [11:0] CSR_MINSTRET  = 12'hB02;
 localparam logic [11:0] CSR_MCYCLEH   = 12'hB80;
 localparam logic [11:0] CSR_MINSTRETH = 12'hB82;
 localparam logic [11:0] CSR_MHARTID   = 12'hF14;  // read-only, returns 0
+localparam logic [11:0] CSR_MVENDORID = 12'hF11;  // read-only, 0 = non-commercial
+localparam logic [11:0] CSR_MARCHID   = 12'hF12;  // read-only, 0 = not registered
+localparam logic [11:0] CSR_MIMPID    = 12'hF13;  // read-only, implementation date
+localparam logic [11:0] CSR_MCONFIGPTR = 12'hF15; // read-only, 0 = no config structure
+// Zicntr user-mode read-only shadows
+localparam logic [11:0] CSR_CYCLE     = 12'hC00;  // shadow of mcycle
+localparam logic [11:0] CSR_TIME      = 12'hC01;  // CLINT mtime (low)
+localparam logic [11:0] CSR_INSTRET   = 12'hC02;  // shadow of minstret
+localparam logic [11:0] CSR_CYCLEH    = 12'hC80;  // shadow of mcycleh
+localparam logic [11:0] CSR_TIMEH     = 12'hC81;  // CLINT mtime (high)
+localparam logic [11:0] CSR_INSTRETH  = 12'hC82;  // shadow of minstreth
+
+// ---------------------------------------------------------------------------
+// CSR existence / writability — used by the decoder to raise
+// illegal-instruction on accesses to unimplemented CSRs and on writes to
+// read-only CSRs (RISC-V privileged spec 2.1).
+// ---------------------------------------------------------------------------
+function automatic logic csr_addr_valid(input logic [11:0] a);
+    case (a)
+        CSR_MSTATUS, CSR_MISA, CSR_MIE, CSR_MTVEC, CSR_MCOUNTEREN,
+        CSR_MCOUNTINHIBIT,
+        CSR_MSCRATCH, CSR_MEPC, CSR_MCAUSE, CSR_MTVAL, CSR_MIP,
+        CSR_MCYCLE, CSR_MINSTRET, CSR_MCYCLEH, CSR_MINSTRETH,
+        CSR_CYCLE, CSR_TIME, CSR_INSTRET,
+        CSR_CYCLEH, CSR_TIMEH, CSR_INSTRETH,
+        CSR_MVENDORID, CSR_MARCHID, CSR_MIMPID, CSR_MHARTID, CSR_MCONFIGPTR:
+            return 1'b1;
+        default:
+            return 1'b0;
+    endcase
+endfunction
+
+// Read-only CSRs: address bits [11:10] = 2'b11 per the spec encoding
+// (covers 0xCxx user counters and 0xFxx machine-information registers).
+function automatic logic csr_addr_readonly(input logic [11:0] a);
+    return (a[11:10] == 2'b11);
+endfunction
 
 endpackage : rv32_isa_pkg
 

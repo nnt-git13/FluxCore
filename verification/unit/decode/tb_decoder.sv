@@ -574,6 +574,69 @@ module tb_decoder;
             if (decoded_w.writes_rd || decoded_w.is_csr || decoded_w.uses_rs1)
                 $fatal(1, "[DECODE-TEST] FAIL MRET: spurious action flag");
 
+            // ---- WFI: 0x10500073 (funct12=0x105, rs1=0, rd=0, funct3=0) ----
+            // Executes as a NOP: legal, no exception, no side effects.
+            i = '0;
+            i[31:20] = FUNCT12_WFI;
+            i[6:0]   = OPCODE_SYSTEM;
+            apply(i);
+            if (!decoded_w.legal)
+                $fatal(1, "[DECODE-TEST] FAIL WFI: not legal (must execute as NOP)");
+            if (decoded_w.op_class !== OPCLASS_SYSTEM)
+                $fatal(1, "[DECODE-TEST] FAIL WFI: op_class");
+            if (decoded_w.exception.valid)
+                $fatal(1, "[DECODE-TEST] FAIL WFI: spurious exception.valid");
+            if (decoded_w.writes_rd || decoded_w.is_csr || decoded_w.is_mret ||
+                decoded_w.uses_rs1 || decoded_w.uses_rs2)
+                $fatal(1, "[DECODE-TEST] FAIL WFI: spurious action flag");
+
+            // WFI with rs1!=0 or rd!=0 is not a valid encoding → illegal
+            i = '0;
+            i[31:20] = FUNCT12_WFI;
+            i[19:15] = 5'd1;
+            i[6:0]   = OPCODE_SYSTEM;
+            apply(i);
+            expect_illegal(i, "WFI rs1!=0");
+            i = '0;
+            i[31:20] = FUNCT12_WFI;
+            i[11:7]  = 5'd1;
+            i[6:0]   = OPCODE_SYSTEM;
+            apply(i);
+            expect_illegal(i, "WFI rd!=0");
+
+            // ---- CSR legality: unimplemented CSR / read-only writes ----
+            // CSRRW to unimplemented CSR 0x123 → illegal
+            i = '0;
+            i[31:20] = 12'h123;
+            i[19:15] = 5'd2;
+            i[14:12] = 3'b001;  // CSRRW
+            i[11:7]  = 5'd1;
+            i[6:0]   = OPCODE_SYSTEM;
+            apply(i);
+            expect_illegal(i, "CSRRW unimplemented CSR");
+            // CSRRW to read-only cycle (0xC00) → illegal
+            i = '0;
+            i[31:20] = CSR_CYCLE;
+            i[19:15] = 5'd2;
+            i[14:12] = 3'b001;
+            i[11:7]  = 5'd1;
+            i[6:0]   = OPCODE_SYSTEM;
+            apply(i);
+            expect_illegal(i, "CSRRW read-only CSR");
+            // CSRRS rd, cycle, x0 (pure read of RO CSR) → legal
+            i = '0;
+            i[31:20] = CSR_CYCLE;
+            i[14:12] = 3'b010;  // CSRRS
+            i[11:7]  = 5'd1;
+            i[6:0]   = OPCODE_SYSTEM;
+            apply(i);
+            if (!decoded_w.legal)
+                $fatal(1, "[DECODE-TEST] FAIL: CSRRS x0 read of RO CSR must be legal");
+            // CSRRS rd, cycle, x2 (would write RO CSR) → illegal
+            i[19:15] = 5'd2;
+            apply(i);
+            expect_illegal(i, "CSRRS rs1!=x0 to read-only CSR");
+
             // ---- CSRRW x1, mstatus(0x300), x2 (funct3=001) ----
             i = '0;
             i[31:20] = CSR_MSTATUS;

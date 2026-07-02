@@ -412,6 +412,14 @@ module decoder
                                     decoded_o.op_class  = OPCLASS_SYSTEM;
                                     decoded_o.is_mret   = 1'b1;
                                 end
+                                // WFI executes as a NOP (RISC-V priv spec
+                                // permits this): no clock gating exists, and
+                                // interrupts are level-sensitive so a pending
+                                // interrupt is taken on the next instruction.
+                                FUNCT12_WFI: begin
+                                    decoded_o.legal    = 1'b1;
+                                    decoded_o.op_class = OPCLASS_SYSTEM;
+                                end
                                 default: decoded_o = make_illegal(instr_i);
                             endcase
                         end else begin
@@ -420,32 +428,47 @@ module decoder
                     end
 
                     // ---- CSR register forms (rs1 = source register) ----
+                    // Illegal-instruction trap on: unimplemented CSR, or a
+                    // write (CSRRW always; CSRRS/C with rs1!=x0) to a
+                    // read-only CSR (priv spec 2.1).
                     3'b001,   // CSRRW
                     3'b010,   // CSRRS
                     3'b011: begin // CSRRC
-                        decoded_o.legal     = 1'b1;
-                        decoded_o.op_class  = OPCLASS_SYSTEM;
-                        decoded_o.is_csr    = 1'b1;
-                        decoded_o.csr_addr  = instr_i[31:20];
-                        decoded_o.csr_op    = csr_op_e'({1'b0, funct3_s[1:0]});
-                        decoded_o.uses_rs1  = 1'b1;
-                        decoded_o.writes_rd = (rd_s != '0);
-                        decoded_o.wb_src    = WB_CSR;
+                        if (!csr_addr_valid(instr_i[31:20])
+                            || (csr_addr_readonly(instr_i[31:20])
+                                && (funct3_s[1:0] == 2'b01 || rs1_s != '0))) begin
+                            decoded_o = make_illegal(instr_i);
+                        end else begin
+                            decoded_o.legal     = 1'b1;
+                            decoded_o.op_class  = OPCLASS_SYSTEM;
+                            decoded_o.is_csr    = 1'b1;
+                            decoded_o.csr_addr  = instr_i[31:20];
+                            decoded_o.csr_op    = csr_op_e'({1'b0, funct3_s[1:0]});
+                            decoded_o.uses_rs1  = 1'b1;
+                            decoded_o.writes_rd = (rd_s != '0);
+                            decoded_o.wb_src    = WB_CSR;
+                        end
                     end
 
                     // ---- CSR immediate forms (zimm = instr[19:15]) ----
                     3'b101,   // CSRRWI
                     3'b110,   // CSRRSI
                     3'b111: begin // CSRRCI
-                        decoded_o.legal     = 1'b1;
-                        decoded_o.op_class  = OPCLASS_SYSTEM;
-                        decoded_o.is_csr    = 1'b1;
-                        decoded_o.csr_addr  = instr_i[31:20];
-                        decoded_o.csr_op    = csr_op_e'({1'b0, funct3_s[1:0]});
-                        decoded_o.uses_rs1  = 1'b0;  // zimm, not a register
-                        decoded_o.writes_rd = (rd_s != '0);
-                        decoded_o.wb_src    = WB_CSR;
-                        // decoded_o.imm overridden below to {27'b0, instr[19:15]}
+                        if (!csr_addr_valid(instr_i[31:20])
+                            || (csr_addr_readonly(instr_i[31:20])
+                                && (funct3_s[1:0] == 2'b01 || instr_i[19:15] != '0))) begin
+                            decoded_o = make_illegal(instr_i);
+                        end else begin
+                            decoded_o.legal     = 1'b1;
+                            decoded_o.op_class  = OPCLASS_SYSTEM;
+                            decoded_o.is_csr    = 1'b1;
+                            decoded_o.csr_addr  = instr_i[31:20];
+                            decoded_o.csr_op    = csr_op_e'({1'b0, funct3_s[1:0]});
+                            decoded_o.uses_rs1  = 1'b0;  // zimm, not a register
+                            decoded_o.writes_rd = (rd_s != '0);
+                            decoded_o.wb_src    = WB_CSR;
+                            // decoded_o.imm overridden below to {27'b0, instr[19:15]}
+                        end
                     end
 
                     default: decoded_o = make_illegal(instr_i);  // funct3=100
