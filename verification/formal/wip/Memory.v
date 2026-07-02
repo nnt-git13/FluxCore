@@ -21,7 +21,7 @@
     same type appeared as [memory] inside the SpMV section.
 *)
 
-Require Import FluxCore.FluxCoreTypes.
+Require Import FluxCore.Common.Types.
 From Stdlib Require Import ZArith Bool List Lia.
 Import ListNotations.
 Open Scope Z_scope.

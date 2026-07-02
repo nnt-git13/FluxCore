@@ -23,7 +23,7 @@
     - RV32M division (requires multi-cycle stall reasoning).
 *)
 
-Require Import FluxCore.FluxCoreTypes.
+Require Import FluxCore.Common.Types.
 From Stdlib Require Import ZArith.
 From Stdlib Require Import Bool.
 From Stdlib Require Import List.

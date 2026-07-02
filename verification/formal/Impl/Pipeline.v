@@ -29,8 +29,8 @@
     recent) value is used.  This matches the RTL [forwarding_unit.sv].
 *)
 
-Require Import FluxCore.FluxCoreTypes.
-Require Import FluxCore.FluxCoreISA.
+Require Import FluxCore.Common.Types.
+Require Import FluxCore.Spec.ISA.
 From Stdlib Require Import ZArith.
 From Stdlib Require Import Bool.
 From Stdlib Require Import List.

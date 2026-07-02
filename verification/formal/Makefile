@@ -1,35 +1,59 @@
 # Formal verification Makefile — FluxCore Rocq/Coq proofs
 #
-# Usage:
-#   make           — compile all .v files (requires coqc in PATH)
-#   make check     — same as default target (alias)
-#   make clean     — remove compiled .vo, .glob, .aux files
+# Layout (inspired by the ModularKoika GPU proof: per-module Spec / Impl /
+# Refine separation, kernels proven end-to-end on top):
 #
-# Run from the repo root:
-#   make -C verification/formal
+#   Common/   shared types (32-bit words, register-file algebra)
+#   Spec/     trusted specifications (sequential ISA semantics)
+#   Impl/     models of the RTL implementation (forwarding pipeline,
+#             CSR counter update logic)
+#   Refine/   proofs that each Impl refines its Spec (one dir per module,
+#             composed theorem in Top.v)
+#   Kernels/  end-to-end program proofs on the ISA machine (SpMV CSR loop)
+#   wip/      unfinished proofs — NOT built, NOT claimed (see README.md)
+#
+# Usage:
+#   make            — compile the shipping proof set (requires coqc)
+#   make check      — build + verify the shipping set contains no Admitted
+#   make clean      — remove compiled artifacts
+#
+# Run from the repo root:  make -C verification/formal
 
-COQC   ?= coqc
+COQC     ?= coqc
 COQFLAGS := -R . FluxCore
 
-SRCS := FluxCoreTypes.v FluxCoreISA.v FluxCorePipeline.v PipelineCorrectness.v FluxCoreSPMV.v
+SRCS := \
+    Common/Types.v \
+    Spec/ISA.v \
+    Impl/Pipeline.v \
+    Impl/CsrCounter.v \
+    Refine/Pipeline/Top.v \
+    Refine/CsrCounter/Top.v \
+    Kernels/SPMV.v
 
 VO := $(SRCS:.v=.vo)
 
-.PHONY: all check clean
+.PHONY: all check no-admitted clean
 
 all: $(VO)
 
-check: all
+check: all no-admitted
+
+no-admitted:
+	@bash ../scripts/check_no_admitted.sh
 
 %.vo: %.v
 	$(COQC) $(COQFLAGS) $<
 
-# Dependencies (explicit ordering required)
-FluxCoreTypes.vo:       FluxCoreTypes.v
-FluxCoreISA.vo:         FluxCoreISA.v  FluxCoreTypes.vo
-FluxCorePipeline.vo:    FluxCorePipeline.v  FluxCoreISA.vo
-PipelineCorrectness.vo: PipelineCorrectness.v  FluxCorePipeline.vo
-FluxCoreSPMV.vo:        FluxCoreSPMV.v         PipelineCorrectness.vo
+# Dependencies (explicit ordering)
+Common/Types.vo:          Common/Types.v
+Spec/ISA.vo:              Spec/ISA.v          Common/Types.vo
+Impl/Pipeline.vo:         Impl/Pipeline.v     Spec/ISA.vo
+Impl/CsrCounter.vo:       Impl/CsrCounter.v   Common/Types.vo
+Refine/Pipeline/Top.vo:   Refine/Pipeline/Top.v   Impl/Pipeline.vo
+Refine/CsrCounter/Top.vo: Refine/CsrCounter/Top.v Impl/CsrCounter.vo
+Kernels/SPMV.vo:          Kernels/SPMV.v      Common/Types.vo
 
 clean:
-	rm -f *.vo *.glob *.aux .*.aux
+	find . \( -name '*.vo' -o -name '*.vok' -o -name '*.vos' \
+	       -o -name '*.glob' -o -name '.*.aux' \) -delete

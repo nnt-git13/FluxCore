@@ -41,9 +41,9 @@
       the ISA RF.
 *)
 
-Require Import FluxCore.FluxCoreTypes.
-Require Import FluxCore.FluxCoreISA.
-Require Import FluxCore.FluxCorePipeline.
+Require Import FluxCore.Common.Types.
+Require Import FluxCore.Spec.ISA.
+Require Import FluxCore.Impl.Pipeline.
 From Stdlib Require Import ZArith Bool List Lia.
 Import ListNotations.
 Open Scope Z_scope.
@@ -67,17 +67,6 @@ Definition pipeline_isa_rf (s : pipe_state) : regfile :=
 (* ========================================================================== *)
 (** ** Layer 1: fwd_read = rf_read ∘ pipeline_isa_rf                          *)
 (* ========================================================================== *)
-
-(** Helper: extract [ps_mem.inf_rd ≠ rs] from the fact that [Hmem_fwd = false]
-    while [ps_mem.inf_valid && ps_mem.inf_rd_wen = true] and [rs ≠ 0]. *)
-Ltac mem_fwd_neq Hmem_fwd Hmem_w Hrs :=
-  intro Heq;
-  assert (Htrue : s.(ps_mem).(inf_valid) && s.(ps_mem).(inf_rd_wen)
-                  && (s.(ps_mem).(inf_rd) =? rs)
-                  && negb (rs =? 0) = true)
-    by (rewrite Hmem_w; rewrite Heq, Z.eqb_refl; simpl;
-        apply negb_true_iff, Z.eqb_neq; exact Hrs);
-  congruence.
 
 (** Core forwarding theorem: [fwd_read s rs] equals the value that [rs] would
     have in [pipeline_isa_rf s]. *)
@@ -128,9 +117,9 @@ Proof.
       (* rf_read (rf_write rf_wb ps_mem.inf_rd v) rs = rf_read rf_wb rs [mem_rd ≠ rs] *)
       rewrite rf_write_read_other; [| exact Hmem_ne].
       (* rf_read rf_wb rs = rf_read (rf_write ps_rf rs v_wb) rs = v_wb [rs ≠ 0] *)
-      rewrite <- Hrd_eq. apply rf_write_read_same. rewrite Hrd_eq. exact Hne_z.
+      rewrite <- Hrd_eq. symmetry. apply rf_write_read_same. rewrite Hrd_eq. exact Hne_z.
     - (* MEM doesn't write at all *)
-      rewrite <- Hrd_eq. apply rf_write_read_same. rewrite Hrd_eq. exact Hne_z.
+      rewrite <- Hrd_eq. symmetry. apply rf_write_read_same. rewrite Hrd_eq. exact Hne_z.
   }
   {
     (* --- Case 3: neither MEM nor WB forwards --- *)
@@ -146,46 +135,49 @@ Proof.
         assert (Hwb_ne : s.(ps_wb).(inf_rd) <> rs).
         {
           intro Heq.
-          assert (Htrue : s.(ps_wb).(inf_valid) && s.(ps_wb).(inf_rd_wen)
-                          && (s.(ps_wb).(inf_rd) =? rs) && negb (rs =? 0) = true).
-          { rewrite Hwb_w. rewrite Heq, Z.eqb_refl. simpl.
-            apply negb_true_iff, Z.eqb_neq. exact Hrs. }
-          congruence.
+          rewrite Heq, Z.eqb_refl in Hwb_fwd.
+          try rewrite Hwb_w in Hwb_fwd.
+          simpl in Hwb_fwd.
+          first [ discriminate Hwb_fwd
+                | apply negb_false_iff in Hwb_fwd; apply Z.eqb_eq in Hwb_fwd;
+                  exact (Hrs Hwb_fwd) ].
         }
-        rewrite Hwb_w. simpl.
+        try rewrite Hwb_w. simpl.
         destruct (s.(ps_mem).(inf_valid) && s.(ps_mem).(inf_rd_wen)) eqn:Hmem_w.
         * assert (Hmem_ne : s.(ps_mem).(inf_rd) <> rs).
           {
             intro Heq.
-            assert (Htrue : s.(ps_mem).(inf_valid) && s.(ps_mem).(inf_rd_wen)
-                            && (s.(ps_mem).(inf_rd) =? rs) && negb (rs =? 0) = true).
-            { rewrite Hmem_w. rewrite Heq, Z.eqb_refl. simpl.
-              apply negb_true_iff, Z.eqb_neq. exact Hrs. }
-            congruence.
+            rewrite Heq, Z.eqb_refl in Hmem_fwd.
+            try rewrite Hmem_w in Hmem_fwd.
+            simpl in Hmem_fwd.
+            first [ discriminate Hmem_fwd
+                  | apply negb_false_iff in Hmem_fwd; apply Z.eqb_eq in Hmem_fwd;
+                    exact (Hrs Hmem_fwd) ].
           }
-          rewrite Hmem_w. simpl.
+          try rewrite Hmem_w. simpl.
           rewrite rf_write_read_other; [| exact Hmem_ne].
           rewrite rf_write_read_other; [| exact Hwb_ne].
           reflexivity.
-        * rewrite Hmem_w. simpl.
+        * try rewrite Hmem_w. simpl.
           rewrite rf_write_read_other; [| exact Hwb_ne].
           reflexivity.
       + (* WB doesn't write *)
-        rewrite Hwb_w. simpl.
+        try rewrite Hwb_w. simpl.
         destruct (s.(ps_mem).(inf_valid) && s.(ps_mem).(inf_rd_wen)) eqn:Hmem_w.
         * assert (Hmem_ne : s.(ps_mem).(inf_rd) <> rs).
           {
             intro Heq.
-            assert (Htrue : s.(ps_mem).(inf_valid) && s.(ps_mem).(inf_rd_wen)
-                            && (s.(ps_mem).(inf_rd) =? rs) && negb (rs =? 0) = true).
-            { rewrite Hmem_w. rewrite Heq, Z.eqb_refl. simpl.
-              apply negb_true_iff, Z.eqb_neq. exact Hrs. }
-            congruence.
+            rewrite Heq, Z.eqb_refl in Hmem_fwd.
+            try rewrite Hmem_w in Hmem_fwd.
+            simpl in Hmem_fwd.
+            first [ discriminate Hmem_fwd
+                  | apply negb_false_iff in Hmem_fwd; apply Z.eqb_eq in Hmem_fwd;
+                    exact (Hrs Hmem_fwd) ].
           }
-          rewrite Hmem_w. simpl.
+          try rewrite Hmem_w. simpl.
           rewrite rf_write_read_other; [| exact Hmem_ne].
           reflexivity.
-        * rewrite Hmem_w. simpl. reflexivity.
+        * try rewrite Hmem_w. simpl. reflexivity.
   }
 Qed.
 
@@ -253,7 +245,8 @@ Proof.
       * apply Z.eqb_neq in Hrd.
         rewrite !rf_write_read_same; [reflexivity | exact Hrd | exact Hrd].
     + apply Z.eqb_neq in Hrsrd.
-      rewrite !rf_write_read_other; [exact Heq | exact Hrsrd | exact Hrsrd].
+      assert (Hrdrs : rd <> rs) by (intro H; apply Hrsrd; symmetry; exact H).
+      rewrite !rf_write_read_other; [exact Heq | exact Hrdrs | exact Hrdrs].
 Qed.
 
 (** KEY STRUCTURAL LEMMA: [pipeline_isa_rf] after one [pipe_exec] step equals
@@ -267,23 +260,21 @@ Lemma pipeline_isa_rf_exec_step : forall s i rs,
     rf_read (rf_write (pipeline_isa_rf s) (instr_rd i) (eval_in_ex s i)) rs.
 Proof.
   intros s i rs.
-  unfold pipeline_isa_rf, pipe_exec, eval_in_ex.
-  (* After unfolding, pipeline_isa_rf (pipe_exec s i) computes:
-       let rf_wb_new = apply(s.ps_mem, apply(s.ps_wb, s.ps_rf))
-                     = pipeline_isa_rf s
-       result = apply(new_mem_slot, rf_wb_new)
-              = rf_write (pipeline_isa_rf s) (instr_rd i) (eval_in_ex s i)
-     Both sides are definitionally equal after simplification. *)
-  simpl.
-  destruct (s.(ps_wb).(inf_valid) && s.(ps_wb).(inf_rd_wen)) eqn:Hwb;
-  destruct (s.(ps_mem).(inf_valid) && s.(ps_mem).(inf_rd_wen)) eqn:Hmem;
-  destruct (instr_writes_rd i) eqn:Hwr;
-  destruct i as [op rd rs1 rs2 | op rd rs1 imm |];
-  simp_rew_all.  (* unfold instr_rd, instr_writes_rd, eval_in_ex *)
-  all: try reflexivity.
-  all: try (simpl; reflexivity).
-  all: try (unfold instr_rd, instr_writes_rd in Hwr; simpl in Hwr;
-            try (rewrite rf_write_x0_nop; reflexivity)).
+  (* pipe_exec commits old-WB into ps_rf and shifts old-MEM into the WB slot,
+     so the inner term of [pipeline_isa_rf (pipe_exec s i)] is definitionally
+     [pipeline_isa_rf s]; only the fresh MEM slot (valid=true,
+     rd_wen = instr_writes_rd i) sits on top. *)
+  unfold pipeline_isa_rf, pipe_exec. simpl.
+  destruct (instr_writes_rd i) eqn:Hwr; simpl.
+  - (* fresh slot writes: both sides carry the same rf_write on top *)
+    try rewrite Hwr. reflexivity.
+  - (* no write: the rf_write on the RHS targets x0 and is a no-op *)
+    destruct i as [op rd rs1 rs2 | op rd rs1 imm |]; simpl in Hwr |- *.
+    + apply negb_false_iff in Hwr. apply Z.eqb_eq in Hwr. subst rd.
+      symmetry. apply rf_write_x0_nop.
+    + apply negb_false_iff in Hwr. apply Z.eqb_eq in Hwr. subst rd.
+      symmetry. apply rf_write_x0_nop.
+    + symmetry. apply rf_write_x0_nop.
 Qed.
 
 (* ========================================================================== *)
@@ -365,7 +356,7 @@ Proof.
   - (* Ialu_rr: check rd ≠ 0 *)
     unfold instr_writes_rd, instr_rd. simpl.
     destruct (rd =? 0) eqn:Hrd.
-    + right. simpl. rewrite Hrd. reflexivity.
+    + right. simpl. try rewrite Hrd. reflexivity.
     + left.
       apply Z.eqb_neq in Hrd.
       (* MEM result = eval_in_ex s (Ialu_rr op rd rs1 rs2) = alu_eval op (fwd_read s rs1) (fwd_read s rs2) *)
@@ -373,15 +364,15 @@ Proof.
       (* These agree by Hinv *)
       simpl. rewrite Hinv, Hinv.
       (* rf_read (rf_write isa_s.isa_rf rd result) rd = result [rd ≠ 0] *)
-      apply rf_write_read_same. exact Hrd.
+      symmetry. apply rf_write_read_same. exact Hrd.
   - (* Ialu_ri *)
     unfold instr_writes_rd, instr_rd. simpl.
     destruct (rd =? 0) eqn:Hrd.
-    + right. simpl. rewrite Hrd. reflexivity.
+    + right. simpl. try rewrite Hrd. reflexivity.
     + left.
       apply Z.eqb_neq in Hrd.
       simpl. rewrite Hinv.
-      apply rf_write_read_same. exact Hrd.
+      symmetry. apply rf_write_read_same. exact Hrd.
   - (* Inop *)
     right. simpl. reflexivity.
 Qed.

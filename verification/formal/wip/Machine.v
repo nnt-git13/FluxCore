@@ -28,7 +28,7 @@
     from [FluxCoreTypes.v].
 *)
 
-Require Import FluxCore.FluxCoreTypes.
+Require Import FluxCore.Common.Types.
 Require Import FluxCore.FluxCoreMemory.
 From Stdlib Require Import ZArith Bool List Lia Nat.
 Import ListNotations.
