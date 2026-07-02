@@ -39,3 +39,21 @@ set_false_path -from [get_ports { rst }]
 ## ---------------------------------------------------------------------------
 set_property DONT_TOUCH true [get_cells -quiet -hierarchical {u_cpu}]
 set_property MARK_DEBUG true [get_nets -quiet -hierarchical -filter {NAME =~ *dbg_*}]
+
+## ---------------------------------------------------------------------------
+## UART TX: PMOD JE pin 1 (V12). Connect a 3.3V USB-UART adapter RX here
+## (plus GND on JE pin 5/11). 115200 baud, 8N1.
+## ---------------------------------------------------------------------------
+set_property -dict { PACKAGE_PIN V12 IOSTANDARD LVCMOS33 } [get_ports { uart_tx_o }]
+set_output_delay -clock [get_clocks { fluxcore_clk }] 0.000 [get_ports { uart_tx_o }]
+set_false_path -to [get_ports { uart_tx_o }]
+
+## ---------------------------------------------------------------------------
+## LEDs: Zybo Z7 LD0..LD3 (from Digilent Zybo-Z7-Master.xdc)
+## ---------------------------------------------------------------------------
+set_property -dict { PACKAGE_PIN M14 IOSTANDARD LVCMOS33 } [get_ports { led_o[0] }]
+set_property -dict { PACKAGE_PIN M15 IOSTANDARD LVCMOS33 } [get_ports { led_o[1] }]
+set_property -dict { PACKAGE_PIN G14 IOSTANDARD LVCMOS33 } [get_ports { led_o[2] }]
+set_property -dict { PACKAGE_PIN D18 IOSTANDARD LVCMOS33 } [get_ports { led_o[3] }]
+set_output_delay -clock [get_clocks { fluxcore_clk }] 0.000 [get_ports { led_o[*] }]
+set_false_path -to [get_ports { led_o[*] }]

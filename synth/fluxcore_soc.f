@@ -21,6 +21,7 @@ rtl/common/regfile.sv
 rtl/decode/decoder.sv
 rtl/execution/alu.sv
 rtl/execution/branch_unit.sv
+rtl/execution/mul_div_unit.sv
 rtl/pipeline/if_id_reg.sv
 rtl/pipeline/id_ex_reg.sv
 rtl/pipeline/ex_mem_reg.sv
@@ -34,6 +35,10 @@ rtl/core/pipeline_ctrl.sv
 rtl/core/csr_unit.sv
 rtl/core/fluxcore_top.sv
 rtl/cache/dcache.sv
+rtl/peripherals/uart_tx.sv
+rtl/peripherals/gpio.sv
+rtl/peripherals/clint.sv
+rtl/top/soc_bus.sv
 rtl/top/bram_imem.sv
 rtl/top/bram_dmem.sv
 rtl/top/fluxcore_soc.sv

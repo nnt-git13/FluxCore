@@ -72,7 +72,21 @@ foreach rtl_file $rtl_files {
 }
 
 read_verilog -sv {*}$rtl_files
-synth_design -top $top_name -part $fpga_part
+
+# Optional second tclarg: path to an imem.hex to bake into the BRAM so the
+# bitstream boots straight into a program (make vivado-synth SW_PROG=<name>).
+if {$argc >= 2} {
+    set imem_hex [lindex $argv 1]
+    if {![file exists $imem_hex]} {
+        puts "ERROR: IMEM init file not found: $imem_hex"
+        exit 1
+    }
+    puts "IMEM init: $imem_hex"
+    synth_design -top $top_name -part $fpga_part -generic IMEM_INIT=$imem_hex
+} else {
+    puts "IMEM init: (none — zeroed instruction memory)"
+    synth_design -top $top_name -part $fpga_part
+}
 
 # Read constraints after synthesis so MARK_DEBUG get_nets queries can match
 # synthesized hierarchical nets.

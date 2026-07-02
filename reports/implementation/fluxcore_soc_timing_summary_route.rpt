@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
-| Date         : Tue Jun 30 04:57:48 2026
+| Date         : Thu Jul  2 05:00:51 2026
 | Host         : lnx-141209 running 64-bit Ubuntu 24.04.4 LTS
 | Command      : report_timing_summary -file /home/lnx-141209/Desktop/FluxCore/reports/implementation/fluxcore_soc_timing_summary_route.rpt
 | Design       : fluxcore_soc
@@ -137,7 +137,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-      3.780        0.000                      0                 5153        0.106        0.000                      0                 5153        9.500        0.000                       0                  2009  
+      1.110        0.000                      0                 7185        0.064        0.000                      0                 7185        9.500        0.000                       0                  2441  
 
 
 All user specified timing constraints are met.
@@ -160,7 +160,7 @@ fluxcore_clk  {0.000 10.000}     20.000          50.000
 
 Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-fluxcore_clk        3.780        0.000                      0                 5153        0.106        0.000                      0                 5153        9.500        0.000                       0                  2009  
+fluxcore_clk        1.110        0.000                      0                 7185        0.064        0.000                      0                 7185        9.500        0.000                       0                  2441  
 
 
 ------------------------------------------------------------------------------------------------
@@ -191,28 +191,28 @@ Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing 
 From Clock:  fluxcore_clk
   To Clock:  fluxcore_clk
 
-Setup :            0  Failing Endpoints,  Worst Slack        3.780ns,  Total Violation        0.000ns
-Hold  :            0  Failing Endpoints,  Worst Slack        0.106ns,  Total Violation        0.000ns
+Setup :            0  Failing Endpoints,  Worst Slack        1.110ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.064ns,  Total Violation        0.000ns
 PW    :            0  Failing Endpoints,  Worst Slack        9.500ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 
 
 Max Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             3.780ns  (required time - arrival time)
-  Source:                 u_dmem/mem0_reg/CLKARDCLK
+Slack (MET) :             1.110ns  (required time - arrival time)
+  Source:                 g_no_dcache.u_dmem/mem3_reg/CLKARDCLK
                             (rising edge-triggered cell RAMB18E1 clocked by fluxcore_clk  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            u_imem/rdata_o_reg/ADDRARDADDR[13]
-                            (rising edge-triggered cell RAMB18E1 clocked by fluxcore_clk  {rise@0.000ns fall@10.000ns period=20.000ns})
+  Destination:            u_cpu/u_ex_mem_reg/q_o_reg[alu_result][14]/D
+                            (rising edge-triggered cell FDRE clocked by fluxcore_clk  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             fluxcore_clk
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            20.000ns  (fluxcore_clk rise@20.000ns - fluxcore_clk rise@0.000ns)
-  Data Path Delay:        15.579ns  (logic 5.583ns (35.836%)  route 9.996ns (64.164%))
-  Logic Levels:           15  (CARRY4=5 LUT2=1 LUT4=2 LUT6=7)
-  Clock Path Skew:        -0.039ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    5.595ns = ( 25.595 - 20.000 ) 
-    Source Clock Delay      (SCD):    6.112ns
-    Clock Pessimism Removal (CPR):    0.478ns
+  Data Path Delay:        18.712ns  (logic 10.899ns (58.246%)  route 7.813ns (41.754%))
+  Logic Levels:           20  (CARRY4=8 DSP48E1=2 LUT2=1 LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.171ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.340ns = ( 25.340 - 20.000 ) 
+    Source Clock Delay      (SCD):    5.935ns
+    Clock Pessimism Removal (CPR):    0.424ns
   Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -228,48 +228,63 @@ Slack (MET) :             3.780ns  (required time - arrival time)
     K17                  IBUF (Prop_ibuf_I_O)         1.475     1.475 r  clk_IBUF_inst/O
                          net (fo=1, routed)           2.522     3.997    clk_IBUF
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.101     4.098 r  clk_IBUF_BUFG_inst/O
-                         net (fo=2008, routed)        2.014     6.112    u_dmem/clk
-    RAMB18_X4Y42         RAMB18E1                                     r  u_dmem/mem0_reg/CLKARDCLK
+                         net (fo=2440, routed)        1.837     5.935    g_no_dcache.u_dmem/clk
+    RAMB18_X4Y5          RAMB18E1                                     r  g_no_dcache.u_dmem/mem3_reg/CLKARDCLK
   -------------------------------------------------------------------    -------------------
-    RAMB18_X4Y42         RAMB18E1 (Prop_ramb18e1_CLKARDCLK_DOADO[7])
-                                                      2.454     8.566 f  u_dmem/mem0_reg/DOADO[7]
-                         net (fo=6, routed)           1.581    10.147    u_cpu/u_mem_wb_reg/dmem_rdata_i[7]
-    SLICE_X98Y114        LUT6 (Prop_lut6_I1_O)        0.124    10.271 f  u_cpu/u_mem_wb_reg/retire_o[rd_data][31]_INST_0_i_5/O
-                         net (fo=25, routed)          1.252    11.523    u_cpu/u_mem_wb_reg/retire_o[rd_data][31]_INST_0_i_5_n_0
-    SLICE_X98Y131        LUT6 (Prop_lut6_I0_O)        0.124    11.647 f  u_cpu/u_mem_wb_reg/retire_o[rd_data][24]_INST_0_i_1/O
-                         net (fo=1, routed)           0.446    12.093    u_cpu/u_mem_wb_reg/retire_o[rd_data][24]_INST_0_i_1_n_0
-    SLICE_X97Y132        LUT6 (Prop_lut6_I0_O)        0.124    12.217 f  u_cpu/u_mem_wb_reg/retire_o[rd_data][24]_INST_0/O
-                         net (fo=35, routed)          0.771    12.988    u_cpu/u_mem_wb_reg/mem3_reg
-    SLICE_X104Y133       LUT6 (Prop_lut6_I3_O)        0.124    13.112 f  u_cpu/u_mem_wb_reg/taken_o0_carry__1_i_18/O
-                         net (fo=12, routed)          0.955    14.067    u_cpu/u_mem_wb_reg/q_o_reg[rs1_data][30][24]
-    SLICE_X100Y128       LUT4 (Prop_lut4_I1_O)        0.124    14.191 r  u_cpu/u_mem_wb_reg/taken_o0__23_carry__2_i_4/O
-                         net (fo=2, routed)           0.524    14.715    u_cpu/u_execute/u_branch_unit/imem_addr_next_o[13]_INST_0_i_18_1[0]
-    SLICE_X98Y128        CARRY4 (Prop_carry4_DI[0]_CO[3])
-                                                      0.550    15.265 r  u_cpu/u_execute/u_branch_unit/taken_o0__55_carry__2/CO[3]
-                         net (fo=1, routed)           1.062    16.326    u_cpu/u_id_ex_reg/imem_addr_next_o[13]_INST_0_i_9_0[0]
-    SLICE_X96Y130        LUT4 (Prop_lut4_I1_O)        0.124    16.450 r  u_cpu/u_id_ex_reg/imem_addr_next_o[13]_INST_0_i_19/O
-                         net (fo=1, routed)           0.565    17.015    u_cpu/u_id_ex_reg/imem_addr_next_o[13]_INST_0_i_19_n_0
-    SLICE_X93Y130        LUT6 (Prop_lut6_I3_O)        0.124    17.139 r  u_cpu/u_id_ex_reg/imem_addr_next_o[13]_INST_0_i_9/O
-                         net (fo=1, routed)           0.567    17.706    u_cpu/u_id_ex_reg/u_pctrl/redirect_branch_s0
-    SLICE_X90Y130        LUT2 (Prop_lut2_I1_O)        0.117    17.823 r  u_cpu/u_id_ex_reg/imem_addr_next_o[13]_INST_0_i_5/O
-                         net (fo=36, routed)          1.027    18.850    u_cpu/u_id_ex_reg/u_pctrl/redirect_branch_s
-    SLICE_X89Y121        LUT6 (Prop_lut6_I1_O)        0.331    19.181 r  u_cpu/u_id_ex_reg/imem_addr_next_o[3]_INST_0_i_5/O
-                         net (fo=1, routed)           0.000    19.181    u_cpu/u_fetch/S[0]
-    SLICE_X89Y121        CARRY4 (Prop_carry4_S[2]_CO[3])
-                                                      0.398    19.579 r  u_cpu/u_fetch/imem_addr_next_o[3]_INST_0_i_2/CO[3]
-                         net (fo=1, routed)           0.000    19.579    u_cpu/u_fetch/imem_addr_next_o[3]_INST_0_i_2_n_0
-    SLICE_X89Y122        CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    19.693 r  u_cpu/u_fetch/imem_addr_next_o[7]_INST_0_i_2/CO[3]
-                         net (fo=1, routed)           0.000    19.693    u_cpu/u_fetch/imem_addr_next_o[7]_INST_0_i_2_n_0
-    SLICE_X89Y123        CARRY4 (Prop_carry4_CI_CO[3])
-                                                      0.114    19.807 r  u_cpu/u_fetch/imem_addr_next_o[11]_INST_0_i_2/CO[3]
-                         net (fo=1, routed)           0.000    19.807    u_cpu/u_fetch/imem_addr_next_o[11]_INST_0_i_2_n_0
-    SLICE_X89Y124        CARRY4 (Prop_carry4_CI_O[1])
-                                                      0.334    20.141 r  u_cpu/u_fetch/imem_addr_next_o[13]_INST_0_i_2/O[1]
-                         net (fo=2, routed)           0.580    20.721    u_cpu/u_id_ex_reg/next_pc_s[13]
-    SLICE_X87Y124        LUT6 (Prop_lut6_I3_O)        0.303    21.024 r  u_cpu/u_id_ex_reg/imem_addr_next_o[13]_INST_0/O
-                         net (fo=1, routed)           0.668    21.692    u_imem/imem_addr_next_o[11]
-    RAMB18_X4Y48         RAMB18E1                                     r  u_imem/rdata_o_reg/ADDRARDADDR[13]
+    RAMB18_X4Y5          RAMB18E1 (Prop_ramb18e1_CLKARDCLK_DOADO[7])
+                                                      2.454     8.389 r  g_no_dcache.u_dmem/mem3_reg/DOADO[7]
+                         net (fo=1, routed)           0.799     9.189    u_bus/mem_rdata[31]
+    SLICE_X88Y13         LUT4 (Prop_lut4_I3_O)        0.124     9.313 r  u_bus/u_cpu_i_1/O
+                         net (fo=9, routed)           0.760    10.073    u_cpu/u_mem_wb_reg/dmem_rdata_i[31]
+    SLICE_X87Y11         LUT6 (Prop_lut6_I0_O)        0.124    10.197 r  u_cpu/u_mem_wb_reg/retire_o[rd_data][14]_INST_0_i_4/O
+                         net (fo=1, routed)           0.151    10.348    u_cpu/u_mem_wb_reg/retire_o[rd_data][14]_INST_0_i_4_n_0
+    SLICE_X87Y11         LUT6 (Prop_lut6_I0_O)        0.124    10.472 r  u_cpu/u_mem_wb_reg/retire_o[rd_data][14]_INST_0_i_3/O
+                         net (fo=7, routed)           0.532    11.004    u_cpu/u_mem_wb_reg/retire_o[rd_data][14]_INST_0_i_3_n_0
+    SLICE_X87Y12         LUT6 (Prop_lut6_I5_O)        0.124    11.128 r  u_cpu/u_mem_wb_reg/retire_o[rd_data][11]_INST_0/O
+                         net (fo=37, routed)          0.599    11.727    u_cpu/u_id_ex_reg/prod_su__1_10
+    SLICE_X85Y13         LUT6 (Prop_lut6_I3_O)        0.124    11.851 r  u_cpu/u_id_ex_reg/prod_ss__1_i_6/O
+                         net (fo=29, routed)          1.403    13.254    u_cpu/u_muldiv/id_ex_fwd_s[rs1_data][11]
+    DSP48_X4Y6           DSP48E1 (Prop_dsp48e1_A[11]_PCOUT[47])
+                                                      4.036    17.290 r  u_cpu/u_muldiv/prod_ss__1/PCOUT[47]
+                         net (fo=1, routed)           0.002    17.292    u_cpu/u_muldiv/prod_ss__1_n_106
+    DSP48_X4Y7           DSP48E1 (Prop_dsp48e1_PCIN[47]_P[0])
+                                                      1.518    18.810 r  u_cpu/u_muldiv/prod_ss__2/P[0]
+                         net (fo=2, routed)           1.157    19.967    u_cpu/u_muldiv/prod_ss__2_n_105
+    SLICE_X95Y8          LUT2 (Prop_lut2_I0_O)        0.124    20.091 r  u_cpu/u_muldiv/q_o[alu_result][19]_i_33/O
+                         net (fo=1, routed)           0.000    20.091    u_cpu/u_muldiv/q_o[alu_result][19]_i_33_n_0
+    SLICE_X95Y8          CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550    20.641 r  u_cpu/u_muldiv/q_o_reg[alu_result][19]_i_20/CO[3]
+                         net (fo=1, routed)           0.000    20.641    u_cpu/u_muldiv/q_o_reg[alu_result][19]_i_20_n_0
+    SLICE_X95Y9          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    20.755 r  u_cpu/u_muldiv/q_o_reg[alu_result][23]_i_19/CO[3]
+                         net (fo=1, routed)           0.000    20.755    u_cpu/u_muldiv/q_o_reg[alu_result][23]_i_19_n_0
+    SLICE_X95Y10         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    20.869 r  u_cpu/u_muldiv/q_o_reg[alu_result][27]_i_20/CO[3]
+                         net (fo=1, routed)           0.000    20.869    u_cpu/u_muldiv/q_o_reg[alu_result][27]_i_20_n_0
+    SLICE_X95Y11         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    20.983 r  u_cpu/u_muldiv/q_o_reg[alu_result][31]_i_39/CO[3]
+                         net (fo=1, routed)           0.000    20.983    u_cpu/u_muldiv/q_o_reg[alu_result][31]_i_39_n_0
+    SLICE_X95Y12         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.097 r  u_cpu/u_muldiv/q_o_reg[alu_result][0]_i_32/CO[3]
+                         net (fo=1, routed)           0.000    21.097    u_cpu/u_muldiv/q_o_reg[alu_result][0]_i_32_n_0
+    SLICE_X95Y13         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.211 r  u_cpu/u_muldiv/q_o_reg[alu_result][7]_i_28/CO[3]
+                         net (fo=1, routed)           0.000    21.211    u_cpu/u_muldiv/q_o_reg[alu_result][7]_i_28_n_0
+    SLICE_X95Y14         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114    21.325 r  u_cpu/u_muldiv/q_o_reg[alu_result][11]_i_28/CO[3]
+                         net (fo=1, routed)           0.000    21.325    u_cpu/u_muldiv/q_o_reg[alu_result][11]_i_28_n_0
+    SLICE_X95Y15         CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.239    21.564 r  u_cpu/u_muldiv/q_o_reg[alu_result][15]_i_29/O[2]
+                         net (fo=1, routed)           0.595    22.159    u_cpu/u_id_ex_reg/data1[14]
+    SLICE_X92Y16         LUT6 (Prop_lut6_I5_O)        0.302    22.461 r  u_cpu/u_id_ex_reg/q_o[alu_result][14]_i_18/O
+                         net (fo=1, routed)           0.638    23.100    u_cpu/u_id_ex_reg/q_o[alu_result][14]_i_18_n_0
+    SLICE_X92Y20         LUT6 (Prop_lut6_I2_O)        0.124    23.224 r  u_cpu/u_id_ex_reg/q_o[alu_result][14]_i_13/O
+                         net (fo=1, routed)           0.607    23.831    u_cpu/u_muldiv/q_o_reg[alu_result][14]
+    SLICE_X92Y20         LUT5 (Prop_lut5_I3_O)        0.124    23.955 r  u_cpu/u_muldiv/q_o[alu_result][14]_i_6/O
+                         net (fo=1, routed)           0.569    24.523    u_cpu/u_id_ex_reg/q_o_reg[alu_result][14]
+    SLICE_X84Y20         LUT6 (Prop_lut6_I5_O)        0.124    24.647 r  u_cpu/u_id_ex_reg/q_o[alu_result][14]_i_1/O
+                         net (fo=1, routed)           0.000    24.647    u_cpu/u_ex_mem_reg/q_o_reg[alu_result][31]_3[14]
+    SLICE_X84Y20         FDRE                                         r  u_cpu/u_ex_mem_reg/q_o_reg[alu_result][14]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock fluxcore_clk rise edge)
@@ -279,17 +294,16 @@ Slack (MET) :             3.780ns  (required time - arrival time)
     K17                  IBUF (Prop_ibuf_I_O)         1.404    21.404 r  clk_IBUF_inst/O
                          net (fo=1, routed)           2.293    23.697    clk_IBUF
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.091    23.788 r  clk_IBUF_BUFG_inst/O
-                         net (fo=2008, routed)        1.807    25.595    u_imem/CLK
-    RAMB18_X4Y48         RAMB18E1                                     r  u_imem/rdata_o_reg/CLKARDCLK
-                         clock pessimism              0.478    26.073    
-                         clock uncertainty           -0.035    26.038    
-    RAMB18_X4Y48         RAMB18E1 (Setup_ramb18e1_CLKARDCLK_ADDRARDADDR[13])
-                                                     -0.566    25.472    u_imem/rdata_o_reg
+                         net (fo=2440, routed)        1.551    25.340    u_cpu/u_ex_mem_reg/clk
+    SLICE_X84Y20         FDRE                                         r  u_cpu/u_ex_mem_reg/q_o_reg[alu_result][14]/C
+                         clock pessimism              0.424    25.764    
+                         clock uncertainty           -0.035    25.728    
+    SLICE_X84Y20         FDRE (Setup_fdre_C_D)        0.029    25.757    u_cpu/u_ex_mem_reg/q_o_reg[alu_result][14]
   -------------------------------------------------------------------
-                         required time                         25.472    
-                         arrival time                         -21.692    
+                         required time                         25.757    
+                         arrival time                         -24.647    
   -------------------------------------------------------------------
-                         slack                                  3.780    
+                         slack                                  1.110    
 
 
 
@@ -297,20 +311,20 @@ Slack (MET) :             3.780ns  (required time - arrival time)
 
 Min Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             0.106ns  (arrival time - required time)
-  Source:                 u_cpu/u_id_ex_reg/q_o_reg[instr][1]/C
+Slack (MET) :             0.064ns  (arrival time - required time)
+  Source:                 u_cpu/u_id_ex_reg/q_o_reg[decoded][csr_addr][4]/C
                             (rising edge-triggered cell FDRE clocked by fluxcore_clk  {rise@0.000ns fall@10.000ns period=20.000ns})
-  Destination:            u_cpu/u_ex_mem_reg/q_o_reg[instr][1]/D
+  Destination:            u_cpu/u_ex_mem_reg/q_o_reg[decoded][csr_addr][4]/D
                             (rising edge-triggered cell FDRE clocked by fluxcore_clk  {rise@0.000ns fall@10.000ns period=20.000ns})
   Path Group:             fluxcore_clk
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (fluxcore_clk rise@0.000ns - fluxcore_clk rise@0.000ns)
-  Data Path Delay:        0.195ns  (logic 0.141ns (72.269%)  route 0.054ns (27.731%))
+  Data Path Delay:        0.396ns  (logic 0.141ns (35.629%)  route 0.255ns (64.371%))
   Logic Levels:           0  
-  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    2.297ns
-    Source Clock Delay      (SCD):    1.768ns
-    Clock Pessimism Removal (CPR):    0.515ns
+  Clock Path Skew:        0.261ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.191ns
+    Source Clock Delay      (SCD):    1.668ns
+    Clock Pessimism Removal (CPR):    0.261ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
@@ -321,12 +335,12 @@ Slack (MET) :             0.106ns  (arrival time - required time)
     K17                  IBUF (Prop_ibuf_I_O)         0.243     0.243 r  clk_IBUF_inst/O
                          net (fo=1, routed)           0.842     1.084    clk_IBUF
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.026     1.110 r  clk_IBUF_BUFG_inst/O
-                         net (fo=2008, routed)        0.658     1.768    u_cpu/u_id_ex_reg/clk
-    SLICE_X67Y137        FDRE                                         r  u_cpu/u_id_ex_reg/q_o_reg[instr][1]/C
+                         net (fo=2440, routed)        0.558     1.668    u_cpu/u_id_ex_reg/clk
+    SLICE_X44Y13         FDRE                                         r  u_cpu/u_id_ex_reg/q_o_reg[decoded][csr_addr][4]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X67Y137        FDRE (Prop_fdre_C_Q)         0.141     1.909 r  u_cpu/u_id_ex_reg/q_o_reg[instr][1]/Q
-                         net (fo=1, routed)           0.054     1.964    u_cpu/u_ex_mem_reg/id_ex_q[instr][1]
-    SLICE_X66Y137        FDRE                                         r  u_cpu/u_ex_mem_reg/q_o_reg[instr][1]/D
+    SLICE_X44Y13         FDRE (Prop_fdre_C_Q)         0.141     1.809 r  u_cpu/u_id_ex_reg/q_o_reg[decoded][csr_addr][4]/Q
+                         net (fo=12, routed)          0.255     2.064    u_cpu/u_ex_mem_reg/q_o_reg[decoded][csr_addr][11]_0[3]
+    SLICE_X51Y8          FDRE                                         r  u_cpu/u_ex_mem_reg/q_o_reg[decoded][csr_addr][4]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock fluxcore_clk rise edge)
@@ -336,15 +350,15 @@ Slack (MET) :             0.106ns  (arrival time - required time)
     K17                  IBUF (Prop_ibuf_I_O)         0.431     0.431 r  clk_IBUF_inst/O
                          net (fo=1, routed)           0.907     1.338    clk_IBUF
     BUFGCTRL_X0Y16       BUFG (Prop_bufg_I_O)         0.029     1.367 r  clk_IBUF_BUFG_inst/O
-                         net (fo=2008, routed)        0.930     2.297    u_cpu/u_ex_mem_reg/clk
-    SLICE_X66Y137        FDRE                                         r  u_cpu/u_ex_mem_reg/q_o_reg[instr][1]/C
-                         clock pessimism             -0.515     1.781    
-    SLICE_X66Y137        FDRE (Hold_fdre_C_D)         0.076     1.857    u_cpu/u_ex_mem_reg/q_o_reg[instr][1]
+                         net (fo=2440, routed)        0.824     2.191    u_cpu/u_ex_mem_reg/clk
+    SLICE_X51Y8          FDRE                                         r  u_cpu/u_ex_mem_reg/q_o_reg[decoded][csr_addr][4]/C
+                         clock pessimism             -0.261     1.929    
+    SLICE_X51Y8          FDRE (Hold_fdre_C_D)         0.070     1.999    u_cpu/u_ex_mem_reg/q_o_reg[decoded][csr_addr][4]
   -------------------------------------------------------------------
-                         required time                         -1.857    
-                         arrival time                           1.964    
+                         required time                         -1.999    
+                         arrival time                           2.064    
   -------------------------------------------------------------------
-                         slack                                  0.106    
+                         slack                                  0.064    
 
 
 
@@ -357,10 +371,10 @@ Waveform(ns):       { 0.000 10.000 }
 Period(ns):         20.000
 Sources:            { clk }
 
-Check Type        Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location        Pin
-Min Period        n/a     RAMB18E1/CLKARDCLK  n/a            2.576         20.000      17.424     RAMB18_X4Y42    u_dmem/mem0_reg/CLKARDCLK
-Low Pulse Width   Slow    FDRE/C              n/a            0.500         10.000      9.500      SLICE_X101Y138  rst_sync_q_reg[0]/C
-High Pulse Width  Slow    FDRE/C              n/a            0.500         10.000      9.500      SLICE_X101Y138  rst_sync_q_reg[0]/C
+Check Type        Corner  Lib Pin             Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location      Pin
+Min Period        n/a     RAMB18E1/CLKARDCLK  n/a            2.576         20.000      17.424     RAMB18_X4Y2   g_no_dcache.u_dmem/mem0_reg/CLKARDCLK
+Low Pulse Width   Slow    FDRE/C              n/a            0.500         10.000      9.500      SLICE_X88Y33  rst_sync_q_reg[0]/C
+High Pulse Width  Slow    FDRE/C              n/a            0.500         10.000      9.500      SLICE_X88Y33  rst_sync_q_reg[0]/C
 
 
 
