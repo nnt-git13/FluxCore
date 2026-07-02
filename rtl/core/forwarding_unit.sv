@@ -12,11 +12,11 @@
 //    Two forward paths, highest priority first:
 //
 //    EX/MEM → EX (1-cycle stale): instruction now in MEM produced a result
-//    one cycle ago.  The result is either alu_result (for ALU/AUIPC/LUI/STORE)
-//    or pc+4 (for JAL/JALR whose link address is computed in MEM stage, not
-//    by the ALU).  Forward is NOT issued for loads (is_load=1) because the
-//    load data is computed by the MEM stage in the same cycle and is not yet
-//    available; a load-use stall is issued instead (see below).
+//    one cycle ago.  The forwarded value mirrors mem_stage's writeback mux:
+//    alu_result (ALU/AUIPC/LUI), pc+4 (JAL/JALR link), or csr_rdata (CSR old
+//    value captured in EX).  Forward is NOT issued for loads (is_load=1)
+//    because the load data is computed by the MEM stage in the same cycle and
+//    is not yet available; a load-use stall is issued instead (see below).
 //    Gated on: ex_mem_i.valid & decoded.writes_rd & decoded.legal & rd != x0
 //              & !decoded.is_load
 //
@@ -79,18 +79,23 @@ module forwarding_unit
 );
 
     // -----------------------------------------------------------------------
-    // EX/MEM forwarded value
+    // EX/MEM forwarded value — must mirror mem_stage's writeback mux exactly,
+    // forwarding the value that WILL be written to rd, not the raw ALU result.
     //
-    // For ALU, AUIPC, LUI, STORE: the useful result is alu_result.
-    // For JAL/JALR (WB_PC4): the written value is pc+4 (link address);
-    //   alu_result holds the jump target, not the link address.
+    // WB_ALU (ALU, AUIPC, LUI):  alu_result.
+    // WB_PC4 (JAL/JALR):         pc+4 (alu_result holds the jump target).
+    // WB_CSR (CSRRW/S/C[I]):     csr_rdata — the old CSR value captured in EX.
+    //   (alu_result for a CSR op is the I-imm passthrough, i.e. the
+    //    sign-extended CSR address — forwarding it corrupts the consumer.)
     // WB_MEM (load): forwarding suppressed — load-use stall handles this case.
     // -----------------------------------------------------------------------
     word_t ex_mem_fwd_s;
     always_comb begin
-        ex_mem_fwd_s = ex_mem_i.alu_result;
-        if (ex_mem_i.decoded.wb_src == WB_PC4)
-            ex_mem_fwd_s = ex_mem_i.pc + 32'd4;
+        case (ex_mem_i.decoded.wb_src)
+            WB_PC4:  ex_mem_fwd_s = ex_mem_i.pc + 32'd4;
+            WB_CSR:  ex_mem_fwd_s = ex_mem_i.csr_rdata;
+            default: ex_mem_fwd_s = ex_mem_i.alu_result;
+        endcase
     end
 
     // -----------------------------------------------------------------------

@@ -119,6 +119,26 @@ module tb_forwarding_unit;
         return p;
     endfunction
 
+    // MEM instruction — CSR read (WB_CSR): rd value is the OLD CSR value
+    // captured in EX (csr_rdata), never the ALU result (which for a CSR op
+    // is the sign-extended CSR address — the 2026-07-02 mcycle bug).
+    function automatic ex_mem_payload_t mk_mem_csr(
+        input reg_idx_t rd,
+        input word_t    csr_rdata,
+        input word_t    poison_alu
+    );
+        automatic ex_mem_payload_t p = '0;
+        p.valid                = 1'b1;
+        p.decoded.legal        = 1'b1;
+        p.decoded.writes_rd    = 1'b1;
+        p.decoded.rd           = rd;
+        p.decoded.wb_src       = WB_CSR;
+        p.decoded.is_csr       = 1'b1;
+        p.csr_rdata            = csr_rdata;
+        p.alu_result           = poison_alu;
+        return p;
+    endfunction
+
     // WB instruction
     function automatic mem_wb_payload_t mk_wb(
         input reg_idx_t rd_addr,
@@ -470,6 +490,20 @@ module tb_forwarding_unit;
         // ================================================================
         // Done
         // ================================================================
+        // ================================================================
+        // Regression: EX/MEM → EX forward of a CSR read (WB_CSR).
+        // The forwarded value must be csr_rdata, NOT alu_result — for a
+        // csrr the ALU result is the sign-extended CSR address, and
+        // forwarding it corrupted `csrr; sub` sequences (mcycle anomaly,
+        // fixed 2026-07-02).
+        // ================================================================
+        begin : t_em_csr
+            automatic id_ex_payload_t  ex  = mk_ex(5'd10, 32'hDEAD, 5'd11, 32'hBEEF, 1'b1, 1'b1);
+            automatic ex_mem_payload_t mem = mk_mem_csr(5'd10, 32'h0000_1F42, 32'hFFFF_FB00);
+            apply(ex, mem, '0, '0, 1'b0);
+            chk_fwd(32'h0000_1F42, 32'hBEEF, 1'b0, "EX/MEM -> rs1 CSR forward (csr_rdata not alu)");
+        end
+
         $display("[FWD] PASS: all forwarding unit behaviors verified.");
         $finish;
 

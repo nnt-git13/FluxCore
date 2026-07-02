@@ -70,14 +70,20 @@ module wb_stage
                 1'b1: half_v = rdata[31:16];
             endcase
 
-            case (instr[INSTR_FUNCT3_MSB:INSTR_FUNCT3_LSB])
-                FUNCT3_LB:  select_load_data = {{24{byte_v[7]}}, byte_v};
-                FUNCT3_LBU: select_load_data = {24'h0,            byte_v};
-                FUNCT3_LH:  select_load_data = {{16{half_v[15]}}, half_v};
-                FUNCT3_LHU: select_load_data = {16'h0,             half_v};
-                FUNCT3_LW:  select_load_data = rdata;
-                default:    select_load_data = fallback;
-            endcase
+            // XFlux XLIDX (CUSTOM_0 opcode) is always a word load; its
+            // funct3 (000) would otherwise alias to LB below.
+            if (instr[INSTR_OPCODE_MSB:INSTR_OPCODE_LSB] == OPCODE_CUSTOM_0)
+                select_load_data = rdata;
+            else begin
+                case (instr[INSTR_FUNCT3_MSB:INSTR_FUNCT3_LSB])
+                    FUNCT3_LB:  select_load_data = {{24{byte_v[7]}}, byte_v};
+                    FUNCT3_LBU: select_load_data = {24'h0,            byte_v};
+                    FUNCT3_LH:  select_load_data = {{16{half_v[15]}}, half_v};
+                    FUNCT3_LHU: select_load_data = {16'h0,             half_v};
+                    FUNCT3_LW:  select_load_data = rdata;
+                    default:    select_load_data = fallback;
+                endcase
+            end
         end
     endfunction
 
