@@ -104,6 +104,15 @@ module pipeline_ctrl
 
     assign redirect_exc_s = exception_i.valid;
 
+    // Effective trap vector: mtvec MODE[0]=1 (vectored) sends interrupts to
+    // base + 4*cause; synchronous exceptions and direct mode use the base.
+    word_t mtvec_base_s;
+    word_t trap_target_s;
+    assign mtvec_base_s = {trap_vector_i[31:2], 2'b00};
+    assign trap_target_s = (trap_vector_i[0] & exception_i.is_irq)
+                         ? mtvec_base_s + {26'b0, exception_i.cause, 2'b00}
+                         : mtvec_base_s;
+
     assign redirect_mret_s = ex_mem_i.valid
                            & ex_mem_i.decoded.is_mret
                            & ex_mem_i.decoded.legal;
@@ -142,7 +151,7 @@ module pipeline_ctrl
             flush_ex_mem_o    = 1'b1;
             flush_mem_wb_o    = 1'b1;
             redirect_valid_o  = 1'b1;
-            redirect_target_o = trap_vector_i;
+            redirect_target_o = trap_target_s;
         end else if (redirect_mret_s) begin
             // MRET: squash the two wrong-path fetches behind MRET,
             // redirect to mepc.  CSR state update (MIE←MPIE) fires

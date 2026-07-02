@@ -8,7 +8,7 @@
 //   3. funct7 constants are correctly encoded.
 //   4. Instruction-field bit positions are correct.
 //   5. All enum values are accessible and have expected ordinals.
-//   6. decoded_instr_t field accessibility and packed width (128 bits).
+//   6. decoded_instr_t field accessibility and packed width (129 bits).
 //   7. CSR-related types: csr_op_e values, WB_CSR, CSR address constants.
 //
 // Pass/fail:
@@ -48,8 +48,8 @@ module tb_rv32_isa_pkg;
     //   + is_branch(1) + is_jump(1) + is_load(1) + is_store(1)
     //   + is_csr(1) + is_mret(1) + is_long_latency(1) + is_custom(1)
     //   + csr_addr(12) + csr_op(2)
-    //   + exception_meta_t(1+EXC_CAUSE_W+XLEN = 1+4+32 = 37)
-    //   = 1+3+5+3+4+3+5+5+5+1+1+1+32+1+1+1+1+1+1+1+1+12+2+37 = 128
+    //   + exception_meta_t(1+1+EXC_CAUSE_W+XLEN = 1+1+4+32 = 38)
+    //   = 1+3+5+3+4+3+5+5+5+1+1+1+32+1+1+1+1+1+1+1+1+12+2+38 = 129  (exception_meta_t gained is_irq)
     localparam int EXPECTED_DECODED_INSTR_W =
         1 +  // legal
         3 +  // op_class (op_class_e, 3-bit)
@@ -74,7 +74,7 @@ module tb_rv32_isa_pkg;
         1 +  // is_custom
         12 + // csr_addr
         2 +  // csr_op (csr_op_e, 2-bit)
-        (1 + fluxcore_pkg::EXC_CAUSE_W + fluxcore_pkg::XLEN); // exception_meta_t
+        (1 + 1 + fluxcore_pkg::EXC_CAUSE_W + fluxcore_pkg::XLEN); // exception_meta_t (valid, is_irq, cause, tval)
 
     initial begin : test_body
 

@@ -6,13 +6,14 @@
 //
 //   0x300  mstatus   MIE[3] and MPIE[7] are R/W; MPP[12:11]=2'b11 hardwired.
 //                    All other bits WPRI (read 0, writes ignored).
-//   0x305  mtvec     Machine trap-vector base; MODE forced to 0 (direct).
-//                    bits[1:0] WARL=0.
+//   0x305  mtvec     Machine trap-vector base; MODE[0] writable (0=direct,
+//                    1=vectored); bit[1] WARL=0.
 //   0x340  mscratch  General-purpose scratch register (32-bit R/W).
 //   0x341  mepc      Machine exception PC; bits[1:0] WARL=0 (no C extension).
 //   0x342  mcause    Machine trap cause (R/W; interrupt bit + cause code).
 //   0x343  mtval     Machine trap value (R/W; 0 for decode-detected traps).
-//   0x344  mip       Machine interrupt pending — read-only, returns 0.
+//   0x344  mip       Machine interrupt pending — read-only composition of
+//                    the mtip_i / msip_i inputs (MTIP[7], MSIP[3]).
 //   0xB00  mcycle    Cycle counter low 32 bits.
 //   0xB02  minstret  Retired-instruction counter low 32 bits.
 //   0xB80  mcycleh   Cycle counter high 32 bits.
@@ -39,7 +40,8 @@
 //
 // Write priority (posedge, highest first): rst > trap_i > mret_i > wen_i.
 // Performance counters update every non-reset cycle. A CSR write to a counter
-// overrides that counter's increment for the same cycle.
+// half overrides that half's increment for the same cycle; the un-written
+// half still takes the increment (including any carry out of the low half).
 
 `default_nettype none
 
@@ -78,9 +80,19 @@ module csr_unit #(
     // Asserted for one cycle when WB retires a non-exception instruction.
     input  wire logic        retire_i,
 
-    // ── Outputs for pipeline_ctrl ────────────────────────────────────────────
-    output word_t        mtvec_o,
-    output word_t        mepc_o
+    // ── Interrupt inputs (from CLINT) ────────────────────────────────────────
+    // Level-sensitive.  Defaults keep legacy instantiations interrupt-free.
+    input  wire logic        mtip_i = 1'b0,        // machine timer interrupt pending
+    input  wire logic        msip_i = 1'b0,        // machine software interrupt pending
+    input  wire logic [63:0] mtime_i = 64'd0,      // CLINT mtime (for time/timeh CSRs)
+
+    // ── Outputs for pipeline_ctrl / interrupt injection ─────────────────────
+    output word_t        mtvec_o,     // raw mtvec including MODE bit[0]
+    output word_t        mepc_o,
+    // 1 when an enabled interrupt is pending and mstatus.MIE is set.
+    output logic         irq_pending_o,
+    // Cause code of the highest-priority pending interrupt (MSI > MTI).
+    output logic [EXC_CAUSE_W-1:0] irq_cause_o
 );
 
     // -----------------------------------------------------------------------
@@ -88,6 +100,10 @@ module csr_unit #(
     // -----------------------------------------------------------------------
     logic  mstatus_mie_q;
     logic  mstatus_mpie_q;
+    logic  mtie_q;           // mie.MTIE (bit 7)
+    logic  msie_q;           // mie.MSIE (bit 3)
+    logic  inh_cy_q;         // mcountinhibit.CY (bit 0): freeze mcycle
+    logic  inh_ir_q;         // mcountinhibit.IR (bit 2): freeze minstret
     word_t mtvec_q;
     word_t mscratch_q;
     word_t mepc_q;
@@ -108,18 +124,33 @@ module csr_unit #(
         case (raddr_i)
             CSR_MSTATUS : rdata_o = {19'b0, 2'b11, 3'b0, mstatus_mpie_q,
                                       3'b0, mstatus_mie_q, 3'b0};
-            CSR_MIE     : rdata_o = '0;
+            CSR_MIE     : rdata_o = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
             CSR_MTVEC   : rdata_o = mtvec_q;
             CSR_MSCRATCH: rdata_o = mscratch_q;
             CSR_MEPC    : rdata_o = mepc_q;
             CSR_MCAUSE  : rdata_o = mcause_q;
             CSR_MTVAL   : rdata_o = mtval_q;
-            CSR_MIP     : rdata_o = '0;
+            CSR_MIP     : rdata_o = {24'b0, mtip_i, 3'b0, msip_i, 3'b0};
             CSR_MCYCLE  : rdata_o = mcycle_q[31:0];
             CSR_MINSTRET: rdata_o = minstret_q[31:0];
             CSR_MCYCLEH : rdata_o = mcycle_q[63:32];
             CSR_MINSTRETH: rdata_o = minstret_q[63:32];
             CSR_MHARTID : rdata_o = '0;
+            // Machine information / configuration registers
+            CSR_MISA    : rdata_o = 32'h4000_1100;   // RV32IM
+            CSR_MVENDORID : rdata_o = '0;            // non-commercial
+            CSR_MARCHID   : rdata_o = '0;            // not registered
+            CSR_MIMPID    : rdata_o = 32'h2026_0702; // implementation date
+            CSR_MCONFIGPTR: rdata_o = '0;
+            CSR_MCOUNTEREN: rdata_o = '0;            // WARL-0 (no U-mode)
+            CSR_MCOUNTINHIBIT: rdata_o = {29'b0, inh_ir_q, 1'b0, inh_cy_q};
+            // Zicntr read-only shadows + CLINT-backed time
+            CSR_CYCLE   : rdata_o = mcycle_q[31:0];
+            CSR_CYCLEH  : rdata_o = mcycle_q[63:32];
+            CSR_INSTRET : rdata_o = minstret_q[31:0];
+            CSR_INSTRETH: rdata_o = minstret_q[63:32];
+            CSR_TIME    : rdata_o = mtime_i[31:0];
+            CSR_TIMEH   : rdata_o = mtime_i[63:32];
             default     : rdata_o = '0;
         endcase
     end
@@ -142,6 +173,8 @@ module csr_unit #(
 
     word_t mstatus_current_s;
     word_t mstatus_rmw_s;
+    word_t mie_current_s;
+    word_t mie_rmw_s;
     word_t mtvec_rmw_s;
     word_t mepc_rmw_s;
     word_t mcycle_lo_rmw_s;
@@ -153,6 +186,8 @@ module csr_unit #(
         mstatus_current_s = {19'b0, 2'b11, 3'b0, mstatus_mpie_q,
                              3'b0, mstatus_mie_q, 3'b0};
         mstatus_rmw_s     = csr_rmw(mstatus_current_s, wdata_i, wop_i);
+        mie_current_s     = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
+        mie_rmw_s         = csr_rmw(mie_current_s,     wdata_i, wop_i);
         mtvec_rmw_s       = csr_rmw(mtvec_q,           wdata_i, wop_i);
         mepc_rmw_s        = csr_rmw(mepc_q,            wdata_i, wop_i);
         mcycle_lo_rmw_s   = csr_rmw(mcycle_q[31:0],    wdata_i, wop_i);
@@ -162,12 +197,39 @@ module csr_unit #(
     end
 
     // -----------------------------------------------------------------------
+    // Counter next-value: free-running increment computed first, then a CSR
+    // write overlays only the addressed 32-bit half. The un-written half
+    // keeps the incremented value, so a carry out of the low half is never
+    // lost, and a half-write never clobbers the other half.
+    // -----------------------------------------------------------------------
+    logic [63:0] mcycle_next_s;
+    logic [63:0] minstret_next_s;
+
+    always_comb begin
+        mcycle_next_s   = mcycle_q   + (inh_cy_q ? 64'd0 : 64'd1);
+        minstret_next_s = minstret_q + (inh_ir_q ? 64'd0 : {63'b0, retire_i});
+        if (wen_i) begin
+            case (waddr_i)
+                CSR_MCYCLE:    mcycle_next_s[31:0]    = mcycle_lo_rmw_s;
+                CSR_MCYCLEH:   mcycle_next_s[63:32]   = mcycle_hi_rmw_s;
+                CSR_MINSTRET:  minstret_next_s[31:0]  = minstret_lo_rmw_s;
+                CSR_MINSTRETH: minstret_next_s[63:32] = minstret_hi_rmw_s;
+                default: ;
+            endcase
+        end
+    end
+
+    // -----------------------------------------------------------------------
     // Synchronous write
     // -----------------------------------------------------------------------
     always_ff @(posedge clk) begin
         if (rst) begin
             mstatus_mie_q  <= 1'b0;
             mstatus_mpie_q <= 1'b0;
+            mtie_q         <= 1'b0;
+            msie_q         <= 1'b0;
+            inh_cy_q       <= 1'b0;
+            inh_ir_q       <= 1'b0;
             mtvec_q        <= MTVEC_RESET & ~32'h3;
             mscratch_q     <= '0;
             mepc_q         <= '0;
@@ -177,25 +239,8 @@ module csr_unit #(
             minstret_q     <= '0;
 
         end else begin
-            if (wen_i) begin
-                case (waddr_i)
-                    CSR_MCYCLE:    mcycle_q[31:0]     <= mcycle_lo_rmw_s;
-                    CSR_MCYCLEH:   mcycle_q[63:32]    <= mcycle_hi_rmw_s;
-                    default:       mcycle_q           <= mcycle_q + 64'd1;
-                endcase
-            end else begin
-                mcycle_q <= mcycle_q + 64'd1;
-            end
-
-            if (wen_i) begin
-                case (waddr_i)
-                    CSR_MINSTRET:  minstret_q[31:0]   <= minstret_lo_rmw_s;
-                    CSR_MINSTRETH: minstret_q[63:32]  <= minstret_hi_rmw_s;
-                    default:       minstret_q         <= minstret_q + {63'b0, retire_i};
-                endcase
-            end else begin
-                minstret_q <= minstret_q + {63'b0, retire_i};
-            end
+            mcycle_q   <= mcycle_next_s;
+            minstret_q <= minstret_next_s;
         end
 
         if (!rst && trap_i) begin
@@ -216,7 +261,18 @@ module csr_unit #(
                     mstatus_mie_q  <= mstatus_rmw_s[3];
                     mstatus_mpie_q <= mstatus_rmw_s[7];
                 end
-                CSR_MTVEC:    mtvec_q    <= {mtvec_rmw_s[31:2], 2'b00};
+                CSR_MCOUNTINHIBIT: begin
+                    // WARL: only CY[0] and IR[2] implemented
+                    inh_cy_q <= csr_rmw({29'b0, inh_ir_q, 1'b0, inh_cy_q}, wdata_i, wop_i) >> 0;
+                    inh_ir_q <= csr_rmw({29'b0, inh_ir_q, 1'b0, inh_cy_q}, wdata_i, wop_i) >> 2;
+                end
+                CSR_MIE: begin
+                    // WARL: only MTIE[7] and MSIE[3] are writable.
+                    mtie_q <= mie_rmw_s[7];
+                    msie_q <= mie_rmw_s[3];
+                end
+                // MODE[0] writable (0=direct, 1=vectored); bit[1] WARL=0.
+                CSR_MTVEC:    mtvec_q    <= {mtvec_rmw_s[31:2], 1'b0, mtvec_rmw_s[0]};
                 CSR_MSCRATCH: mscratch_q <= csr_rmw(mscratch_q,  wdata_i, wop_i);
                 CSR_MEPC:     mepc_q     <= {mepc_rmw_s[31:2], 2'b00};
                 CSR_MCAUSE:   mcause_q   <= csr_rmw(mcause_q,    wdata_i, wop_i);
@@ -229,6 +285,13 @@ module csr_unit #(
             endcase
         end
     end
+
+    // -----------------------------------------------------------------------
+    // Interrupt pending / cause (level-sensitive; priority MSI > MTI)
+    // -----------------------------------------------------------------------
+    assign irq_pending_o = mstatus_mie_q
+                         & ((mtip_i & mtie_q) | (msip_i & msie_q));
+    assign irq_cause_o   = (msip_i & msie_q) ? IRQ_M_SOFT_CODE : IRQ_M_TIMER_CODE;
 
 endmodule : csr_unit
 

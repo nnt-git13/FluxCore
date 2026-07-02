@@ -66,6 +66,12 @@ module fluxcore_top
     input  wire word_t             dmem_rdata_i,  // load read data
     input  wire logic              dmem_stall_i,  // 1 = cache miss, stall all stages
 
+    // --- Interrupt inputs (from CLINT; level-sensitive) ---
+    // Defaults keep legacy instantiations (unit/integration TBs) interrupt-free.
+    input  wire logic         mtip_i = 1'b0,   // machine timer interrupt
+    input  wire logic         msip_i = 1'b0,   // machine software interrupt
+    input  wire logic [63:0]  mtime_i = 64'd0, // CLINT mtime for time/timeh CSRs
+
     // --- Retirement and exception outputs ---
     // retire_o: one retirement event per architecturally committed instruction.
     // exception_o / exception_pc_o: captured by the future CSR/trap unit.
@@ -102,6 +108,9 @@ module fluxcore_top
     logic  csr_raw_stall_s;
 
     // CSR unit signals
+    logic    irq_pending_s;        // enabled interrupt pending (csr_unit)
+    logic [EXC_CAUSE_W-1:0] irq_cause_s;  // highest-priority pending cause
+    ex_mem_payload_t ex_mem_tag_s; // EX output with interrupt tag applied
     word_t   csr_rdata_s;          // combinatorial read from csr_unit (→ execute_stage)
     word_t   mtvec_s, mepc_s;      // csr_unit outputs used for redirects
     logic    csr_wen_s;            // CSR write enable from mem_stage
@@ -297,14 +306,21 @@ module fluxcore_top
         // Trap entry (driven from WB stage when exception commits)
         .trap_i       (exception_s.valid),
         .trap_epc_i   (exception_pc_o),
-        .trap_cause_i ({28'b0, exception_s.cause}),
+        // mcause: interrupt bit 31 from is_irq, cause code in the low bits
+        .trap_cause_i ({exception_s.is_irq, 27'b0, exception_s.cause}),
         .trap_tval_i  (exception_s.tval),
         // MRET commit (pulsed by MEM stage when MRET instruction is there)
         .mret_i       (mret_s),
         .retire_i     (retire_s.valid),
+        // Interrupt lines from the CLINT
+        .mtip_i       (mtip_i),
+        .msip_i       (msip_i),
+        .mtime_i      (mtime_i),
         // Redirect targets for pipeline_ctrl
         .mtvec_o      (mtvec_s),
-        .mepc_o       (mepc_s)
+        .mepc_o       (mepc_s),
+        .irq_pending_o(irq_pending_s),
+        .irq_cause_o  (irq_cause_s)
     );
 
     // =========================================================================
@@ -336,6 +352,49 @@ module fluxcore_top
         .ex_mem_o       (ex_mem_s)
     );
 
+    // -------------------------------------------------------------------------
+    // Interrupt injection — tag the valid instruction leaving EX.
+    //
+    // The tagged instruction travels to MEM and WB like a synchronous
+    // exception: its store / CSR write / rd write are suppressed (mem_stage
+    // gates on decoded.exception.valid), it does not retire, and when it
+    // reaches WB the trap gate sets mepc to its PC — the first un-executed
+    // instruction — and flushes the pipeline to the trap vector.
+    //
+    // Injection happens at EX (never WB): stores commit at the end of MEM, so
+    // interrupting at WB would require replaying a committed store.
+    // Interrupts are level-sensitive; if EX holds a bubble the request simply
+    // waits for the next valid instruction.  An interrupt outranks a
+    // same-instruction synchronous exception (the instruction is re-executed
+    // after the handler returns, re-raising the sync exception then).
+    // -------------------------------------------------------------------------
+    always_comb begin
+        ex_mem_tag_s = ex_mem_s;
+        // Fetch misalignment: a taken control transfer whose target is not
+        // 4-byte aligned raises EXC_INSTR_ADDR_MISALIGNED on the transfer
+        // instruction itself (mtval = the bad target).  The transient
+        // redirect is harmless: every wrong-path fetch is flushed when the
+        // exception commits in WB.
+        if (ex_mem_s.valid
+            & (ex_mem_s.branch_taken
+               | (ex_mem_s.decoded.is_jump & ex_mem_s.decoded.legal))
+            & (ex_mem_s.branch_target[1:0] != 2'b00)
+            & ~ex_mem_s.decoded.exception.valid) begin
+            ex_mem_tag_s.decoded.exception.valid  = 1'b1;
+            ex_mem_tag_s.decoded.exception.is_irq = 1'b0;
+            ex_mem_tag_s.decoded.exception.cause  = EXC_INSTR_ADDR_MISALIGNED;
+            ex_mem_tag_s.decoded.exception.tval   = ex_mem_s.branch_target;
+            // Do not redirect into the misaligned target
+            ex_mem_tag_s.branch_taken = 1'b0;
+        end
+        if (irq_pending_s & ex_mem_s.valid) begin
+            ex_mem_tag_s.decoded.exception.valid  = 1'b1;
+            ex_mem_tag_s.decoded.exception.is_irq = 1'b1;
+            ex_mem_tag_s.decoded.exception.cause  = exc_cause_e'(irq_cause_s);
+            ex_mem_tag_s.decoded.exception.tval   = '0;
+        end
+    end
+
     // =========================================================================
     // EX/MEM stage register
     // =========================================================================
@@ -345,7 +404,7 @@ module fluxcore_top
         .rst    (rst),
         .stall_i(stall_mem_s),
         .flush_i(flush_ex_mem_s),
-        .d_i    (ex_mem_s),
+        .d_i    (ex_mem_tag_s),
         .q_o    (ex_mem_q)
     );
 
@@ -413,7 +472,7 @@ module fluxcore_top
     // =========================================================================
 
     pipeline_ctrl u_pctrl (
-        .ex_mem_i        (ex_mem_s),
+        .ex_mem_i        (ex_mem_tag_s),
         .exception_i     (exception_s),
         .trap_vector_i   (mtvec_s),
         .mepc_i          (mepc_s),

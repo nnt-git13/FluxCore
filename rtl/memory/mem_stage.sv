@@ -225,6 +225,7 @@ module mem_stage
     assign mem_wen_o   = ex_mem_i.valid
                        & ex_mem_i.decoded.is_store
                        & ex_mem_i.decoded.legal
+                       & ~ex_mem_i.decoded.exception.valid
                        & ~new_exc_s;
     assign mem_wstrb_o = wstrb_s;
     assign mem_wdata_o = wdata_s;
@@ -256,6 +257,7 @@ module mem_stage
                        & ex_mem_i.decoded.is_csr
                        & ex_mem_i.decoded.legal
                        & (ex_mem_i.decoded.csr_op != CSR_NOP)
+                       & ~ex_mem_i.decoded.exception.valid
                        & ~new_exc_s;
     assign csr_waddr_o = ex_mem_i.decoded.csr_addr;
     assign csr_wdata_o = ex_mem_i.rs2_data;
@@ -268,7 +270,9 @@ module mem_stage
     // one cycle earlier (when MRET was in EX). This pulse updates csr_unit's
     // mstatus: MIE←MPIE, MPIE←1.
     // -----------------------------------------------------------------------
-    assign mret_o = ex_mem_i.valid & ex_mem_i.decoded.is_mret & ex_mem_i.decoded.legal;
+    assign mret_o = ex_mem_i.valid & ex_mem_i.decoded.is_mret
+                  & ex_mem_i.decoded.legal
+                  & ~ex_mem_i.decoded.exception.valid;
 
     // -----------------------------------------------------------------------
     // Assemble MEM/WB payload
@@ -281,6 +285,7 @@ module mem_stage
         // misalignment exception was raised in this stage.
         mem_wb_o.rd_wen    = ex_mem_i.decoded.writes_rd
                            & ex_mem_i.decoded.legal
+                           & ~ex_mem_i.decoded.exception.valid
                            & ~new_exc_s;
         mem_wb_o.rd_addr   = ex_mem_i.decoded.rd;
         mem_wb_o.rd_data   = rd_data_s;

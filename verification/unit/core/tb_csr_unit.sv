@@ -5,7 +5,7 @@
 // Test groups:
 //
 //   G01  Reset state
-//   G02  mtvec CSRRW (write / read-back; WARL bits[1:0] forced 0)
+//   G02  mtvec CSRRW (write / read-back; MODE[0] writable, bit[1] WARL=0)
 //   G03  mtvec CSRRS / CSRRC (set / clear bits)
 //   G04  mscratch CSRRW / CSRRS / CSRRC
 //   G05  mepc write (WARL: bits[1:0] forced 0) and mtvec_o / mepc_o outputs
@@ -21,6 +21,10 @@
 //   G15  mip / mhartid / MIE CSR read-only (returns 0, writes ignored)
 //   G16  MTVEC_RESET parameter wires through; WARL clears bits[1:0]
 //   G17  mcycle/minstret counters increment and support CSR writes
+//   G18  Counter half-write never clobbers the other half
+//   G19  Carry reaches the un-written half; RMW ops on counters
+//   G20  Interrupt CSRs: mie writable bits, mip tracks inputs, time shadows
+//   G21  Machine information CSRs + mcountinhibit freeze
 
 `timescale 1ns / 1ps
 `default_nettype none
@@ -59,6 +63,10 @@ module tb_csr_unit;
 
     word_t         mtvec_out;
     word_t         mepc_out;
+    logic          mtip = 0, msip = 0;
+    logic [63:0]   mtime_val = '0;
+    logic          irq_pending_out;
+    logic [3:0]    irq_cause_out;
 
     csr_unit #(
         .MTVEC_RESET(32'h0000_2000)   // non-zero reset to test G16
@@ -77,8 +85,13 @@ module tb_csr_unit;
         .trap_tval_i  (trap_tval),
         .mret_i       (mret),
         .retire_i     (retire),
+        .mtip_i       (mtip),
+        .msip_i       (msip),
+        .mtime_i      (mtime_val),
         .mtvec_o      (mtvec_out),
-        .mepc_o       (mepc_out)
+        .mepc_o       (mepc_out),
+        .irq_pending_o(irq_pending_out),
+        .irq_cause_o  (irq_cause_out)
     );
 
     // -----------------------------------------------------------------------
@@ -188,10 +201,11 @@ module tb_csr_unit;
         // G02: mtvec CSRRW and WARL (bits[1:0] forced 0)
         // -------------------------------------------------------------------
         $display("[CSR] G02: mtvec CSRRW");
-        do_write(CSR_MTVEC, 32'hDEAD_BEFF, CSR_WRITE);   // bits[1:0]=11 → clamped to 00
-        chk_read(CSR_MTVEC, 32'hDEAD_BEFC, "G02 mtvec WARL bits[1:0]=0");
-        if (mtvec_out !== 32'hDEAD_BEFC)
+        do_write(CSR_MTVEC, 32'hDEAD_BEFF, CSR_WRITE);   // bit1 clamped, MODE[0] kept
+        chk_read(CSR_MTVEC, 32'hDEAD_BEFD, "G02 mtvec WARL bit[1]=0, MODE[0] kept");
+        if (mtvec_out !== 32'hDEAD_BEFD)
             $fatal(1, "[CSR] FAIL G02: mtvec_o wrong after write");
+        do_write(CSR_MTVEC, 32'hDEAD_BEFC, CSR_WRITE);   // direct mode again
 
         do_write(CSR_MTVEC, 32'h0000_4000, CSR_WRITE);
         chk_read(CSR_MTVEC, 32'h0000_4000, "G02 mtvec aligned write");
@@ -383,29 +397,133 @@ module tb_csr_unit;
 
         // -------------------------------------------------------------------
         // G17: mcycle/minstret performance counters
+        //
+        // Counter write semantics: the free-running increment is computed
+        // first, then the CSR write overlays only the addressed half. The
+        // un-written half keeps the incremented value (including carry).
+        // chk_read consumes no clock edges and do_write consumes exactly one
+        // posedge, so counter values below are cycle-exact.
         // -------------------------------------------------------------------
         $display("[CSR] G17: mcycle/minstret counters");
-        do_write(CSR_MINSTRET,  32'h0000_000A, CSR_WRITE);
-        do_write(CSR_MINSTRETH, 32'h0000_0000, CSR_WRITE);
-        do_write(CSR_MCYCLE,    32'hFFFF_FFFF, CSR_WRITE);
-        do_write(CSR_MCYCLEH,   32'h0000_0001, CSR_WRITE);
+        do_write(CSR_MINSTRET,  32'h0000_000A, CSR_WRITE); // minstret lo <- 0xA
+        do_write(CSR_MINSTRETH, 32'h0000_0000, CSR_WRITE); // minstret = {0, 0xA}
+        do_write(CSR_MCYCLE,    32'hFFFF_FFFF, CSR_WRITE); // mcycle = {0, FFFF_FFFF}
+        do_write(CSR_MCYCLEH,   32'h0000_0001, CSR_WRITE); // next={1,0}, hi<-1 → {1, 0}
 
         chk_read(CSR_MCYCLEH, 32'h0000_0001, "G17 mcycleh write");
+        chk_read(CSR_MCYCLE,  32'h0000_0000, "G17 low half carried during high write");
 
         @(negedge clk);
         retire = 1'b1;
         @(posedge clk); #1;
-        retire = 1'b0;
+        retire = 1'b0;                                     // mcycle {1,1}; minstret {0,0xB}
 
         chk_read(CSR_MINSTRET, 32'h0000_000B, "G17 minstret increments on retire");
-        chk_read(CSR_MCYCLEH, 32'h0000_0002, "G17 mcycle carry into high half");
+        chk_read(CSR_MCYCLE,   32'h0000_0001, "G17 mcycle increments on retire cycle");
+        chk_read(CSR_MCYCLEH,  32'h0000_0001, "G17 mcycleh stable");
 
-        do_write(CSR_MINSTRET, 32'hFFFF_FFFF, CSR_SET);
+        do_write(CSR_MINSTRET, 32'hFFFF_FFFF, CSR_SET);    // mcycle {1,2}
         chk_read(CSR_MINSTRET, 32'hFFFF_FFFF, "G17 minstret CSR_SET");
-        do_write(CSR_MINSTRET, 32'h0000_00FF, CSR_CLR);
+        do_write(CSR_MINSTRET, 32'h0000_00FF, CSR_CLR);    // mcycle {1,3}
         chk_read(CSR_MINSTRET, 32'hFFFF_FF00, "G17 minstret CSR_CLR");
 
-        $display("[CSR] PASS: all %0d test groups passed.", 17);
+        // -------------------------------------------------------------------
+        // G18: counter half-write never clobbers the other half
+        // -------------------------------------------------------------------
+        $display("[CSR] G18: half-write preserves other half");
+        // mcycle = {1, 3} here.
+        do_write(CSR_MCYCLEH, 32'h0000_0005, CSR_WRITE);   // next={1,4}, hi<-5 → {5,4}
+        chk_read(CSR_MCYCLE,  32'h0000_0004, "G18 low half took increment during high write");
+        chk_read(CSR_MCYCLEH, 32'h0000_0005, "G18 high half written");
+        do_write(CSR_MCYCLE,  32'h0000_0010, CSR_WRITE);   // next={5,5}, lo<-0x10 → {5,0x10}
+        chk_read(CSR_MCYCLEH, 32'h0000_0005, "G18 high half preserved across low write");
+        chk_read(CSR_MCYCLE,  32'h0000_0010, "G18 low half written");
+
+        // minstret half-write with retire asserted the same cycle:
+        // minstret = {0, FFFF_FF00}; next = {0, FFFF_FF01}, hi<-7 → {7, FFFF_FF01}
+        @(negedge clk);
+        retire = 1'b1;
+        wen    = 1'b1;
+        waddr  = CSR_MINSTRETH;
+        wdata  = 32'h0000_0007;
+        wop    = CSR_WRITE;
+        @(posedge clk); #1;
+        retire = 1'b0;
+        wen    = 1'b0;
+        wdata  = '0;
+        wop    = CSR_NOP;
+        chk_read(CSR_MINSTRET,  32'hFFFF_FF01, "G18 low half takes retire tick during high write");
+        chk_read(CSR_MINSTRETH, 32'h0000_0007, "G18 minstreth written");
+
+        // -------------------------------------------------------------------
+        // G19: carry reaches the un-written half; RMW ops on counters
+        // -------------------------------------------------------------------
+        $display("[CSR] G19: counter carry and RMW");
+        // mcycle = {5, 0x10}.
+        do_write(CSR_MCYCLE, 32'hFFFF_FFFF, CSR_WRITE);    // next hi=5, lo<-FFFF_FFFF → {5, FFFF_FFFF}
+        do_write(CSR_MSCRATCH, 32'h0, CSR_WRITE);          // unrelated write: full increment → {6, 0}
+        chk_read(CSR_MCYCLE,  32'h0000_0000, "G19 low half wraps");
+        chk_read(CSR_MCYCLEH, 32'h0000_0006, "G19 carry into high half on unrelated write");
+
+        // RMW on a counter half: rmw operates on the pre-increment old value.
+        // mcycle = {6, 0}: SET 0xF0 → lo <- (0 | 0xF0), hi keeps increment (no carry) → {6, 0xF0}
+        do_write(CSR_MCYCLE, 32'h0000_00F0, CSR_SET);
+        chk_read(CSR_MCYCLE,  32'h0000_00F0, "G19 CSR_SET on mcycle low");
+        chk_read(CSR_MCYCLEH, 32'h0000_0006, "G19 high half stable across low RMW");
+
+        // -------------------------------------------------------------------
+        // G20: interrupt CSRs — mie MTIE/MSIE writable; mip mirrors inputs;
+        //      time/timeh read mtime_i; irq_pending priority MSI > MTI
+        // -------------------------------------------------------------------
+        $display("[CSR] G20: interrupt CSRs");
+        do_write(CSR_MSTATUS, 32'h0, CSR_WRITE);         // MIE=0 baseline
+        do_write(CSR_MIE, 32'hFFFF_FFFF, CSR_WRITE);     // only bits 7/3 stick
+        chk_read(CSR_MIE, 32'h0000_0088, "G20 mie WARL MTIE|MSIE");
+        chk_read(CSR_MIP, 32'h0000_0000, "G20 mip idle");
+
+        mtip = 1'b1; #1;
+        chk_read(CSR_MIP, 32'h0000_0080, "G20 mip.MTIP tracks input");
+        if (irq_pending_out)
+            $fatal(1, "[CSR] FAIL G20: irq_pending with mstatus.MIE=0");
+        do_write(CSR_MSTATUS, 32'h0000_0008, CSR_WRITE); // MIE=1
+        #1;
+        if (!irq_pending_out)
+            $fatal(1, "[CSR] FAIL G20: irq_pending not asserted (MTI)");
+        if (irq_cause_out !== IRQ_M_TIMER_CODE)
+            $fatal(1, "[CSR] FAIL G20: cause=%0d expected MTI", irq_cause_out);
+        msip = 1'b1; #1;
+        if (irq_cause_out !== IRQ_M_SOFT_CODE)
+            $fatal(1, "[CSR] FAIL G20: MSI must outrank MTI");
+        mtip = 0; msip = 0;
+        do_write(CSR_MSTATUS, 32'h0, CSR_WRITE);
+        do_write(CSR_MIE, 32'h0, CSR_WRITE);
+
+        mtime_val = 64'hDEAD_BEEF_0123_4567;
+        #1;
+        chk_read(CSR_TIME,  32'h0123_4567, "G20 time reads mtime low");
+        chk_read(CSR_TIMEH, 32'hDEAD_BEEF, "G20 timeh reads mtime high");
+
+        // -------------------------------------------------------------------
+        // G21: machine information CSRs + mcountinhibit
+        // -------------------------------------------------------------------
+        $display("[CSR] G21: info CSRs + mcountinhibit");
+        chk_read(CSR_MISA,      32'h4000_1100, "G21 misa RV32IM");
+        chk_read(CSR_MVENDORID, 32'h0,         "G21 mvendorid");
+        chk_read(CSR_MARCHID,   32'h0,         "G21 marchid");
+        chk_read(CSR_MIMPID,    32'h2026_0702, "G21 mimpid");
+        chk_read(CSR_MCOUNTEREN,32'h0,         "G21 mcounteren WARL-0");
+
+        do_write(CSR_MCOUNTINHIBIT, 32'hFFFF_FFFF, CSR_WRITE);
+        chk_read(CSR_MCOUNTINHIBIT, 32'h0000_0005, "G21 mcountinhibit CY|IR only");
+        begin
+            automatic word_t frozen;
+            raddr = CSR_MCYCLE; #1; frozen = rdata;
+            @(negedge clk); @(posedge clk); #1;   // one free-running cycle
+            chk_read(CSR_MCYCLE, frozen, "G21 mcycle frozen by inhibit");
+        end
+        do_write(CSR_MCOUNTINHIBIT, 32'h0, CSR_WRITE);
+
+        $display("[CSR] PASS: all %0d test groups passed.", 21);
         $finish;
 
     end : stim

@@ -8,7 +8,7 @@
 //        if_id_payload_t  =  65 bits
 //        id_ex_payload_t  = 256 bits  (was 239; +17 from decoded_instr_t wb_src+CSR fields)
 //        ex_mem_payload_t = 321 bits  (was 289; +32 for csr_rdata field)
-//        mem_wb_payload_t = 143 bits  (+3 for BRAM load metadata)
+//        mem_wb_payload_t = 144 bits  (+3 for BRAM load metadata, +1 is_irq)
 //   3. The `valid` field is the MSB of each payload (packed struct, MSB first).
 //   4. Setting valid=0 produces a bit-vector whose MSB is 0.
 //   5. A zero-initialised payload has valid=0 (bubble representation).
@@ -30,7 +30,7 @@ module tb_pipeline_pkg;
     // -----------------------------------------------------------------------
     // Expected widths — computed from the constituent types
     // -----------------------------------------------------------------------
-    // exception_meta_t : 1 + EXC_CAUSE_W + XLEN = 1 + 4 + 32 = 37
+    // exception_meta_t : 1 + 1 + EXC_CAUSE_W + XLEN = 1 + 1 + 4 + 32 = 38  (valid, is_irq, cause, tval)
     // decoded_instr_t  : 128  (was 127; +1 from alu_op_e 4→5 bits for RV32M+XFlux ops)
     //
     // if_id   : 1 + 32 + 32                               = 65
@@ -39,7 +39,7 @@ module tb_pipeline_pkg;
     // mem_wb  : 1 + 32 + 32 + 1 + REG_IDX_W + 32 + 1 + 2 + 37 = 143
 
     localparam int EXCEPTION_META_W =
-        1 + EXC_CAUSE_W + XLEN;   // 37
+        1 + 1 + EXC_CAUSE_W + XLEN;   // valid + is_irq + cause + tval   // 37
 
     localparam int DECODED_W = $bits(decoded_instr_t);  // 127
 
@@ -72,9 +72,9 @@ module tb_pipeline_pkg;
 
         // Confirm computed values against constants in the package comment
         check_eq("if_id_payload_t width",   EXP_IF_ID_W,   65);
-        check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  257);
-        check_eq("ex_mem_payload_t width",  EXP_EX_MEM_W, 322);
-        check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 143);
+        check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  258);
+        check_eq("ex_mem_payload_t width",  EXP_EX_MEM_W, 323);
+        check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 144);
 
         // ================================================================
         // 2. IF/ID payload: field accessibility and bubble invariant

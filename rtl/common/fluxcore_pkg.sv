@@ -151,9 +151,16 @@ typedef enum logic [EXC_CAUSE_W-1:0] {
 //   - retirement is not signalled as successful
 typedef struct packed {
     logic       valid;   // 1 = exception is pending for this instruction
+    logic       is_irq;  // 1 = asynchronous interrupt (mcause[31]); 0 = synchronous
     exc_cause_e cause;   // RISC-V exception cause (maps directly to mcause[30:0])
     word_t      tval;    // trap value: faulting address or illegal instruction word
 } exception_meta_t;
+
+// Interrupt cause codes (valid when exception_meta_t.is_irq = 1).
+// Numerically these reuse the exc_cause_e encoding space; the is_irq bit
+// (mcause[31]) disambiguates, exactly as in the RISC-V privileged spec.
+localparam logic [EXC_CAUSE_W-1:0] IRQ_M_SOFT_CODE  = 4'd3;   // machine software interrupt
+localparam logic [EXC_CAUSE_W-1:0] IRQ_M_TIMER_CODE = 4'd7;   // machine timer interrupt
 
 // Retirement event record.
 // Emitted by the WB stage for every architecturally committed instruction.
