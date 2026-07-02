@@ -6,7 +6,8 @@
  * Assumptions:
  *   - IMEM holds .text starting at 0x0000_0000.
  *   - DMEM (separate Harvard bus) provides 8 KB of read/write data space.
- *   - Stack occupies the top of DMEM; grows downward from _stack_top.
+ *   - Stack grows downward from _stack_top (= 0x1FE0, just below the
+ *     32-byte fluxcore_report result block at the top of DMEM).
  *   - BSS symbols (_bss_start, _bss_end) are exported by the linker script
  *     as byte addresses in the DMEM address space starting from 0x0.
  */
@@ -19,8 +20,8 @@ _start:
     /* Disable all interrupts and clear mstatus */
     csrw    mstatus, zero
 
-    /* Set stack pointer to top of DMEM (8 KB = 0x2000) */
-    li      sp, 0x00002000
+    /* Set stack pointer just below the result block (linker symbol) */
+    la      sp, _stack_top
 
     /* Clear BSS in DMEM — byte addresses [_bss_start, _bss_end) */
     la      t0, _bss_start

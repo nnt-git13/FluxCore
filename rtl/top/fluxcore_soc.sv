@@ -54,11 +54,15 @@ module fluxcore_soc
     // Set USE_DCACHE=1 to insert a direct-mapped write-through data cache
     // between the CPU and bram_dmem. Default 0 = direct BRAM path (no stalls).
     parameter int    USE_DCACHE   = 0,
-    parameter int    DCACHE_SETS  = 64   // cache lines; must be a power of two
+    parameter int    DCACHE_SETS  = 64,  // cache lines; must be a power of two
+    // Simulation override for the UART divisor (0 = derive from CLK_HZ/BAUD)
+    parameter int    UART_BAUD_DIV = 0
 )
 (
-    input wire logic clk,
-    input wire logic rst   // external active-high reset button
+    input  wire logic clk,
+    input  wire logic rst,          // external active-high reset button
+    output logic      uart_tx_o,    // 8N1 TX @ 115200 (PMOD pin)
+    output logic [3:0] led_o        // board LEDs (GPIO register)
 );
 
     // -----------------------------------------------------------------------
@@ -69,6 +73,23 @@ module fluxcore_soc
     logic           dmem_ren, dmem_wen;
     logic [3:0]     dmem_wstrb;
     logic           dmem_stall;  // 0 = direct BRAM, driven by dcache when USE_DCACHE=1
+
+    // Bus → memory-path (dcache/BRAM) signals
+    word_t          mem_addr, mem_wdata, mem_rdata;
+    logic           mem_ren, mem_wen;
+    logic [3:0]     mem_wstrb;
+
+    // Bus → peripheral signals
+    logic           clint_sel, uart_sel, gpio_sel;
+    logic [15:0]    clint_addr;
+    logic [3:0]     periph_addr;
+    logic           periph_wen;
+    word_t          periph_wdata;
+    word_t          clint_rdata, uart_rdata, gpio_rdata;
+
+    // CLINT → core interrupt lines
+    logic           mtip, msip;
+    logic [63:0]    mtime;
     retirement_event_t retire;
     exception_meta_t   exc;
     word_t             exc_pc;
@@ -130,6 +151,9 @@ module fluxcore_soc
         .dmem_wdata_o   (dmem_wdata),
         .dmem_rdata_i   (dmem_rdata),
         .dmem_stall_i   (dmem_stall),
+        .mtip_i         (mtip),
+        .msip_i         (msip),
+        .mtime_i        (mtime),
         .retire_o       (retire),
         .exception_o    (exc),
         .exception_pc_o (exc_pc)
@@ -146,6 +170,77 @@ module fluxcore_soc
         .clk        (clk),
         .addr_next_i(imem_addr_next),
         .rdata_o    (imem_rdata)
+    );
+
+    // -----------------------------------------------------------------------
+    // SoC bus: decodes the CPU data port into {memory path, CLINT, UART, GPIO}
+    // -----------------------------------------------------------------------
+    soc_bus u_bus (
+        .clk           (clk),
+        .rst           (core_rst),
+        .cpu_addr_i    (dmem_addr),
+        .cpu_ren_i     (dmem_ren),
+        .cpu_wen_i     (dmem_wen),
+        .cpu_wstrb_i   (dmem_wstrb),
+        .cpu_wdata_i   (dmem_wdata),
+        .cpu_rdata_o   (dmem_rdata),
+        .mem_addr_o    (mem_addr),
+        .mem_ren_o     (mem_ren),
+        .mem_wen_o     (mem_wen),
+        .mem_wstrb_o   (mem_wstrb),
+        .mem_wdata_o   (mem_wdata),
+        .mem_rdata_i   (mem_rdata),
+        .clint_sel_o   (clint_sel),
+        .clint_addr_o  (clint_addr),
+        .clint_rdata_i (clint_rdata),
+        .uart_sel_o    (uart_sel),
+        .uart_rdata_i  (uart_rdata),
+        .gpio_sel_o    (gpio_sel),
+        .gpio_rdata_i  (gpio_rdata),
+        .periph_addr_o (periph_addr),
+        .periph_wen_o  (periph_wen),
+        .periph_wdata_o(periph_wdata)
+    );
+
+    clint u_clint (
+        .clk     (clk),
+        .rst     (core_rst),
+        .sel_i   (clint_sel),
+        .addr_i  (clint_addr),
+        .wen_i   (periph_wen),
+        .wdata_i (periph_wdata),
+        .rdata_o (clint_rdata),
+        .mtip_o  (mtip),
+        .msip_o  (msip),
+        .mtime_o (mtime)
+    );
+
+    uart_tx #(
+        .CLK_HZ  (50_000_000),
+        .BAUD    (115_200),
+        .BAUD_DIV(UART_BAUD_DIV)
+    ) u_uart (
+        .clk     (clk),
+        .rst     (core_rst),
+        .sel_i   (uart_sel),
+        .addr_i  (periph_addr),
+        .wen_i   (periph_wen),
+        .wdata_i (periph_wdata),
+        .rdata_o (uart_rdata),
+        .tx_o    (uart_tx_o)
+    );
+
+    gpio #(
+        .WIDTH(4)
+    ) u_gpio (
+        .clk     (clk),
+        .rst     (core_rst),
+        .sel_i   (gpio_sel),
+        .addr_i  (periph_addr),
+        .wen_i   (periph_wen),
+        .wdata_i (periph_wdata),
+        .rdata_o (gpio_rdata),
+        .gpio_o  (led_o)
     );
 
     // -----------------------------------------------------------------------
@@ -170,12 +265,12 @@ module fluxcore_soc
         ) u_dcache (
             .clk          (clk),
             .rst          (core_rst),
-            .cpu_addr_i   (dmem_addr),
-            .cpu_ren_i    (dmem_ren),
-            .cpu_wen_i    (dmem_wen),
-            .cpu_wstrb_i  (dmem_wstrb),
-            .cpu_wdata_i  (dmem_wdata),
-            .cpu_rdata_o  (dmem_rdata),
+            .cpu_addr_i   (mem_addr),
+            .cpu_ren_i    (mem_ren),
+            .cpu_wen_i    (mem_wen),
+            .cpu_wstrb_i  (mem_wstrb),
+            .cpu_wdata_i  (mem_wdata),
+            .cpu_rdata_o  (mem_rdata),
             .dmem_stall_o (dmem_stall),
             .mem_addr_o   (bram_addr_w),
             .mem_ren_o    (/* debug only */),
@@ -206,11 +301,11 @@ module fluxcore_soc
             .INIT_FILE(DMEM_INIT)
         ) u_dmem (
             .clk     (clk),
-            .addr_i  (dmem_addr),
-            .wen_i   (dmem_wen),
-            .wstrb_i (dmem_wstrb),
-            .wdata_i (dmem_wdata),
-            .rdata_o (dmem_rdata)
+            .addr_i  (mem_addr),
+            .wen_i   (mem_wen),
+            .wstrb_i (mem_wstrb),
+            .wdata_i (mem_wdata),
+            .rdata_o (mem_rdata)
         );
     end
 

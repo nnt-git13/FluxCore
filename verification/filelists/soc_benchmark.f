@@ -38,9 +38,14 @@ rtl/core/fluxcore_top.sv
 rtl/top/bram_imem.sv
 rtl/top/bram_dmem.sv
 rtl/cache/dcache.sv
+rtl/peripherals/uart_tx.sv
+rtl/peripherals/gpio.sv
+rtl/peripherals/clint.sv
+rtl/top/soc_bus.sv
 
 # SOC top
 rtl/top/fluxcore_soc.sv
 
 # Benchmark testbenches
 verification/integration/tb_soc_benchmarks.sv
+verification/integration/tb_soc_uart.sv

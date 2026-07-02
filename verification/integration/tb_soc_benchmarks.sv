@@ -31,6 +31,7 @@ module soc_bench_runner #(
     parameter string IMEM_INIT     = "",         // path relative to vsim CWD
     parameter int    EXP_CHECKSUM  = -1,         // -1 = skip correctness check
     parameter int    TIMEOUT_CYCS  = 200_000,    // simulation cycle budget
+    parameter int    USE_DCACHE    = 0,          // 1 = insert the write-through dcache
     // Must match software/runtime/fluxcore.h
     parameter logic [31:0] RESULT_BASE  = 32'h0000_1FE0,
     parameter logic [31:0] RESULT_MAGIC = 32'hF10C_CAFE,
@@ -49,7 +50,7 @@ module soc_bench_runner #(
     // -----------------------------------------------------------------------
     fluxcore_soc #(
         .IMEM_INIT (IMEM_INIT),
-        .USE_DCACHE(0)
+        .USE_DCACHE(USE_DCACHE)
     ) u_soc (
         .clk(clk),
         .rst(rst)
@@ -160,5 +161,104 @@ module tb_spmv_csr;
         .TIMEOUT_CYCS (50_000)
     ) runner ();
 endmodule : tb_spmv_csr
+
+module tb_csr_probe;
+    soc_bench_runner #(
+        .BENCH_NAME   ("csr_probe"),
+        .IMEM_INIT    ("build/sw/csr_probe/imem.hex"),
+        .EXP_CHECKSUM (499500),
+        .TIMEOUT_CYCS (50_000)
+    ) runner ();
+endmodule : tb_csr_probe
+
+// Timer-interrupt test: checksum = number of interrupts taken (3).
+// extra0 must additionally show mcause = 0x80000007 (machine timer);
+// the runner prints it for the transcript.
+module tb_timer_irq;
+    soc_bench_runner #(
+        .BENCH_NAME   ("timer_irq"),
+        .IMEM_INIT    ("build/sw/timer_irq/imem.hex"),
+        .EXP_CHECKSUM (3),
+        .TIMEOUT_CYCS (50_000)
+    ) runner ();
+
+    // Deep check: the last mcause captured by the handler
+    initial begin
+        wait (runner.done);
+        @(negedge runner.clk);   // before the runner's posedge-timed $finish
+        if (runner.result_shadow[4] !== 32'h8000_0007)
+            $fatal(1, "[timer_irq] FAIL mcause=0x%08h expected 0x80000007",
+                   runner.result_shadow[4]);
+        if (runner.result_shadow[5] !== 32'h0000_0008)
+            $fatal(1, "[timer_irq] FAIL mstatus.MIE not restored after mret");
+    end
+endmodule : tb_timer_irq
+
+// Fetch-misalignment test: checksum = trap count (1);
+// extra0 = mcause (0 = EXC_INSTR_ADDR_MISALIGNED), extra1 = mtval (0x102).
+module tb_misalign_trap;
+    soc_bench_runner #(
+        .BENCH_NAME   ("misalign_trap"),
+        .IMEM_INIT    ("build/sw/misalign_trap/imem.hex"),
+        .EXP_CHECKSUM (1),
+        .TIMEOUT_CYCS (50_000)
+    ) runner ();
+
+    initial begin
+        wait (runner.done);
+        @(negedge runner.clk);
+        if (runner.result_shadow[4] !== 32'h0000_0000)
+            $fatal(1, "[misalign_trap] FAIL mcause=0x%08h expected 0 (INSTR_ADDR_MISALIGNED)",
+                   runner.result_shadow[4]);
+        if (runner.result_shadow[5] !== 32'h0000_0102)
+            $fatal(1, "[misalign_trap] FAIL mtval=0x%08h expected 0x102",
+                   runner.result_shadow[5]);
+    end
+endmodule : tb_misalign_trap
+
+// XFlux-from-C benchmark: checksum must be nonzero (scalar/xflux agreement);
+// extra2 = xflux_clz(1) = 31 verified below.
+module tb_xflux_kernel;
+    soc_bench_runner #(
+        .BENCH_NAME   ("xflux_kernel"),
+        .IMEM_INIT    ("build/sw/xflux_kernel/imem.hex"),
+        .EXP_CHECKSUM (-1),
+        .TIMEOUT_CYCS (100_000)
+    ) runner ();
+
+    initial begin
+        wait (runner.done);
+        @(negedge runner.clk);
+        if (runner.result_shadow[3] == 32'h0)
+            $fatal(1, "[xflux_kernel] FAIL: scalar and XFlux checksums disagree");
+        if (runner.result_shadow[6] !== 32'd31)
+            $fatal(1, "[xflux_kernel] FAIL: xflux_clz(1)=%0d expected 31",
+                   runner.result_shadow[6]);
+        $display("[xflux_kernel] scalar cycles=%0d  xflux cycles=%0d",
+                 runner.result_shadow[4], runner.result_shadow[5]);
+    end
+endmodule : tb_xflux_kernel
+
+// Memory-hierarchy variants: the same benchmark programs through the
+// write-through direct-mapped D-cache (USE_DCACHE=1, miss = +1 stall cycle).
+module tb_hello_cpi_dcache;
+    soc_bench_runner #(
+        .BENCH_NAME   ("hello_cpi_dcache"),
+        .IMEM_INIT    ("build/sw/hello_cpi/imem.hex"),
+        .EXP_CHECKSUM (499500),
+        .TIMEOUT_CYCS (100_000),
+        .USE_DCACHE   (1)
+    ) runner ();
+endmodule : tb_hello_cpi_dcache
+
+module tb_spmv_csr_dcache;
+    soc_bench_runner #(
+        .BENCH_NAME   ("spmv_csr_dcache"),
+        .IMEM_INIT    ("build/sw/spmv_csr/imem.hex"),
+        .EXP_CHECKSUM (416),
+        .TIMEOUT_CYCS (100_000),
+        .USE_DCACHE   (1)
+    ) runner ();
+endmodule : tb_spmv_csr_dcache
 
 `default_nettype wire
