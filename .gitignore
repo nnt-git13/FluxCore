@@ -103,3 +103,17 @@ Thumbs.db
 # NOTE: reports/ subdirectories (simulation/, synthesis/, implementation/, benchmarks/)
 # are source-controlled for curated, reproducible summaries. Only raw build/
 # outputs are ignored above.
+
+# Simulator droppings when tools are run from the repo root by hand
+a.out
+xvlog.log
+xvlog.pb
+xelab.log
+xelab.pb
+xsim.log
+xsim.jou
+xsim.dir/
+*.wdb
+.Xil/
+vivado*.jou
+vivado*.log
