@@ -85,6 +85,7 @@ DEFAULT_TARGETS=(
     fencei-test
     amo-test
     btb-predict-test
+    umode-test
     dcache-e2e-test
     # Core integration
     integration-test

@@ -134,6 +134,7 @@ typedef enum logic [EXC_CAUSE_W-1:0] {
     EXC_LOAD_ACCESS_FAULT      = 4'd5,   // load memory access error
     EXC_STORE_ADDR_MISALIGNED  = 4'd6,   // store effective address misaligned
     EXC_STORE_ACCESS_FAULT     = 4'd7,   // store memory access error
+    EXC_ECALL_U                = 4'd8,   // ECALL from U-mode
     EXC_ECALL_M                = 4'd11   // ECALL from M-mode
 } exc_cause_e;
 

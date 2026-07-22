@@ -120,6 +120,10 @@ module csr_unit #(
     // fs_off_o = 1 when mstatus.FS == Off; wired to the decoder so it raises
     // illegal-instruction on FP instructions / fcsr accesses while FP is disabled.
     // frm_o exposes the dynamic rounding mode for the FPU (FRM_DYN resolution).
+    // Current privilege (2'b11 = M, 2'b00 = U) for the decoder's CSR and
+    // MRET legality gates.
+    output logic [1:0]   priv_o,
+
     output logic         fs_off_o,
     output logic [2:0]   frm_o
 );
@@ -129,6 +133,10 @@ module csr_unit #(
     // -----------------------------------------------------------------------
     logic  mstatus_mie_q;
     logic  mstatus_mpie_q;
+    // Privilege state (M+U): 2'b11 = machine, 2'b00 = user. MPP is now a
+    // real WARL field restricted to those two values.
+    logic [1:0] priv_q;
+    logic [1:0] mpp_q;
     logic  mtie_q;           // mie.MTIE (bit 7)
     logic  msie_q;           // mie.MSIE (bit 3)
     logic  inh_cy_q;         // mcountinhibit.CY (bit 0): freeze mcycle
@@ -147,14 +155,16 @@ module csr_unit #(
 
     assign mtvec_o = mtvec_q;
     assign mepc_o  = mepc_q;
+    assign priv_o   = priv_q;
     assign fs_off_o = (fs_q == 2'b00);
     assign frm_o    = frm_q;
 
     // mstatus composition helper: FS in [14:13]; SD (bit 31) = (FS==Dirty).
     // MPP hardwired 2'b11 in [12:11]; MPIE[7], MIE[3] are the only other R/W bits.
     function automatic word_t mstatus_compose(input logic mie, input logic mpie,
-                                              input logic [1:0] fs);
-        return {(fs == 2'b11), 16'b0, fs, 2'b11, 3'b0, mpie, 3'b0, mie, 3'b0};
+                                               input logic [1:0] fs,
+                                               input logic [1:0] mpp);
+        return {(fs == 2'b11), 16'b0, fs, mpp, 3'b0, mpie, 3'b0, mie, 3'b0};
     endfunction
 
     // -----------------------------------------------------------------------
@@ -164,7 +174,7 @@ module csr_unit #(
     // -----------------------------------------------------------------------
     always_comb begin
         case (raddr_i)
-            CSR_MSTATUS : rdata_o = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q);
+            CSR_MSTATUS : rdata_o = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q, mpp_q);
             CSR_MIE     : rdata_o = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
             CSR_MTVEC   : rdata_o = mtvec_q;
             CSR_CACHEOP : rdata_o = {31'b0, cacheflush_busy_i};
@@ -236,7 +246,7 @@ module csr_unit #(
     word_t fcsr_rmw_s;
 
     always_comb begin
-        mstatus_current_s = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q);
+        mstatus_current_s = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q, mpp_q);
         mstatus_rmw_s     = csr_rmw(mstatus_current_s, wdata_i, wop_i);
         mie_current_s     = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
         mie_rmw_s         = csr_rmw(mie_current_s,     wdata_i, wop_i);
@@ -313,6 +323,8 @@ module csr_unit #(
         if (rst) begin
             mstatus_mie_q  <= 1'b0;
             mstatus_mpie_q <= 1'b0;
+            priv_q         <= 2'b11;   // boot in machine mode
+            mpp_q          <= 2'b11;
             mtie_q         <= 1'b0;
             msie_q         <= 1'b0;
             inh_cy_q       <= 1'b0;
@@ -340,21 +352,34 @@ module csr_unit #(
 
         if (!rst && trap_i) begin
             mepc_q         <= {trap_epc_i[31:2], 2'b00};
-            mcause_q       <= trap_cause_i;
+            // ECALL's cause depends on the ORIGIN mode; the decoder tags it
+            // statically as ECALL_M, remapped here at commit.
+            mcause_q       <= (trap_cause_i[EXC_CAUSE_W-1:0] == EXC_ECALL_M
+                               && priv_q == 2'b00)
+                            ? {trap_cause_i[31:EXC_CAUSE_W],
+                               EXC_CAUSE_W'(EXC_ECALL_U)}
+                            : trap_cause_i;
             mtval_q        <= trap_tval_i;
             mstatus_mpie_q <= mstatus_mie_q;
             mstatus_mie_q  <= 1'b0;
+            mpp_q          <= priv_q;      // remember where we came from
+            priv_q         <= 2'b11;       // traps always target M
 
         end else if (!rst && mret_i) begin
             mstatus_mie_q  <= mstatus_mpie_q;
             mstatus_mpie_q <= 1'b1;
+            priv_q         <= mpp_q;       // return to the trapped-from mode
+            mpp_q          <= 2'b00;       // spec: xPP set to least-privileged
 
         end else if (!rst && wen_i) begin
             case (waddr_i)
                 CSR_MSTATUS: begin
-                    // WARL: only MIE[3] and MPIE[7] are writable.
+                    // WARL: MIE[3], MPIE[7], and MPP[12:11] (values 00/11
+                    // only; anything else squashes to 00 = user).
                     mstatus_mie_q  <= mstatus_rmw_s[3];
                     mstatus_mpie_q <= mstatus_rmw_s[7];
+                    mpp_q          <= (mstatus_rmw_s[12:11] == 2'b11)
+                                    ? 2'b11 : 2'b00;
                 end
                 CSR_MCOUNTINHIBIT: begin
                     // WARL: only CY[0] and IR[2] implemented
@@ -384,7 +409,10 @@ module csr_unit #(
     // -----------------------------------------------------------------------
     // Interrupt pending / cause (level-sensitive; priority MSI > MTI)
     // -----------------------------------------------------------------------
-    assign irq_pending_o = mstatus_mie_q
+    // M-mode interrupts are enabled when MIE is set OR when executing in a
+    // less-privileged mode (spec 3.1.6.1: interrupts for higher modes are
+    // always enabled regardless of that mode's global bit).
+    assign irq_pending_o = (mstatus_mie_q | (priv_q != 2'b11))
                          & ((mtip_i & mtie_q) | (msip_i & msie_q));
     assign irq_cause_o   = (msip_i & msie_q) ? IRQ_M_SOFT_CODE : IRQ_M_TIMER_CODE;
 

@@ -289,19 +289,19 @@ module tb_csr_unit;
         $display("[CSR] G09: mstatus CSRRW");
         // Set MIE only
         do_write(CSR_MSTATUS, 32'h0000_0008, CSR_WRITE);  // MIE=1
-        chk_read(CSR_MSTATUS, 32'h0000_1808, "G09 mstatus MIE=1 MPP=11");
+        chk_read(CSR_MSTATUS, 32'h0000_0008, "G09 mstatus MIE=1 (MPP now writable, cleared by this write)");
         // Set MPIE only
         do_write(CSR_MSTATUS, 32'h0000_0080, CSR_WRITE);  // MPIE=1, MIE=0
-        chk_read(CSR_MSTATUS, 32'h0000_1880, "G09 mstatus MPIE=1 MIE=0");
+        chk_read(CSR_MSTATUS, 32'h0000_0080, "G09 mstatus MPIE=1 MIE=0");
         // Write both MIE and MPIE
         do_write(CSR_MSTATUS, 32'h0000_0088, CSR_WRITE);  // both =1
-        chk_read(CSR_MSTATUS, 32'h0000_1888, "G09 mstatus MIE=MPIE=1");
+        chk_read(CSR_MSTATUS, 32'h0000_0088, "G09 mstatus MIE=MPIE=1");
         // Write 0 to clear both (MPP must stay 2'b11)
         do_write(CSR_MSTATUS, 32'h0000_0000, CSR_WRITE);
-        chk_read(CSR_MSTATUS, 32'h0000_1800, "G09 mstatus cleared MPP preserved");
+        chk_read(CSR_MSTATUS, 32'h0000_0000, "G09 mstatus cleared (MPP=U after zero write)");
         // Writing MPP bits (WARL: ignored) — MPP must stay 2'b11
         do_write(CSR_MSTATUS, 32'h0000_0000, CSR_WRITE);  // try clearing MPP via 0
-        chk_read(CSR_MSTATUS, 32'h0000_1800, "G09 MPP hardwired after write-zero");
+        chk_read(CSR_MSTATUS, 32'h0000_0000, "G09 MPP WARL: zero write leaves U");
 
         // -------------------------------------------------------------------
         // G10: mstatus CSRRS / CSRRC
@@ -309,13 +309,13 @@ module tb_csr_unit;
         $display("[CSR] G10: mstatus CSRRS/CSRRC");
         do_write(CSR_MSTATUS, 32'h0, CSR_WRITE);           // clear to baseline
         do_write(CSR_MSTATUS, 32'h0000_0008, CSR_SET);     // set MIE
-        chk_read(CSR_MSTATUS, 32'h0000_1808, "G10 mstatus SET MIE");
+        chk_read(CSR_MSTATUS, 32'h0000_0008, "G10 mstatus SET MIE");
         do_write(CSR_MSTATUS, 32'h0000_0080, CSR_SET);     // set MPIE
-        chk_read(CSR_MSTATUS, 32'h0000_1888, "G10 mstatus SET MPIE");
+        chk_read(CSR_MSTATUS, 32'h0000_0088, "G10 mstatus SET MPIE");
         do_write(CSR_MSTATUS, 32'h0000_0008, CSR_CLR);     // clear MIE
-        chk_read(CSR_MSTATUS, 32'h0000_1880, "G10 mstatus CLR MIE");
+        chk_read(CSR_MSTATUS, 32'h0000_0080, "G10 mstatus CLR MIE");
         do_write(CSR_MSTATUS, 32'h0000_0080, CSR_CLR);     // clear MPIE
-        chk_read(CSR_MSTATUS, 32'h0000_1800, "G10 mstatus CLR MPIE baseline");
+        chk_read(CSR_MSTATUS, 32'h0000_0000, "G10 mstatus CLR MPIE baseline");
 
         // -------------------------------------------------------------------
         // G11: Trap entry with MIE=0 — MPIE←0, MIE←0 (no change for MIE)
@@ -351,7 +351,7 @@ module tb_csr_unit;
         $display("[CSR] G13: MRET round-trip");
         // Current state: MPIE=1, MIE=0. MRET should set MIE←1, MPIE←1.
         do_mret();
-        chk_read(CSR_MSTATUS, 32'h0000_1888, "G13 after MRET: MIE=MPIE=1");
+        chk_read(CSR_MSTATUS, 32'h0000_0088, "G13 after MRET: MIE=MPIE=1, MPP->U");
 
         // Full round-trip: trap with MIE=1, then MRET
         // After above: MIE=1, MPIE=1
@@ -361,7 +361,7 @@ module tb_csr_unit;
         chk_read(CSR_MEPC,    32'h0003_0000, "G13 mepc second trap");
         // MRET restores: MIE←MPIE=1, MPIE←1
         do_mret();
-        chk_read(CSR_MSTATUS, 32'h0000_1888, "G13 mstatus after MRET: MIE=MPIE=1");
+        chk_read(CSR_MSTATUS, 32'h0000_0088, "G13 mstatus after MRET: MIE=MPIE=1, MPP->U");
         if (mepc_out !== 32'h0003_0000)
             $fatal(1, "[CSR] FAIL G13: mepc_o should still be 0x30000 after MRET");
 
@@ -551,7 +551,7 @@ module tb_csr_unit;
         #1;
         if (fs_off_out !== 1'b0)
             $fatal(1, "[CSR] FAIL G22: fs_off_o still set after enabling FS");
-        chk_read(CSR_MSTATUS, 32'h0000_3800, "G22 mstatus FS=Initial (bit13) + MPP");
+        chk_read(CSR_MSTATUS, 32'h0000_2000, "G22 mstatus FS=Initial (MPP=U)");
 
         // frm: write rounding mode, read back via frm/fcsr, check frm_o output.
         do_write(CSR_FRM, 32'h0000_0003, CSR_WRITE);   // RUP
@@ -596,7 +596,7 @@ module tb_csr_unit;
         @(posedge clk); #1;
         fs_dirty = 1'b0;
         // FS=Dirty(11)→0x6000, MPP(11)→0x1800, SD(bit31)→0x8000_0000.
-        chk_read(CSR_MSTATUS, 32'h8000_7800, "G22 mstatus FS=Dirty + SD");
+        chk_read(CSR_MSTATUS, 32'h8000_6000, "G22 mstatus FS=Dirty + SD (MPP=U)");
 
         $display("[CSR] PASS: all %0d test groups passed.", 22);
         $finish;

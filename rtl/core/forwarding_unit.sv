@@ -377,7 +377,27 @@ module forwarding_unit
 
     assign fcsr_fp_raw_s = id_reads_fcsr_s & fp_flags_inflight_s;
 
-    assign csr_raw_stall_o = csr_raw_ex_s | csr_raw_mem_s | fcsr_fp_raw_s;
+    // -----------------------------------------------------------------------
+    // MRET's implicit mepc read.
+    //
+    // MRET redirects from EX using csr_unit.mepc_o; a CSR write to mepc
+    // commits at the writer's MEM stage. An unseparated `csrw mepc; mret`
+    // would therefore redirect to the STALE mepc. Hold MRET in ID while a
+    // CSR write to mepc is still in EX or MEM — the same interlock the
+    // explicit-CSR-read path gets, extended to this implicit reader (trap
+    // handlers emitted by real toolchains do not insert the NOP the early
+    // hand-written tests carried).
+    // -----------------------------------------------------------------------
+    logic mret_mepc_raw_s;
+    assign mret_mepc_raw_s = id_valid_i
+                           & id_decoded_i.is_mret
+                           & ( (id_ex_i.valid  & id_ex_i.decoded.is_csr
+                                & (id_ex_i.decoded.csr_addr == CSR_MEPC))
+                             | (ex_mem_i.valid & ex_mem_i.decoded.is_csr
+                                & (ex_mem_i.decoded.csr_addr == CSR_MEPC)) );
+
+    assign csr_raw_stall_o = csr_raw_ex_s | csr_raw_mem_s | fcsr_fp_raw_s
+                           | mret_mepc_raw_s;
 
 endmodule : forwarding_unit
 

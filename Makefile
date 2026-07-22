@@ -884,6 +884,16 @@ btb-predict-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_btb_predict"
 
+umode-test:
+	@echo "--- U-mode privilege integration test ---"
+	@mkdir -p "build/questa/umode"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/umode" \
+	     "verification/filelists/umode.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_umode"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

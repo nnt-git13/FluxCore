@@ -139,7 +139,8 @@ module fluxcore_top
     ex_mem_payload_t ex_mem_tag_s; // EX output with interrupt tag applied
     word_t   csr_rdata_s;          // combinatorial read from csr_unit (→ execute_stage)
     word_t   mtvec_s, mepc_s;      // csr_unit outputs used for redirects
-    logic    fs_off_s;             // mstatus.FS==Off → decoder gates FP instructions
+    logic    fs_off_s;
+    logic [1:0] priv_s;            // current privilege (M=11, U=00)             // mstatus.FS==Off → decoder gates FP instructions
     logic [2:0] frm_s;             // dynamic rounding mode (fcsr.frm) → FPU (Phase C)
     logic    csr_wen_s;            // CSR write enable from mem_stage
     logic [11:0] csr_waddr_s;      // CSR write address from mem_stage
@@ -307,6 +308,7 @@ module fluxcore_top
     decoder u_decoder (
         .instr_i  (if_id_q.instr),
         .fs_off_i (fs_off_s),
+        .priv_is_m_i(priv_s == 2'b11),
         .decoded_o(decoded_s)
     );
 
@@ -570,6 +572,7 @@ module fluxcore_top
         // fflags accrual / fs-dirty inputs are tied off until the FPU lands
         // (Phase C); they default to 0 and keep FS/fflags inert for now.
         .fs_off_o     (fs_off_s),
+        .priv_o       (priv_s),
         .frm_o        (frm_s)
     );
 

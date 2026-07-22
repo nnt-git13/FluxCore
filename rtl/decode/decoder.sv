@@ -45,6 +45,13 @@ module decoder
     // Wired from csr_unit.fs_off_o in fluxcore_top; defaults to 0 (FP enabled)
     // for standalone instantiations that predate the FP milestone.
     input  wire logic           fs_off_i = 1'b0,
+
+    // Current-privilege gate (from csr_unit.priv_o; default = machine so
+    // every existing instantiation is unchanged). In U-mode: MRET and any
+    // CSR outside the user-accessible space are illegal instructions. With
+    // mcounteren WARL-0, that includes ALL 0xCxx user counters — U-mode
+    // rdcycle/rdinstret trap to M (spec-legal; M can emulate).
+    input  wire logic           priv_is_m_i = 1'b1,
     output decoded_instr_t decoded_o
 );
 
@@ -499,9 +506,14 @@ module decoder
                                     decoded_o.exception.cause = EXC_BREAKPOINT;
                                 end
                                 FUNCT12_MRET: begin
+                                    if (!priv_is_m_i) begin
+                                        // MRET from U-mode: illegal.
+                                        decoded_o = make_illegal(instr_i);
+                                    end else begin
                                     decoded_o.legal     = 1'b1;
                                     decoded_o.op_class  = OPCLASS_SYSTEM;
                                     decoded_o.is_mret   = 1'b1;
+                                    end
                                 end
                                 // WFI executes as a NOP (RISC-V priv spec
                                 // permits this): no clock gating exists, and
@@ -527,7 +539,12 @@ module decoder
                     3'b011: begin // CSRRC
                         if (!csr_addr_valid(instr_i[31:20])
                             || (csr_addr_readonly(instr_i[31:20])
-                                && (funct3_s[1:0] == 2'b01 || rs1_s != '0))) begin
+                                && (funct3_s[1:0] == 2'b01 || rs1_s != '0))
+                            // U-mode: only user-space CSRs (addr[9:8]=00)
+                            // and, with mcounteren=0, not the 0xCxx counters.
+                            || (!priv_is_m_i
+                                && (instr_i[29:28] != 2'b00
+                                    || instr_i[31:28] == 4'hC))) begin
                             decoded_o = make_illegal(instr_i);
                         end else begin
                             decoded_o.legal     = 1'b1;
@@ -547,7 +564,10 @@ module decoder
                     3'b111: begin // CSRRCI
                         if (!csr_addr_valid(instr_i[31:20])
                             || (csr_addr_readonly(instr_i[31:20])
-                                && (funct3_s[1:0] == 2'b01 || instr_i[19:15] != '0))) begin
+                                && (funct3_s[1:0] == 2'b01 || instr_i[19:15] != '0))
+                            || (!priv_is_m_i
+                                && (instr_i[29:28] != 2'b00
+                                    || instr_i[31:28] == 4'hC))) begin
                             decoded_o = make_illegal(instr_i);
                         end else begin
                             decoded_o.legal     = 1'b1;
