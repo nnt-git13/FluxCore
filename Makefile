@@ -744,6 +744,16 @@ dcache-sim:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache"
 
+dcache-multiword-test:
+	@echo "--- dcache multiword unit test ---"
+	@mkdir -p "build/questa/dcache_multiword"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_multiword" \
+	     "verification/filelists/dcache_multiword.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_multiword"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

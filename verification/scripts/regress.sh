@@ -71,6 +71,7 @@ DEFAULT_TARGETS=(
     bram-imem-test
     bram-dmem-test
     dcache-sim
+    dcache-multiword-test
     dcache-e2e-test
     # Core integration
     integration-test
