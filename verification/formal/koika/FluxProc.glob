@@ -1,0 +1,398 @@
+DIGEST 4fb90278fee8750bf89efa5bb7f7762a
+FFlux.FluxProc
+R1727:1733 Koika.Lang.Prelude <> <> lib
+R1761:1770 Flux.FluxCommon <> <> lib
+R1798:1809 Flux.Spec.FluxAlu <> <> lib
+R1837:1851 Flux.Spec.FluxBranch <> <> lib
+ind 1898:1903 <> vmet_t
+constr 1912:1916 <> getPc
+constr 1922:1927 <> getReg
+constr 1933:1938 <> getMem
+ind 1951:1956 <> amet_t
+constr 1965:1968 <> step
+def 1984:1989 <> CtrlSz
+def 2010:2018 <> getPc_sig
+R2022:2032 Koika.Lang.Syntax Methods sig rec
+R2042:2050 Koika.Lang.Syntax Methods a proj
+R2042:2050 Koika.Lang.Syntax Methods a proj
+R2042:2050 Koika.Lang.Syntax Methods a proj
+R2059:2067 Koika.Lang.Syntax Methods r proj
+R2059:2067 Koika.Lang.Syntax Methods r proj
+R2055:2056 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+def 2090:2099 <> getReg_sig
+R2103:2113 Koika.Lang.Syntax Methods sig rec
+R2123:2131 Koika.Lang.Syntax Methods a proj
+R2123:2131 Koika.Lang.Syntax Methods a proj
+R2123:2131 Koika.Lang.Syntax Methods a proj
+R2141:2149 Koika.Lang.Syntax Methods r proj
+R2141:2149 Koika.Lang.Syntax Methods r proj
+R2136:2136 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2138:2138 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+def 2172:2181 <> getMem_sig
+R2185:2195 Koika.Lang.Syntax Methods sig rec
+R2205:2213 Koika.Lang.Syntax Methods a proj
+R2205:2213 Koika.Lang.Syntax Methods a proj
+R2205:2213 Koika.Lang.Syntax Methods a proj
+R2224:2232 Koika.Lang.Syntax Methods r proj
+R2224:2232 Koika.Lang.Syntax Methods r proj
+R2218:2218 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2221:2221 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+def 2255:2262 <> step_sig
+R2266:2276 Koika.Lang.Syntax Methods sig rec
+R2286:2294 Koika.Lang.Syntax Methods a proj
+R2286:2294 Koika.Lang.Syntax Methods a proj
+R2286:2294 Koika.Lang.Syntax Methods a proj
+R2309:2317 Koika.Lang.Syntax Methods r proj
+R2309:2317 Koika.Lang.Syntax Methods r proj
+R2299:2299 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2306:2306 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2300:2305 Flux.FluxProc <> CtrlSz def
+inst 2348:2352 <> VMets
+R2356:2364 Koika.Lang.Syntax Methods t class
+R2366:2371 Flux.FluxProc <> vmet_t variant
+R2381:2396 Koika.Lang.Syntax Methods met_list meth
+R2381:2396 Koika.Lang.Syntax Methods met_list meth
+R2381:2396 Koika.Lang.Syntax Methods met_list meth
+R2428:2442 Koika.Lang.Syntax Methods get_sig meth
+R2428:2442 Koika.Lang.Syntax Methods get_sig meth
+R2560:2575 Koika.Lang.Syntax Methods get_name meth
+R2560:2575 Koika.Lang.Syntax Methods get_name meth
+R2401:2401 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R2407:2408 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R2415:2416 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R2423:2423 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R2402:2406 Flux.FluxProc <> getPc constr
+R2409:2414 Flux.FluxProc <> getReg constr
+R2417:2422 Flux.FluxProc <> getMem constr
+binder 2444:2446 <> met:5
+R2461:2463 Flux.FluxProc <> met:5 var
+R2476:2480 Flux.FluxProc <> getPc constr
+R2485:2493 Flux.FluxProc <> getPc_sig def
+R2501:2506 Flux.FluxProc <> getReg constr
+R2511:2520 Flux.FluxProc <> getReg_sig def
+R2528:2533 Flux.FluxProc <> getMem constr
+R2538:2547 Flux.FluxProc <> getMem_sig def
+binder 2577:2579 <> met:7
+R2594:2596 Flux.FluxProc <> met:7 var
+R2609:2613 Flux.FluxProc <> getPc constr
+R2632:2637 Flux.FluxProc <> getReg constr
+R2657:2662 Flux.FluxProc <> getMem constr
+inst 2709:2713 <> AMets
+R2717:2725 Koika.Lang.Syntax Methods t class
+R2727:2732 Flux.FluxProc <> amet_t variant
+R2742:2757 Koika.Lang.Syntax Methods met_list meth
+R2742:2757 Koika.Lang.Syntax Methods met_list meth
+R2742:2757 Koika.Lang.Syntax Methods met_list meth
+R2772:2786 Koika.Lang.Syntax Methods get_sig meth
+R2772:2786 Koika.Lang.Syntax Methods get_sig meth
+R2848:2863 Koika.Lang.Syntax Methods get_name meth
+R2848:2863 Koika.Lang.Syntax Methods get_name meth
+R2762:2762 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2767:2767 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2763:2766 Flux.FluxProc <> step constr
+binder 2788:2790 <> met:9
+R2805:2807 Flux.FluxProc <> met:9 var
+R2820:2823 Flux.FluxProc <> step constr
+R2828:2835 Flux.FluxProc <> step_sig def
+binder 2865:2867 <> met:11
+R2882:2884 Flux.FluxProc <> met:11 var
+R2897:2900 Flux.FluxProc <> step constr
+def 2937:2939 <> ifc
+R2943:2959 Koika.Lang.Syntax Modules interface rec
+R2964:2982 Koika.Lang.Syntax Modules mkInterface constr
+R2988:2992 Flux.FluxProc <> VMets inst
+R2994:2998 Flux.FluxProc <> AMets inst
+def 3094:3103 <> ctrl_class
+R3110:3113 Koika.Common.Vect <> bits abbrev
+R3115:3120 Flux.FluxProc <> CtrlSz def
+binder 3106:3106 <> c:13
+R3125:3128 Koika.Common.Vect <> bits abbrev
+R3135:3144 Koika.Common.Vect Bits slice def
+R3152:3152 Flux.FluxProc <> c:13 var
+def 3166:3172 <> ctrl_op
+R3182:3185 Koika.Common.Vect <> bits abbrev
+R3187:3192 Flux.FluxProc <> CtrlSz def
+binder 3178:3178 <> c:14
+R3197:3200 Koika.Common.Vect <> bits abbrev
+R3207:3216 Koika.Common.Vect Bits slice def
+R3224:3224 Flux.FluxProc <> c:14 var
+def 3238:3244 <> ctrl_rd
+R3254:3257 Koika.Common.Vect <> bits abbrev
+R3259:3264 Flux.FluxProc <> CtrlSz def
+binder 3250:3250 <> c:15
+R3269:3274 Flux.FluxCommon <> RegIdx abbrev
+R3279:3288 Koika.Common.Vect Bits slice def
+R3296:3296 Flux.FluxProc <> c:15 var
+def 3310:3317 <> ctrl_rs1
+R3326:3329 Koika.Common.Vect <> bits abbrev
+R3331:3336 Flux.FluxProc <> CtrlSz def
+binder 3322:3322 <> c:16
+R3341:3346 Flux.FluxCommon <> RegIdx abbrev
+R3351:3360 Koika.Common.Vect Bits slice def
+R3368:3368 Flux.FluxProc <> c:16 var
+def 3382:3389 <> ctrl_rs2
+R3398:3401 Koika.Common.Vect <> bits abbrev
+R3403:3408 Flux.FluxProc <> CtrlSz def
+binder 3394:3394 <> c:17
+R3413:3418 Flux.FluxCommon <> RegIdx abbrev
+R3423:3432 Koika.Common.Vect Bits slice def
+R3440:3440 Flux.FluxProc <> c:17 var
+def 3454:3461 <> ctrl_imm
+R3470:3473 Koika.Common.Vect <> bits abbrev
+R3475:3480 Flux.FluxProc <> CtrlSz def
+binder 3466:3466 <> c:18
+R3485:3488 Flux.FluxCommon <> Word abbrev
+R3495:3504 Koika.Common.Vect Bits slice def
+R3512:3512 Flux.FluxProc <> c:18 var
+def 3598:3602 <> plus4
+R3609:3612 Flux.FluxCommon <> Word abbrev
+binder 3605:3605 <> p:19
+R3617:3620 Flux.FluxCommon <> Word abbrev
+R3625:3633 Koika.Common.Vect Bits plus def
+R3638:3648 Koika.Common.Vect Bits of_nat def
+R3635:3635 Flux.FluxProc <> p:19 var
+def 3720:3727 <> maskJalr
+R3731:3734 Flux.FluxCommon <> Word abbrev
+R3739:3747 Koika.Common.Vect Bits of_N def
+def 3824:3832 <> maskAlign
+R3836:3839 Flux.FluxCommon <> Word abbrev
+R3844:3852 Koika.Common.Vect Bits of_N def
+def 3882:3887 <> align4
+R3894:3897 Flux.FluxCommon <> Word abbrev
+binder 3890:3890 <> a:20
+R3902:3905 Flux.FluxCommon <> Word abbrev
+R3910:3917 Koika.Common.Vect Bits and def
+R3921:3929 Flux.FluxProc <> maskAlign def
+R3919:3919 Flux.FluxProc <> a:20 var
+def 4164:4168 <> sext8
+R4176:4179 Koika.Common.Vect <> bits abbrev
+binder 4172:4172 <> b:21
+R4187:4190 Flux.FluxCommon <> Word abbrev
+R4195:4209 Koika.Common.Vect Bits extend_end abbrev
+R4217:4224 Koika.Common.Vect Bits msb abbrev
+R4226:4226 Flux.FluxProc <> b:21 var
+R4211:4211 Flux.FluxProc <> b:21 var
+def 4241:4245 <> zext8
+R4253:4256 Koika.Common.Vect <> bits abbrev
+binder 4249:4249 <> b:22
+R4264:4267 Flux.FluxCommon <> Word abbrev
+R4272:4286 Koika.Common.Vect Bits extend_end abbrev
+R4293:4297 Corelib.Init.Datatypes <> false constr
+R4288:4288 Flux.FluxProc <> b:22 var
+def 4311:4316 <> sext16
+R4323:4326 Koika.Common.Vect <> bits abbrev
+binder 4319:4319 <> h:23
+R4334:4337 Flux.FluxCommon <> Word abbrev
+R4342:4356 Koika.Common.Vect Bits extend_end abbrev
+R4364:4371 Koika.Common.Vect Bits msb abbrev
+R4373:4373 Flux.FluxProc <> h:23 var
+R4358:4358 Flux.FluxProc <> h:23 var
+def 4388:4393 <> zext16
+R4400:4403 Koika.Common.Vect <> bits abbrev
+binder 4396:4396 <> h:24
+R4411:4414 Flux.FluxCommon <> Word abbrev
+R4419:4433 Koika.Common.Vect Bits extend_end abbrev
+R4440:4444 Corelib.Init.Datatypes <> false constr
+R4435:4435 Flux.FluxProc <> h:24 var
+def 4459:4467 <> load_byte
+R4474:4477 Flux.FluxCommon <> Word abbrev
+binder 4470:4470 <> w:25
+R4488:4491 Koika.Common.Vect <> bits abbrev
+binder 4481:4484 <> lane:26
+R4498:4501 Koika.Common.Vect <> bits abbrev
+R4516:4526 Koika.Common.Vect Bits to_nat def
+R4528:4531 Flux.FluxProc <> lane:26 var
+R4547:4556 Koika.Common.Vect Bits slice def
+R4563:4563 Flux.FluxProc <> w:25 var
+R4574:4583 Koika.Common.Vect Bits slice def
+R4590:4590 Flux.FluxProc <> w:25 var
+R4601:4610 Koika.Common.Vect Bits slice def
+R4617:4617 Flux.FluxProc <> w:25 var
+R4628:4637 Koika.Common.Vect Bits slice def
+R4644:4644 Flux.FluxProc <> w:25 var
+def 4665:4673 <> load_half
+R4680:4683 Flux.FluxCommon <> Word abbrev
+binder 4676:4676 <> w:27
+R4694:4697 Koika.Common.Vect <> bits abbrev
+binder 4687:4690 <> lane:28
+R4704:4707 Koika.Common.Vect <> bits abbrev
+R4723:4733 Koika.Common.Vect Bits to_nat def
+R4735:4738 Flux.FluxProc <> lane:28 var
+R4754:4763 Koika.Common.Vect Bits slice def
+R4771:4771 Flux.FluxProc <> w:27 var
+R4782:4791 Koika.Common.Vect Bits slice def
+R4799:4799 Flux.FluxProc <> w:27 var
+def 4820:4829 <> store_byte
+R4836:4839 Flux.FluxCommon <> Word abbrev
+binder 4832:4832 <> w:29
+R4850:4853 Koika.Common.Vect <> bits abbrev
+binder 4843:4846 <> lane:30
+R4863:4866 Koika.Common.Vect <> bits abbrev
+binder 4859:4859 <> v:31
+R4873:4876 Flux.FluxCommon <> Word abbrev
+R4889:4899 Koika.Common.Vect Bits to_nat def
+R4901:4904 Flux.FluxProc <> lane:30 var
+R4920:4935 Koika.Common.Vect Bits slice_subst def
+R4944:4944 Flux.FluxProc <> v:31 var
+R4942:4942 Flux.FluxProc <> w:29 var
+R4955:4970 Koika.Common.Vect Bits slice_subst def
+R4979:4979 Flux.FluxProc <> v:31 var
+R4977:4977 Flux.FluxProc <> w:29 var
+R4990:5005 Koika.Common.Vect Bits slice_subst def
+R5014:5014 Flux.FluxProc <> v:31 var
+R5012:5012 Flux.FluxProc <> w:29 var
+R5025:5040 Koika.Common.Vect Bits slice_subst def
+R5049:5049 Flux.FluxProc <> v:31 var
+R5047:5047 Flux.FluxProc <> w:29 var
+def 5070:5079 <> store_half
+R5086:5089 Flux.FluxCommon <> Word abbrev
+binder 5082:5082 <> w:32
+R5100:5103 Koika.Common.Vect <> bits abbrev
+binder 5093:5096 <> lane:33
+R5113:5116 Koika.Common.Vect <> bits abbrev
+binder 5109:5109 <> v:34
+R5124:5127 Flux.FluxCommon <> Word abbrev
+R5140:5150 Koika.Common.Vect Bits to_nat def
+R5152:5155 Flux.FluxProc <> lane:33 var
+R5171:5186 Koika.Common.Vect Bits slice_subst def
+R5196:5196 Flux.FluxProc <> v:34 var
+R5194:5194 Flux.FluxProc <> w:32 var
+R5207:5222 Koika.Common.Vect Bits slice_subst def
+R5232:5232 Flux.FluxProc <> v:34 var
+R5230:5230 Flux.FluxProc <> w:32 var
+ind 5287:5292 <> iclass
+constr 5301:5306 <> CL_ALU
+constr 5310:5316 <> CL_ALUI
+constr 5322:5326 <> CL_BR
+constr 5332:5337 <> CL_JAL
+constr 5341:5347 <> CL_JALR
+constr 5353:5358 <> CL_LUI
+constr 5362:5369 <> CL_AUIPC
+constr 5375:5379 <> CL_LW
+constr 5384:5388 <> CL_SW
+constr 5394:5399 <> CL_MUL
+constr 5405:5409 <> CL_LB
+constr 5414:5419 <> CL_LBU
+constr 5425:5429 <> CL_LH
+constr 5434:5439 <> CL_LHU
+constr 5445:5449 <> CL_SB
+constr 5454:5458 <> CL_SH
+def 5514:5525 <> decode_class
+R5532:5535 Koika.Common.Vect <> bits abbrev
+binder 5528:5528 <> b:37
+R5542:5547 Corelib.Init.Datatypes <> option ind
+R5549:5554 Flux.FluxProc <> iclass variant
+R5567:5577 Koika.Common.Vect Bits to_nat def
+R5579:5579 Flux.FluxProc <> b:37 var
+R5595:5598 Corelib.Init.Datatypes <> Some constr
+R5600:5605 Flux.FluxProc <> CL_ALU constr
+R5616:5619 Corelib.Init.Datatypes <> Some constr
+R5621:5627 Flux.FluxProc <> CL_ALUI constr
+R5638:5641 Corelib.Init.Datatypes <> Some constr
+R5643:5647 Flux.FluxProc <> CL_BR constr
+R5658:5661 Corelib.Init.Datatypes <> Some constr
+R5663:5668 Flux.FluxProc <> CL_JAL constr
+R5679:5682 Corelib.Init.Datatypes <> Some constr
+R5684:5690 Flux.FluxProc <> CL_JALR constr
+R5701:5704 Corelib.Init.Datatypes <> Some constr
+R5706:5711 Flux.FluxProc <> CL_LUI constr
+R5722:5725 Corelib.Init.Datatypes <> Some constr
+R5727:5734 Flux.FluxProc <> CL_AUIPC constr
+R5745:5748 Corelib.Init.Datatypes <> Some constr
+R5750:5754 Flux.FluxProc <> CL_LW constr
+R5765:5768 Corelib.Init.Datatypes <> Some constr
+R5770:5774 Flux.FluxProc <> CL_SW constr
+R5785:5788 Corelib.Init.Datatypes <> Some constr
+R5790:5795 Flux.FluxProc <> CL_MUL constr
+R5807:5810 Corelib.Init.Datatypes <> Some constr
+R5812:5816 Flux.FluxProc <> CL_LB constr
+R5828:5831 Corelib.Init.Datatypes <> Some constr
+R5833:5838 Flux.FluxProc <> CL_LBU constr
+R5850:5853 Corelib.Init.Datatypes <> Some constr
+R5855:5859 Flux.FluxProc <> CL_LH constr
+R5871:5874 Corelib.Init.Datatypes <> Some constr
+R5876:5881 Flux.FluxProc <> CL_LHU constr
+R5893:5896 Corelib.Init.Datatypes <> Some constr
+R5898:5902 Flux.FluxProc <> CL_SB constr
+R5914:5917 Corelib.Init.Datatypes <> Some constr
+R5919:5923 Flux.FluxProc <> CL_SH constr
+R5934:5937 Corelib.Init.Datatypes <> None constr
+def 6101:6109 <> decode_op
+R6116:6119 Koika.Common.Vect <> bits abbrev
+binder 6112:6112 <> b:38
+R6126:6131 Corelib.Init.Datatypes <> option ind
+R6133:6138 Flux.Spec.FluxAlu <> alu_op ind
+R6151:6161 Koika.Common.Vect Bits to_nat def
+R6163:6163 Flux.FluxProc <> b:38 var
+R6180:6183 Corelib.Init.Datatypes <> Some constr
+R6185:6191 Flux.Spec.FluxAlu <> ALU_AND constr
+R6203:6206 Corelib.Init.Datatypes <> Some constr
+R6208:6213 Flux.Spec.FluxAlu <> ALU_OR constr
+R6225:6228 Corelib.Init.Datatypes <> Some constr
+R6230:6236 Flux.Spec.FluxAlu <> ALU_XOR constr
+R6248:6251 Corelib.Init.Datatypes <> Some constr
+R6253:6259 Flux.Spec.FluxAlu <> ALU_ADD constr
+R6271:6274 Corelib.Init.Datatypes <> Some constr
+R6276:6282 Flux.Spec.FluxAlu <> ALU_SUB constr
+R6294:6297 Corelib.Init.Datatypes <> Some constr
+R6299:6308 Flux.Spec.FluxAlu <> ALU_COPY_B constr
+R6320:6323 Corelib.Init.Datatypes <> Some constr
+R6325:6331 Flux.Spec.FluxAlu <> ALU_SLL constr
+R6343:6346 Corelib.Init.Datatypes <> Some constr
+R6348:6354 Flux.Spec.FluxAlu <> ALU_SRL constr
+R6366:6369 Corelib.Init.Datatypes <> Some constr
+R6371:6377 Flux.Spec.FluxAlu <> ALU_SRA constr
+R6389:6392 Corelib.Init.Datatypes <> Some constr
+R6394:6400 Flux.Spec.FluxAlu <> ALU_SLT constr
+R6412:6415 Corelib.Init.Datatypes <> Some constr
+R6417:6424 Flux.Spec.FluxAlu <> ALU_SLTU constr
+R6436:6439 Corelib.Init.Datatypes <> Some constr
+R6441:6448 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R6460:6463 Corelib.Init.Datatypes <> Some constr
+R6465:6472 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R6484:6487 Corelib.Init.Datatypes <> Some constr
+R6489:6497 Flux.Spec.FluxAlu <> ALU_XLIDX constr
+R6509:6512 Corelib.Init.Datatypes <> Some constr
+R6514:6521 Flux.Spec.FluxAlu <> ALU_XABS constr
+R6533:6536 Corelib.Init.Datatypes <> None constr
+def 6605:6613 <> decode_br
+R6620:6623 Koika.Common.Vect <> bits abbrev
+binder 6616:6616 <> b:39
+R6630:6635 Corelib.Init.Datatypes <> option ind
+R6637:6645 Flux.Spec.FluxBranch <> branch_op variant
+R6658:6668 Koika.Common.Vect Bits to_nat def
+R6670:6670 Flux.FluxProc <> b:39 var
+R6686:6689 Corelib.Init.Datatypes <> Some constr
+R6691:6695 Flux.Spec.FluxBranch <> BR_EQ constr
+R6706:6709 Corelib.Init.Datatypes <> Some constr
+R6711:6715 Flux.Spec.FluxBranch <> BR_NE constr
+R6726:6729 Corelib.Init.Datatypes <> Some constr
+R6731:6735 Flux.Spec.FluxBranch <> BR_LT constr
+R6746:6749 Corelib.Init.Datatypes <> Some constr
+R6751:6755 Flux.Spec.FluxBranch <> BR_GE constr
+R6766:6769 Corelib.Init.Datatypes <> Some constr
+R6771:6776 Flux.Spec.FluxBranch <> BR_LTU constr
+R6787:6790 Corelib.Init.Datatypes <> Some constr
+R6792:6797 Flux.Spec.FluxBranch <> BR_GEU constr
+R6808:6811 Corelib.Init.Datatypes <> None constr
+ind 6860:6865 <> mul_op
+constr 6874:6877 <> M_LO
+constr 6898:6901 <> M_HI
+constr 6922:6927 <> M_HISU
+constr 6946:6950 <> M_HIU
+def 6980:6989 <> decode_mop
+R6996:6999 Koika.Common.Vect <> bits abbrev
+binder 6992:6992 <> b:42
+R7006:7011 Corelib.Init.Datatypes <> option ind
+R7013:7018 Flux.FluxProc <> mul_op variant
+R7031:7041 Koika.Common.Vect Bits to_nat def
+R7043:7043 Flux.FluxProc <> b:42 var
+R7059:7062 Corelib.Init.Datatypes <> Some constr
+R7064:7067 Flux.FluxProc <> M_LO constr
+R7078:7081 Corelib.Init.Datatypes <> Some constr
+R7083:7086 Flux.FluxProc <> M_HI constr
+R7097:7100 Corelib.Init.Datatypes <> Some constr
+R7102:7107 Flux.FluxProc <> M_HISU constr
+R7118:7121 Corelib.Init.Datatypes <> Some constr
+R7123:7127 Flux.FluxProc <> M_HIU constr
+R7138:7141 Corelib.Init.Datatypes <> None constr

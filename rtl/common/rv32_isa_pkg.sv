@@ -87,11 +87,21 @@ localparam opcode_t OPCODE_MISC_MEM= 7'b000_1111;  // FENCE (NOP in initial impl
 // XFlux custom-0 opcode (RISC-V CUSTOM_0 space): indexed load and data ops.
 localparam opcode_t OPCODE_CUSTOM_0 = 7'b000_1011;  // XLIDX/XABS/XMIN/XMAX/XCLZ
 
+// RV32F single-precision floating-point opcodes.
+// FLW/FSW share the LOAD/STORE address computation but target the FP register
+// file. OP-FP covers all register-register FP arithmetic and the FP↔int
+// conversion / move / compare / classify group (funct7 = FP_FUNCT7_* below).
+// The four fused-multiply-add opcodes each carry an fs3 operand in instr[31:27].
+localparam opcode_t OPCODE_LOAD_FP  = 7'b000_0111;  // FLW
+localparam opcode_t OPCODE_STORE_FP = 7'b010_0111;  // FSW
+localparam opcode_t OPCODE_OP_FP    = 7'b101_0011;  // FADD.S FSUB.S FMUL.S FDIV.S FSQRT.S FSGNJ FMIN FEQ FCVT FMV FCLASS …
+localparam opcode_t OPCODE_MADD     = 7'b100_0011;  // FMADD.S
+localparam opcode_t OPCODE_MSUB     = 7'b100_0111;  // FMSUB.S
+localparam opcode_t OPCODE_NMSUB    = 7'b100_1011;  // FNMSUB.S
+localparam opcode_t OPCODE_NMADD    = 7'b100_1111;  // FNMADD.S
+
 // Reserved for future use:
-// OPCODE_LOAD_FP = 7'b000_0111  (FP loads — future)
-// OPCODE_STORE_FP= 7'b010_0111  (FP stores — future)
-// OPCODE_OP_FP   = 7'b101_0011  (FP arithmetic — future)
-// OPCODE_MADD    = 7'b100_0011  (FP fused — future)
+// OPCODE_OP_FP fmt=01 (D extension, double precision) — future.
 
 // ---------------------------------------------------------------------------
 // 4. funct3 constants
@@ -184,6 +194,72 @@ localparam logic [11:0] FUNCT12_MRET   = 12'b0011_0000_0010;
 localparam logic [11:0] FUNCT12_WFI    = 12'b0001_0000_0101;
 
 // ---------------------------------------------------------------------------
+// 5b. RV32F floating-point encoding fields
+// ---------------------------------------------------------------------------
+// OP-FP (opcode 1010011) selects the operation from funct7 = instr[31:25].
+// For single precision the low two bits (fmt) are 00; the top five bits pick
+// the operation family. FCVT/FMV/FCLASS/FSGNJ/FMIN/FCMP additionally use rs2
+// (instr[24:20]) as a sub-selector and funct3 (instr[14:12]) for the mode.
+//
+// Naming: FP7_* are the 7-bit funct7 values; FP2_* are the rs2 sub-selectors
+// used by the single-operand / conversion instructions.
+
+// funct7 values (single precision, fmt=00)
+localparam funct7_t FP7_FADD    = 7'b000_0000;  // FADD.S
+localparam funct7_t FP7_FSUB    = 7'b000_0100;  // FSUB.S
+localparam funct7_t FP7_FMUL    = 7'b000_1000;  // FMUL.S
+localparam funct7_t FP7_FDIV    = 7'b000_1100;  // FDIV.S
+localparam funct7_t FP7_FSQRT   = 7'b010_1100;  // FSQRT.S   (rs2 = 00000)
+localparam funct7_t FP7_FSGNJ   = 7'b001_0000;  // FSGNJ[N/X].S (funct3 selects)
+localparam funct7_t FP7_FMINMAX = 7'b001_0100;  // FMIN/FMAX.S  (funct3 selects)
+localparam funct7_t FP7_FCMP    = 7'b101_0000;  // FEQ/FLT/FLE.S (funct3 selects)
+localparam funct7_t FP7_FCVT_W  = 7'b110_0000;  // FCVT.W.S / FCVT.WU.S (rs2 selects)
+localparam funct7_t FP7_FCVT_S  = 7'b110_1000;  // FCVT.S.W / FCVT.S.WU (rs2 selects)
+localparam funct7_t FP7_FMV_X_W = 7'b111_0000;  // FMV.X.W (funct3=000) / FCLASS.S (funct3=001)
+localparam funct7_t FP7_FMV_W_X = 7'b111_1000;  // FMV.W.X (funct3=000)
+
+// rs2-field sub-selectors for the conversion instructions
+localparam logic [4:0] FP2_W  = 5'b00000;  // signed 32-bit int   (FCVT.W.S / FCVT.S.W)
+localparam logic [4:0] FP2_WU = 5'b00001;  // unsigned 32-bit int  (FCVT.WU.S / FCVT.S.WU)
+
+// funct3 sub-selectors for sign-inject, min/max, compare
+localparam funct3_t FP3_SGNJ  = 3'b000;  // FSGNJ.S
+localparam funct3_t FP3_SGNJN = 3'b001;  // FSGNJN.S
+localparam funct3_t FP3_SGNJX = 3'b010;  // FSGNJX.S
+localparam funct3_t FP3_MIN   = 3'b000;  // FMIN.S
+localparam funct3_t FP3_MAX   = 3'b001;  // FMAX.S
+localparam funct3_t FP3_FLE   = 3'b000;  // FLE.S
+localparam funct3_t FP3_FLT   = 3'b001;  // FLT.S
+localparam funct3_t FP3_FEQ   = 3'b010;  // FEQ.S
+localparam funct3_t FP3_FMV   = 3'b000;  // FMV.X.W / FMV.W.X
+localparam funct3_t FP3_FCLASS = 3'b001; // FCLASS.S
+
+// FLW/FSW width selector (funct3 = 010, single precision word)
+localparam funct3_t FP3_LSW   = 3'b010;  // FLW / FSW
+
+// IEEE-754 rounding modes (instr[14:12] for OP-FP arithmetic; frm field of fcsr).
+// DYN means "use fcsr.frm"; 101/110 are reserved (illegal-instruction).
+typedef enum logic [2:0] {
+    FRM_RNE = 3'b000,  // round to nearest, ties to even
+    FRM_RTZ = 3'b001,  // round toward zero
+    FRM_RDN = 3'b010,  // round down   (toward -inf)
+    FRM_RUP = 3'b011,  // round up     (toward +inf)
+    FRM_RMM = 3'b100,  // round to nearest, ties to max magnitude
+    FRM_DYN = 3'b111   // use dynamic rounding mode from fcsr.frm
+} frm_e;
+
+// IEEE-754 exception flag bit positions within fflags / fcsr[4:0].
+localparam int unsigned FFLAG_NX = 0;  // inexact
+localparam int unsigned FFLAG_UF = 1;  // underflow
+localparam int unsigned FFLAG_OF = 2;  // overflow
+localparam int unsigned FFLAG_DZ = 3;  // divide by zero
+localparam int unsigned FFLAG_NV = 4;  // invalid operation
+typedef logic [4:0] fflags_t;
+
+// Canonical single-precision quiet NaN produced by any invalid FP result.
+localparam logic [31:0] FP_CANONICAL_QNAN = 32'h7FC0_0000;
+
+// ---------------------------------------------------------------------------
 // 6. Instruction format enum
 // ---------------------------------------------------------------------------
 // Used by the immediate generator and decoder to select the immediate
@@ -236,6 +312,56 @@ typedef enum logic [4:0] {
 } alu_op_e;
 
 // ---------------------------------------------------------------------------
+// 7b. Floating-point operation enum (RV32F)
+// ---------------------------------------------------------------------------
+// All operations the FPU (rtl/execution/fpu.sv) can perform. The decoder maps
+// the OP-FP / MADD encodings onto this enum; the FPU does not parse the ISA.
+//
+// Latency classes (see fpu.sv):
+//   Multi-cycle (freeze pipeline via fpu_stall): FADD..FNMADD, FDIV, FSQRT.
+//   Single-cycle combinational:                  FSGNJ..FCLASS.
+// FLW/FSW are NOT here: they reuse the integer load/store path with a
+// writes_frd / uses_fs2 flag (the value simply routes to the FP register file).
+//
+// Result destination:
+//   FP register  (writes_frd): FADD..FNMADD, FSGNJ*, FMIN/FMAX, FCVT_S_*, FMV_W_X.
+//   Int register (writes_rd):  FEQ/FLT/FLE, FCVT_W_*, FMV_X_W, FCLASS.
+typedef enum logic [4:0] {
+    FPU_NONE    = 5'd0,   // not an FP compute op (FLW/FSW or non-FP instruction)
+    // --- multi-cycle arithmetic ---
+    FPU_ADD     = 5'd1,   // a + b
+    FPU_SUB     = 5'd2,   // a - b
+    FPU_MUL     = 5'd3,   // a * b
+    FPU_DIV     = 5'd4,   // a / b
+    FPU_SQRT    = 5'd5,   // sqrt(a)
+    FPU_MADD    = 5'd6,   //  (a * b) + c
+    FPU_MSUB    = 5'd7,   //  (a * b) - c
+    FPU_NMSUB   = 5'd8,   // -(a * b) + c
+    FPU_NMADD   = 5'd9,   // -(a * b) - c
+    // --- single-cycle: sign-inject ---
+    FPU_SGNJ    = 5'd10,  // {sign(b),     a[30:0]}
+    FPU_SGNJN   = 5'd11,  // {~sign(b),    a[30:0]}
+    FPU_SGNJX   = 5'd12,  // {sign(a)^sign(b), a[30:0]}
+    // --- single-cycle: min / max ---
+    FPU_MIN     = 5'd13,  // IEEE minNum(a,b)
+    FPU_MAX     = 5'd14,  // IEEE maxNum(a,b)
+    // --- single-cycle: compare (result to int reg) ---
+    FPU_EQ      = 5'd15,  // (a == b) ? 1 : 0
+    FPU_LT      = 5'd16,  // (a <  b) ? 1 : 0
+    FPU_LE      = 5'd17,  // (a <= b) ? 1 : 0
+    // --- single-cycle: conversions ---
+    FPU_CVT_W_S  = 5'd18, // float -> signed int32     (to int reg)
+    FPU_CVT_WU_S = 5'd19, // float -> unsigned int32    (to int reg)
+    FPU_CVT_S_W  = 5'd20, // signed int32 -> float      (to fp reg)
+    FPU_CVT_S_WU = 5'd21, // unsigned int32 -> float     (to fp reg)
+    // --- single-cycle: bit moves ---
+    FPU_MV_X_W  = 5'd22,  // raw bits float -> int reg
+    FPU_MV_W_X  = 5'd23,  // raw bits int -> fp reg
+    // --- single-cycle: classify ---
+    FPU_CLASS   = 5'd24   // 10-bit class mask (to int reg)
+} fpu_op_e;
+
+// ---------------------------------------------------------------------------
 // 8. Branch comparison enum
 // ---------------------------------------------------------------------------
 // The branch unit (rtl/execution/branch_unit.sv) uses this to decide whether
@@ -281,7 +407,11 @@ typedef enum logic [2:0] {
     WB_ALU  = 3'd1,   // ALU result (arithmetic, logic, LUI, AUIPC)
     WB_MEM  = 3'd2,   // memory load result (sign/zero extended in MEM or WB stage)
     WB_PC4  = 3'd3,   // PC+4 (link register for JAL, JALR)
-    WB_CSR  = 3'd4    // CSR read result (old CSR value before write)
+    WB_CSR  = 3'd4,   // CSR read result (old CSR value before write)
+    WB_FPU  = 3'd5    // FPU result for an FP→int op (FEQ/FLT/FLE, FCVT.W[U].S,
+                      // FMV.X.W, FCLASS) written to the integer register file.
+                      // FP→FP results reach the FP register file on a separate
+                      // write port (writes_frd), not through this mux.
 } wb_src_e;
 
 // ---------------------------------------------------------------------------
@@ -293,15 +423,16 @@ typedef enum logic [2:0] {
 //   op_class is used for enum-based dispatch (case statements, scheduling);
 //   is_* flags are used for direct boolean hazard checks.
 
-typedef enum logic [2:0] {
-    OPCLASS_ALU      = 3'd0,   // integer arithmetic and logic (ADD, AND, LUI, AUIPC, …)
-    OPCLASS_BRANCH   = 3'd1,   // conditional branches (BEQ, BNE, …)
-    OPCLASS_JUMP     = 3'd2,   // unconditional jumps (JAL, JALR)
-    OPCLASS_LOAD     = 3'd3,   // memory loads (LB, LH, LW, …)
-    OPCLASS_STORE    = 3'd4,   // memory stores (SB, SH, SW)
-    OPCLASS_SYSTEM   = 3'd5,   // privileged / system (ECALL, EBREAK, fence)
-    OPCLASS_LONG_LAT = 3'd6,   // multi-cycle: MUL, DIV, FP, gather (future)
-    OPCLASS_CUSTOM   = 3'd7    // XFlux custom operations (future)
+typedef enum logic [3:0] {
+    OPCLASS_ALU      = 4'd0,   // integer arithmetic and logic (ADD, AND, LUI, AUIPC, …)
+    OPCLASS_BRANCH   = 4'd1,   // conditional branches (BEQ, BNE, …)
+    OPCLASS_JUMP     = 4'd2,   // unconditional jumps (JAL, JALR)
+    OPCLASS_LOAD     = 4'd3,   // memory loads (LB, LH, LW, …)
+    OPCLASS_STORE    = 4'd4,   // memory stores (SB, SH, SW)
+    OPCLASS_SYSTEM   = 4'd5,   // privileged / system (ECALL, EBREAK, fence)
+    OPCLASS_LONG_LAT = 4'd6,   // multi-cycle integer: MUL, DIV
+    OPCLASS_CUSTOM   = 4'd7,   // XFlux custom operations
+    OPCLASS_FP       = 4'd8    // RV32F floating-point (compute; FLW/FSW use LOAD/STORE)
 } op_class_e;
 
 // ---------------------------------------------------------------------------
@@ -371,8 +502,26 @@ typedef struct packed {
     logic         is_store;       // memory store
     logic         is_csr;         // CSR read-modify-write (CSRRW/RS/RC and immediate forms)
     logic         is_mret;        // MRET (trap return — redirects PC to mepc)
-    logic         is_long_latency;// multi-cycle execution unit required (future)
-    logic         is_custom;      // XFlux custom encoding (future)
+    logic         is_long_latency;// multi-cycle integer unit required (MUL/DIV → mul_div_unit)
+    logic         is_custom;      // XFlux custom encoding
+    // ---- RV32F floating-point metadata ----
+    // Populated only when is_fp=1 (OP-FP / MADD family) or for FLW/FSW.
+    //   fpu_op    selects the FPU operation (FPU_NONE for FLW/FSW).
+    //   uses_fs1/2/3 mark FP register sources (indices reuse rs1/rs2 fields and
+    //             the new fs3 field; fs1=instr[19:15], fs2=instr[24:20],
+    //             fs3=instr[31:27]).  Kept distinct from uses_rs1/uses_rs2 so the
+    //             integer and FP forwarding paths never cross-match (different
+    //             register files sharing the same 5-bit index space).
+    //   writes_frd  1 = result is written to the FP register file (index = rd).
+    //   frm       rounding mode (instr[14:12]; FRM_DYN means use fcsr.frm).
+    logic         is_fp;          // FP compute instruction (OP-FP / MADD family)
+    fpu_op_e      fpu_op;         // FPU operation select
+    reg_idx_t     fs3;            // third FP source (instr[31:27], FMADD family)
+    logic         uses_fs1;       // 1 = fs1 (rs1 field) is an FP source operand
+    logic         uses_fs2;       // 1 = fs2 (rs2 field) is an FP source operand
+    logic         uses_fs3;       // 1 = fs3 is an FP source operand (FMADD family)
+    logic         writes_frd;     // 1 = rd receives an FP-register writeback
+    frm_e         frm;            // IEEE rounding mode (FRM_DYN → fcsr.frm)
     // ---- CSR access metadata ----
     // Populated only when is_csr=1.  The execute stage reads csr_addr, the WB
     // stage uses csr_op and either rs1_data (uses_rs1=1) or imm[4:0] (uses_rs1=0).
@@ -385,16 +534,20 @@ typedef struct packed {
 } decoded_instr_t;
 
 // Packed width reference (for testbench verification):
-//   legal(1) + op_class(3) + alu_op(5) + branch_op(3) + mem_op(4) + wb_src(3)
+//   legal(1) + op_class(4) + alu_op(5) + branch_op(3) + mem_op(4) + wb_src(3)
 //   + rs1(5) + rs2(5) + rd(5)
 //   + uses_rs1(1) + uses_rs2(1) + writes_rd(1)
 //   + imm(32)
 //   + is_branch(1) + is_jump(1) + is_load(1) + is_store(1)
 //   + is_csr(1) + is_mret(1)
 //   + is_long_latency(1) + is_custom(1)
+//   + is_fp(1) + fpu_op(5) + fs3(5) + uses_fs1(1) + uses_fs2(1) + uses_fs3(1)
+//   + writes_frd(1) + frm(3)
 //   + csr_addr(12) + csr_op(2)
 //   + exception(37)
-//   = 1+3+5+3+4+3+5+5+5+1+1+1+32+1+1+1+1+1+1+1+1+12+2+37 = 128 bits
+//   Base integer fields (unchanged) = 127 bits with op_class now 4 bits.
+//   FP fields add 1+5+5+1+1+1+1+3 = 18 bits.  Total = 146 bits.
+//   Use $bits(decoded_instr_t) in testbenches rather than a hard-coded width.
 
 // Standard M-mode CSR addresses
 localparam logic [11:0] CSR_MSTATUS   = 12'h300;
@@ -424,6 +577,10 @@ localparam logic [11:0] CSR_INSTRET   = 12'hC02;  // shadow of minstret
 localparam logic [11:0] CSR_CYCLEH    = 12'hC80;  // shadow of mcycleh
 localparam logic [11:0] CSR_TIMEH     = 12'hC81;  // CLINT mtime (high)
 localparam logic [11:0] CSR_INSTRETH  = 12'hC82;  // shadow of minstreth
+// RV32F user-mode floating-point control/status registers
+localparam logic [11:0] CSR_FFLAGS    = 12'h001;  // fcsr[4:0]  accrued exception flags
+localparam logic [11:0] CSR_FRM       = 12'h002;  // fcsr[7:5]  dynamic rounding mode
+localparam logic [11:0] CSR_FCSR      = 12'h003;  // {frm, fflags}
 
 // ---------------------------------------------------------------------------
 // CSR existence / writability — used by the decoder to raise
@@ -438,6 +595,7 @@ function automatic logic csr_addr_valid(input logic [11:0] a);
         CSR_MCYCLE, CSR_MINSTRET, CSR_MCYCLEH, CSR_MINSTRETH,
         CSR_CYCLE, CSR_TIME, CSR_INSTRET,
         CSR_CYCLEH, CSR_TIMEH, CSR_INSTRETH,
+        CSR_FFLAGS, CSR_FRM, CSR_FCSR,
         CSR_MVENDORID, CSR_MARCHID, CSR_MIMPID, CSR_MHARTID, CSR_MCONFIGPTR:
             return 1'b1;
         default:

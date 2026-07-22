@@ -1,0 +1,73 @@
+DIGEST 67c893de8278da8d3a599373c05f2599
+FFlux.Impl.FluxMulImpl
+R365:371 Koika.Lang.Prelude <> <> lib
+R399:408 Flux.FluxCommon <> <> lib
+sec 454:465 <> mul_circuits
+var  479:483 mul_circuits mod_t
+var  488:488 mul_circuits M
+var  510:510 mul_circuits V
+R492:500 Koika.Lang.Syntax Modules t class
+R502:506 Flux.Impl.FluxMulImpl <> mod_t:1 var
+R517:520 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R514:516 Corelib.Init.Datatypes <> nat ind
+def 590:600 <> mul_lo_expr
+R610:610 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+binder 604:604 <> a:4
+binder 606:606 <> b:5
+R618:625 Koika.Lang.Syntax <> PureExpr def
+R627:627 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+R639:648 Koika.Lang.Syntax Abbr slice def
+R656:663 Koika.Lang.Syntax Abbr mul def
+R670:671 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R673:673 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R672:672 Flux.Impl.FluxMulImpl <> b:5 var
+R665:666 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R668:668 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R667:667 Flux.Impl.FluxMulImpl <> a:4 var
+def 751:762 <> mul_hiu_expr
+R771:771 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+binder 765:765 <> a:6
+binder 767:767 <> b:7
+R779:786 Koika.Lang.Syntax <> PureExpr def
+R788:788 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+R800:809 Koika.Lang.Syntax Abbr slice def
+R818:825 Koika.Lang.Syntax Abbr mul def
+R832:833 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R835:835 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R834:834 Flux.Impl.FluxMulImpl <> b:7 var
+R827:828 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R830:830 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R829:829 Flux.Impl.FluxMulImpl <> a:6 var
+def 1079:1089 <> mul_hi_expr
+R1098:1098 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+binder 1092:1092 <> a:8
+binder 1094:1094 <> b:9
+R1106:1113 Koika.Lang.Syntax <> PureExpr def
+R1115:1115 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+R1127:1136 Koika.Lang.Syntax Abbr slice def
+R1145:1152 Koika.Lang.Syntax Abbr mul def
+R1175:1183 Koika.Lang.Syntax Abbr sext def
+R1188:1189 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1191:1191 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1190:1190 Flux.Impl.FluxMulImpl <> b:9 var
+R1155:1163 Koika.Lang.Syntax Abbr sext def
+R1168:1169 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1171:1171 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1170:1170 Flux.Impl.FluxMulImpl <> a:8 var
+def 1260:1272 <> mul_hisu_expr
+R1281:1281 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+binder 1275:1275 <> a:10
+binder 1277:1277 <> b:11
+R1289:1296 Koika.Lang.Syntax <> PureExpr def
+R1298:1298 Flux.Impl.FluxMulImpl <> mul_circuits.V var
+R1310:1319 Koika.Lang.Syntax Abbr slice def
+R1328:1335 Koika.Lang.Syntax Abbr mul def
+R1358:1367 Koika.Lang.Syntax Abbr zextL def
+R1372:1373 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1375:1375 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1374:1374 Flux.Impl.FluxMulImpl <> b:11 var
+R1338:1346 Koika.Lang.Syntax Abbr sext def
+R1351:1352 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1354:1354 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1353:1353 Flux.Impl.FluxMulImpl <> a:10 var
+R1384:1395 Flux.Impl.FluxMulImpl mul_circuits <> sec

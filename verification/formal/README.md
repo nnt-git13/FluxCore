@@ -1,54 +1,63 @@
-# FluxCore Formal Verification
+# FluxCore formal verification — Kôika Path-A refinement
 
-Machine-checked proofs about FluxCore models, built with Rocq/Coq
-(`make -C verification/formal check` — compiles everything and enforces
-the no-Admitted gate).
+FluxCore's formal verification is a **Kôika refinement proof**: the processor is
+re-expressed in [Kôika](https://github.com/mit-plv/koika) — a rule-based HDL
+with formal Rocq semantics *and* a compiler to synthesizable Verilog — and
+proven to **refine a machine-checked ISA specification**. Because Kôika compiles
+to the RTL, the object proven correct is the object synthesised. Everything is
+under [`koika/`](koika/); see [`koika/README.md`](koika/README.md) for details,
+the build, and the module-by-module roadmap.
 
-## Layout
+## Why this replaced the previous proofs
 
-The organization follows the ModularKoika GPU proof
-(per-module **Spec / Impl / Refine** separation, end-to-end kernel proofs
-on top, unfinished work quarantined):
+An earlier iteration of this directory held hand-written Coq *models* of the
+SystemVerilog (a forwarding-pipeline model, a CSR-counter model, an SpMV kernel
+proof). Those were `Qed`-complete but had a fundamental limitation, stated
+plainly in their own README at the time: **there was no mechanical link between
+the RTL and the Coq model** — a human transcribed the algorithm, and if the SV
+and the model drifted, the theorems said nothing about the hardware.
 
-| Directory | Contents |
-|---|---|
-| `Common/` | Shared foundations: 32-bit word arithmetic (`wrap32`), register-file algebra with the x0 hardwire (`Types.v`) |
-| `Spec/` | Trusted specifications: sequential ISA semantics for the ALU-class subset (`ISA.v`) |
-| `Impl/` | Models of the RTL implementation: the 3-slot forwarding pipeline (`Pipeline.v`), the CSR counter update algorithm (`CsrCounter.v`) |
-| `Refine/<Module>/Top.v` | Proof that each Impl refines its Spec |
-| `Kernels/` | End-to-end program proofs on the ISA machine (`SPMV.v`) |
-| `wip/` | **Not built, not claimed.** Unfinished proofs (`Machine.v`, `Memory.v`) |
+That entire model-level tree has been **removed** in favour of the Kôika
+approach, which closes that gap by construction. The SystemVerilog RTL under
+`rtl/` is unchanged and remains governed by the 54-target simulation regression;
+this directory adds the theorem-prover layer on top of a design representation
+that is itself compilable to hardware.
 
-## What is actually proven (all Qed — no Admitted, gated in CI)
+## Status
 
-- **`Refine/Pipeline/Top.v`** — the forwarding pipeline model refines the
-  sequential ISA: `fwd_read` equals the architectural register value
-  (`fwd_read_equals_pipeline_isa_rf`), the invariant is preserved by every
-  `pipe_exec` step, and after draining, the committed register file equals
-  the ISA register file for any ALU program.
-- **`Refine/CsrCounter/Top.v`** — the mcycle/minstret update algorithm
-  (increment first, then overlay the written 32-bit half) satisfies:
-  written half reads back exactly (S2), and the un-written half keeps the
-  increment including the low→high carry (S3).  `buggy_loses_carry`
-  exhibits the pre-2026-07-02 RTL bug as a concrete violation of S3.
-- **`Kernels/SPMV.v`** — the 12-instruction SpMV CSR inner loop terminates
-  from any well-formed initial state with `rf[x3]` equal to the exact
-  dot product (`spmv_terminates`, via a strictly-decreasing per-PC step
-  budget), never triggering undefined behavior; instantiated on the 8×8
-  NNZ=21 benchmark matrix with checksum 416 (`spmv_concrete_terminates`,
-  matching `make sim-spmv-csr`).
+- ✅ **`FluxCore_refines : refines FluxCoreImpl ISASpec`** — the top-level
+  machine refinement over the **full FluxCore integer ISA**, proven `Qed`,
+  axiom-free, in the framework's simulation relation. `FluxCoreImpl` is a
+  real stateful Kôika machine (PC + 32 register submodules + word memory +
+  the proven datapath circuits); `ISASpec` is the sequential ISA machine
+  {pc, regfile, memory}; the simulation quantifies over all instruction
+  streams. **Covered:** ALU/ALU-imm (15 ops incl. XABS/XMIN/XMAX/XLIDX),
+  BEQ/BNE/BLT/BGE/BLTU/BGEU, JAL/JALR, LUI/AUIPC, LW/SW/LB/LBU/LH/LHU/SB/SH,
+  MUL/MULH/MULHSU/MULHU; x0 hardwired.
+- ✅ **25 combinational datapath circuits** (ALU/XFlux, branch comparisons,
+  the RV32M multiply family) — each proven against its reference and consumed
+  by the machine theorem through the dispatch bridges.
+- ⏳ DIV/REM (verified iterative divider) + XCLZ, decode from raw RV32
+  instruction bits, CSRs/traps, the FPU (against **Flocq**), and the
+  **pipelined** implementation proven against the same `ISASpec` via
+  `refines_trans` — see `koika/README.md`.
 
-## What is NOT proven (honesty section)
+This is a large, ongoing formal-methods effort: a complete machine-checked
+refinement of a full **pipelined** RV32IMF+XFlux core is a multi-module
+research undertaking (the ModularKoika GPU proof it is modeled on is a
+substantial artifact). What is done: the single-cycle machine over the full
+integer ISA is proven end to end. What remains: division, raw-bits decode,
+CSRs/traps, the FPU vs Flocq, and the pipelined-vs-sequential refinement.
 
-- These are proofs about **hand-written models** of the RTL, not about the
-  SystemVerilog itself.  There is no mechanical link RTL ↔ Coq (that is
-  the role of the planned RVFI + riscv-formal track).
-- The ISA spec covers the ALU-class subset (RV32I ALU ops + XFlux); loads/
-  stores/branches/CSRs are modeled only where the SPMV kernel needs them.
-- `wip/Machine.v` and `wip/Memory.v` are incomplete explorations and are
-  excluded from the build and from every claim above.
+## Building
 
-## Gate
+Requires **opam Rocq 9.1** and a built ModularKoika checkout:
 
-`verification/scripts/check_no_admitted.sh` fails the build if any
-`Admitted`, `admit`, or new `Axiom` appears outside `wip/`.
+```sh
+eval $(opam env)
+make -C verification/formal check MK=$HOME/Desktop/CSAIL_UROP/ModularKoika
+```
+
+Without those dependencies (e.g. minimal CI) the build step is skipped with a
+message; the no-`Admitted` gate (`verification/scripts/check_no_admitted.sh`)
+still runs over the sources.

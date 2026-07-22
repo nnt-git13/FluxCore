@@ -37,6 +37,20 @@ module wb_stage
     output word_t             rd_data_o,
     output logic              rd_wen_o,
 
+    // FP register file write port (RV32F)
+    output reg_idx_t          frd_addr_o,
+    output word_t             frd_data_o,
+    output logic              frd_wen_o,
+    // Canonical FP writeback value (for the FP forwarding path), valid whenever
+    // the payload carries an FP-register write.
+    output word_t             frd_fwd_data_o,
+
+    // fcsr accrual (RV32F): pulse fflags_wen_o with the op's flags on a retiring
+    // FP compute op; fs_dirty_o marks any FP-state change (→ mstatus.FS Dirty).
+    output logic              fflags_wen_o,
+    output fflags_t           fflags_o,
+    output logic              fs_dirty_o,
+
     // Retirement event (one per architecturally committed instruction)
     output retirement_event_t retire_o,
 
@@ -106,6 +120,33 @@ module wb_stage
     assign rd_addr_o = mem_wb_i.rd_addr;
     assign rd_data_o = rd_data_s;
     assign rd_wen_o  = mem_wb_i.valid & mem_wb_i.rd_wen & ~stall_i;
+
+    // -----------------------------------------------------------------------
+    // FP register file write port (RV32F).
+    // For FLW (fp_from_mem) the final word is recomputed from the live memory
+    // read, exactly like the integer load path; FLW is always a word load so
+    // select_load_data returns the aligned 32-bit word unmodified.
+    // -----------------------------------------------------------------------
+    word_t frd_data_s;
+    always_comb begin
+        frd_data_s = mem_wb_i.frd_data;
+        if (mem_wb_i.valid && mem_wb_i.frd_wen && mem_wb_i.fp_from_mem)
+            frd_data_s = select_load_data(
+                mem_wb_i.instr, mem_wb_i.mem_byte_off, dmem_rdata_i, mem_wb_i.frd_data
+            );
+    end
+
+    assign frd_addr_o     = mem_wb_i.frd_addr;
+    assign frd_data_o     = frd_data_s;
+    assign frd_wen_o      = mem_wb_i.valid & mem_wb_i.frd_wen & ~stall_i;
+    assign frd_fwd_data_o = frd_data_s;
+
+    // fcsr accrual: flags accrue on a retiring FP compute op; FS goes Dirty on
+    // any committed FP-register write or flag update.
+    assign fflags_wen_o = mem_wb_i.valid & mem_wb_i.fflags_wen & ~stall_i;
+    assign fflags_o     = mem_wb_i.fflags;
+    assign fs_dirty_o   = mem_wb_i.valid & ~stall_i
+                        & (mem_wb_i.frd_wen | mem_wb_i.fflags_wen);
 
     // -----------------------------------------------------------------------
     // Retirement event

@@ -1,0 +1,10 @@
+rtl/common/fluxcore_pkg.sv
+rtl/common/rv32_isa_pkg.sv
+rtl/common/fp_pkg.sv
+rtl/execution/fp/fp_sgnj.sv
+rtl/execution/fp/fp_minmax.sv
+rtl/execution/fp/fp_cmp.sv
+rtl/execution/fp/fp_classify.sv
+rtl/execution/fp/fp_cvt.sv
+rtl/execution/fp/fp_short.sv
+verification/unit/execution/tb_fp_short.sv

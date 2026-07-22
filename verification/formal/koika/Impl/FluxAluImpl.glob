@@ -1,0 +1,250 @@
+DIGEST 5032830258589a13f78995a1f901c082
+FFlux.Impl.FluxAluImpl
+R668:674 Koika.Lang.Prelude <> <> lib
+R702:711 Flux.FluxCommon <> <> lib
+sec 757:768 <> alu_circuits
+var  782:786 alu_circuits mod_t
+var  791:791 alu_circuits M
+var  813:813 alu_circuits V
+R795:803 Koika.Lang.Syntax Modules t class
+R805:809 Flux.Impl.FluxAluImpl <> mod_t:1 var
+R820:823 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R817:819 Corelib.Init.Datatypes <> nat ind
+def 915:926 <> alu_and_expr
+R935:935 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 929:929 <> a:4
+binder 931:931 <> b:5
+R943:950 Koika.Lang.Syntax <> PureExpr def
+R952:952 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R960:967 Koika.Lang.Syntax Abbr and def
+R976:977 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R979:979 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R978:978 Flux.Impl.FluxAluImpl <> b:5 var
+R971:972 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R974:974 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R973:973 Flux.Impl.FluxAluImpl <> a:4 var
+def 995:1005 <> alu_or_expr
+R1015:1015 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1009:1009 <> a:6
+binder 1011:1011 <> b:7
+R1023:1030 Koika.Lang.Syntax <> PureExpr def
+R1032:1032 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1040:1046 Koika.Lang.Syntax Abbr or def
+R1056:1057 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1059:1059 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1058:1058 Flux.Impl.FluxAluImpl <> b:7 var
+R1051:1052 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1054:1054 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1053:1053 Flux.Impl.FluxAluImpl <> a:6 var
+def 1075:1086 <> alu_xor_expr
+R1095:1095 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1089:1089 <> a:8
+binder 1091:1091 <> b:9
+R1103:1110 Koika.Lang.Syntax <> PureExpr def
+R1112:1112 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1120:1127 Koika.Lang.Syntax Abbr xor def
+R1136:1137 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1139:1139 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1138:1138 Flux.Impl.FluxAluImpl <> b:9 var
+R1131:1132 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1134:1134 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1133:1133 Flux.Impl.FluxAluImpl <> a:8 var
+def 1155:1166 <> alu_add_expr
+R1175:1175 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1169:1169 <> a:10
+binder 1171:1171 <> b:11
+R1183:1190 Koika.Lang.Syntax <> PureExpr def
+R1192:1192 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1200:1208 Koika.Lang.Syntax Abbr plus def
+R1216:1217 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1219:1219 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1218:1218 Flux.Impl.FluxAluImpl <> b:11 var
+R1211:1212 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1214:1214 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1213:1213 Flux.Impl.FluxAluImpl <> a:10 var
+def 1235:1246 <> alu_sub_expr
+R1255:1255 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1249:1249 <> a:12
+binder 1251:1251 <> b:13
+R1263:1270 Koika.Lang.Syntax <> PureExpr def
+R1272:1272 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1280:1289 Koika.Lang.Syntax Abbr minus def
+R1296:1297 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1299:1299 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1298:1298 Flux.Impl.FluxAluImpl <> b:13 var
+R1291:1292 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1294:1294 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1293:1293 Flux.Impl.FluxAluImpl <> a:12 var
+def 1364:1377 <> alu_copyb_expr
+R1386:1386 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1380:1380 <> a:14
+binder 1382:1382 <> b:15
+R1394:1401 Koika.Lang.Syntax <> PureExpr def
+R1403:1403 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1411:1412 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1414:1414 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1413:1413 Flux.Impl.FluxAluImpl <> b:15 var
+def 1491:1502 <> alu_sll_expr
+R1511:1511 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1505:1505 <> a:16
+binder 1507:1507 <> b:17
+R1519:1526 Koika.Lang.Syntax <> PureExpr def
+R1528:1528 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1536:1543 Koika.Lang.Syntax Abbr lsl def
+R1551:1560 Koika.Lang.Syntax Abbr slice def
+R1566:1567 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1569:1569 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1568:1568 Flux.Impl.FluxAluImpl <> b:17 var
+R1545:1546 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1548:1548 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1547:1547 Flux.Impl.FluxAluImpl <> a:16 var
+def 1586:1597 <> alu_srl_expr
+R1606:1606 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1600:1600 <> a:18
+binder 1602:1602 <> b:19
+R1614:1621 Koika.Lang.Syntax <> PureExpr def
+R1623:1623 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1631:1638 Koika.Lang.Syntax Abbr lsr def
+R1646:1655 Koika.Lang.Syntax Abbr slice def
+R1661:1662 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1664:1664 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1663:1663 Flux.Impl.FluxAluImpl <> b:19 var
+R1640:1641 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1643:1643 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1642:1642 Flux.Impl.FluxAluImpl <> a:18 var
+def 1681:1692 <> alu_sra_expr
+R1701:1701 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1695:1695 <> a:20
+binder 1697:1697 <> b:21
+R1709:1716 Koika.Lang.Syntax <> PureExpr def
+R1718:1718 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1726:1733 Koika.Lang.Syntax Abbr asr def
+R1741:1750 Koika.Lang.Syntax Abbr slice def
+R1756:1757 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1759:1759 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1758:1758 Flux.Impl.FluxAluImpl <> b:21 var
+R1735:1736 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1738:1738 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1737:1737 Flux.Impl.FluxAluImpl <> a:20 var
+def 1842:1853 <> alu_slt_expr
+R1863:1863 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1857:1857 <> a:22
+binder 1859:1859 <> b:23
+R1871:1878 Koika.Lang.Syntax <> PureExpr def
+R1880:1880 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R1892:1893 Koika.Lang.Syntax <> If constr
+R1928:1929 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R1939:1939 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R1930:1938 Koika.Common.Vect Bits zero def
+R1916:1917 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R1926:1926 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R1918:1925 Koika.Common.Vect Bits one def
+R1896:1903 Koika.Lang.Syntax Abbr slt def
+R1910:1911 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1913:1913 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1912:1912 Flux.Impl.FluxAluImpl <> b:23 var
+R1905:1906 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1908:1908 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1907:1907 Flux.Impl.FluxAluImpl <> a:22 var
+def 1955:1967 <> alu_sltu_expr
+R1976:1976 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 1970:1970 <> a:24
+binder 1972:1972 <> b:25
+R1984:1991 Koika.Lang.Syntax <> PureExpr def
+R1993:1993 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R2005:2006 Koika.Lang.Syntax <> If constr
+R2041:2042 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2052:2052 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2043:2051 Koika.Common.Vect Bits zero def
+R2029:2030 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2039:2039 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2031:2038 Koika.Common.Vect Bits one def
+R2009:2015 Koika.Lang.Syntax Abbr lt def
+R2023:2024 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2026:2026 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2025:2025 Flux.Impl.FluxAluImpl <> b:25 var
+R2018:2019 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2021:2021 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2020:2020 Flux.Impl.FluxAluImpl <> a:24 var
+def 2101:2113 <> alu_xmin_expr
+R2122:2122 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 2116:2116 <> a:26
+binder 2118:2118 <> b:27
+R2130:2137 Koika.Lang.Syntax <> PureExpr def
+R2139:2139 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R2147:2148 Koika.Lang.Syntax <> If constr
+R2176:2177 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2179:2179 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2178:2178 Flux.Impl.FluxAluImpl <> b:27 var
+R2171:2172 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2174:2174 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2173:2173 Flux.Impl.FluxAluImpl <> a:26 var
+R2151:2158 Koika.Lang.Syntax Abbr slt def
+R2165:2166 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2168:2168 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2167:2167 Flux.Impl.FluxAluImpl <> b:27 var
+R2160:2161 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2163:2163 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2162:2162 Flux.Impl.FluxAluImpl <> a:26 var
+def 2195:2207 <> alu_xmax_expr
+R2216:2216 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 2210:2210 <> a:28
+binder 2212:2212 <> b:29
+R2224:2231 Koika.Lang.Syntax <> PureExpr def
+R2233:2233 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R2241:2242 Koika.Lang.Syntax <> If constr
+R2270:2271 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2273:2273 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2272:2272 Flux.Impl.FluxAluImpl <> b:29 var
+R2265:2266 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2268:2268 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2267:2267 Flux.Impl.FluxAluImpl <> a:28 var
+R2245:2252 Koika.Lang.Syntax Abbr slt def
+R2259:2260 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2262:2262 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2261:2261 Flux.Impl.FluxAluImpl <> a:28 var
+R2254:2255 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2257:2257 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2256:2256 Flux.Impl.FluxAluImpl <> b:29 var
+def 2347:2360 <> alu_xlidx_expr
+R2369:2369 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 2363:2363 <> a:30
+binder 2365:2365 <> b:31
+R2377:2384 Koika.Lang.Syntax <> PureExpr def
+R2386:2386 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R2398:2406 Koika.Lang.Syntax Abbr plus def
+R2414:2421 Koika.Lang.Syntax Abbr lsl def
+R2428:2429 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2445:2445 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2430:2440 Koika.Common.Vect Bits of_nat def
+R2423:2424 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2426:2426 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2425:2425 Flux.Impl.FluxAluImpl <> b:31 var
+R2408:2409 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2411:2411 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2410:2410 Flux.Impl.FluxAluImpl <> a:30 var
+def 2564:2576 <> alu_xabs_expr
+R2585:2585 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+binder 2579:2579 <> a:32
+binder 2581:2581 <> b:33
+R2593:2600 Koika.Lang.Syntax <> PureExpr def
+R2602:2602 Flux.Impl.FluxAluImpl <> alu_circuits.V var
+R2614:2615 Koika.Lang.Syntax <> If constr
+R2677:2678 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2680:2680 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2679:2679 Flux.Impl.FluxAluImpl <> a:32 var
+R2647:2656 Koika.Lang.Syntax Abbr minus def
+R2671:2672 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2674:2674 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2673:2673 Flux.Impl.FluxAluImpl <> a:32 var
+R2658:2659 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2669:2669 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2660:2668 Koika.Common.Vect Bits zero def
+R2618:2625 Koika.Lang.Syntax Abbr slt def
+R2632:2633 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2643:2643 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2634:2642 Koika.Common.Vect Bits zero def
+R2627:2628 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2630:2630 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2629:2629 Flux.Impl.FluxAluImpl <> a:32 var
+R2687:2698 Flux.Impl.FluxAluImpl alu_circuits <> sec

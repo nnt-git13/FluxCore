@@ -34,7 +34,12 @@ module tb_pipeline_ctrl;
     ex_mem_payload_t  ex_mem_w   = '0;
     exception_meta_t  exc_w        = '0;
     word_t            trap_vec_w   = 32'hFFFF_0000;  // arbitrary trap vector
-    logic             ldu_stall_w  = 1'b0;
+    word_t            mepc_w         = '0;
+    logic             ldu_stall_w    = 1'b0;
+    logic             csr_raw_w      = 1'b0;
+    logic             dmem_stall_w   = 1'b0;
+    logic             muldiv_stall_w = 1'b0;
+    logic             fpu_stall_w    = 1'b0;
 
     logic  stall_if_w, stall_id_w, stall_ex_w, stall_mem_w, stall_wb_w;
     logic  fl_ifid_w, fl_idex_w, fl_exmem_w, fl_memwb_w;
@@ -45,7 +50,12 @@ module tb_pipeline_ctrl;
         .ex_mem_i        (ex_mem_w),
         .exception_i     (exc_w),
         .trap_vector_i   (trap_vec_w),
+        .mepc_i          (mepc_w),
         .load_use_stall_i(ldu_stall_w),
+        .csr_raw_stall_i (csr_raw_w),
+        .dmem_stall_i    (dmem_stall_w),
+        .muldiv_stall_i  (muldiv_stall_w),
+        .fpu_stall_i     (fpu_stall_w),
         .stall_if_o      (stall_if_w),
         .stall_id_o      (stall_id_w),
         .stall_ex_o      (stall_ex_w),

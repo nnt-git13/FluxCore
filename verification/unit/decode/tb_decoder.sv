@@ -44,12 +44,14 @@ module tb_decoder;
     // -----------------------------------------------------------------------
     instr_t         instr_w;
     decoded_instr_t decoded_w;
+    logic           fs_off_w = 1'b0;   // mstatus.FS==Off gate (RV32F)
 
     // -----------------------------------------------------------------------
     // DUT
     // -----------------------------------------------------------------------
     decoder dut (
         .instr_i  (instr_w),
+        .fs_off_i (fs_off_w),
         .decoded_o(decoded_w)
     );
 
@@ -170,6 +172,44 @@ module tb_decoder;
             $fatal(1, "[DECODE-TEST] FAIL %s: illegal instr has action flag set", desc);
         if (decoded_w.is_branch || decoded_w.is_jump || decoded_w.is_load || decoded_w.is_store)
             $fatal(1, "[DECODE-TEST] FAIL %s: illegal instr has class flag set", desc);
+        if (decoded_w.is_fp || decoded_w.writes_frd ||
+            decoded_w.uses_fs1 || decoded_w.uses_fs2 || decoded_w.uses_fs3)
+            $fatal(1, "[DECODE-TEST] FAIL %s: illegal instr has FP flag set", desc);
+    endtask
+
+    // Apply an instruction, then assert it decodes illegal (convenience wrapper).
+    task automatic expect_illegal_i(input instr_t instr, input string desc);
+        apply(instr);
+        expect_illegal(instr, desc);
+    endtask
+
+    // Check the RV32F control fields of a legal FP instruction.
+    task automatic chk_fp(
+        input fpu_op_e exp_fpu,
+        input logic    exp_is_fp,
+        input logic    exp_uses_fs1, exp_uses_fs2, exp_uses_fs3,
+        input logic    exp_writes_frd, exp_writes_rd, exp_uses_rs1,
+        input string   desc
+    );
+        if (!decoded_w.legal)
+            $fatal(1, "[DECODE-TEST] FAIL %s: expected legal FP op, got illegal", desc);
+        if (decoded_w.fpu_op !== exp_fpu)
+            $fatal(1, "[DECODE-TEST] FAIL %s: fpu_op=%0d exp=%0d",
+                   desc, int'(decoded_w.fpu_op), int'(exp_fpu));
+        if (decoded_w.is_fp !== exp_is_fp)
+            $fatal(1, "[DECODE-TEST] FAIL %s: is_fp=%b exp=%b", desc, decoded_w.is_fp, exp_is_fp);
+        if (decoded_w.uses_fs1 !== exp_uses_fs1)
+            $fatal(1, "[DECODE-TEST] FAIL %s: uses_fs1=%b exp=%b", desc, decoded_w.uses_fs1, exp_uses_fs1);
+        if (decoded_w.uses_fs2 !== exp_uses_fs2)
+            $fatal(1, "[DECODE-TEST] FAIL %s: uses_fs2=%b exp=%b", desc, decoded_w.uses_fs2, exp_uses_fs2);
+        if (decoded_w.uses_fs3 !== exp_uses_fs3)
+            $fatal(1, "[DECODE-TEST] FAIL %s: uses_fs3=%b exp=%b", desc, decoded_w.uses_fs3, exp_uses_fs3);
+        if (decoded_w.writes_frd !== exp_writes_frd)
+            $fatal(1, "[DECODE-TEST] FAIL %s: writes_frd=%b exp=%b", desc, decoded_w.writes_frd, exp_writes_frd);
+        if (decoded_w.writes_rd !== exp_writes_rd)
+            $fatal(1, "[DECODE-TEST] FAIL %s: writes_rd=%b exp=%b", desc, decoded_w.writes_rd, exp_writes_rd);
+        if (decoded_w.uses_rs1 !== exp_uses_rs1)
+            $fatal(1, "[DECODE-TEST] FAIL %s: uses_rs1=%b exp=%b", desc, decoded_w.uses_rs1, exp_uses_rs1);
     endtask
 
     // -----------------------------------------------------------------------
@@ -903,12 +943,130 @@ module tb_decoder;
         end
 
         // ================================================================
+        // RV32F floating-point decode
+        // ================================================================
+        begin : fp_decode
+            // FADD.S f1, f2, f3  (funct7=0000000, rm=RNE)
+            apply(build_r(FP7_FADD, 5'd3, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_ADD, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FADD.S");
+            // FSUB.S / FMUL.S / FDIV.S
+            apply(build_r(FP7_FSUB, 5'd3, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_SUB, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FSUB.S");
+            apply(build_r(FP7_FMUL, 5'd3, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_MUL, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FMUL.S");
+            apply(build_r(FP7_FDIV, 5'd3, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_DIV, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FDIV.S");
+
+            // FSQRT.S f1, f2  (rs2 must be 0)
+            apply(build_r(FP7_FSQRT, 5'd0, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_SQRT, 1'b1, 1,0,0, 1'b1,1'b0,1'b0, "FSQRT.S");
+            // FSQRT with rs2 != 0 is illegal
+            expect_illegal_i(build_r(FP7_FSQRT, 5'd5, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP),
+                           "FSQRT rs2!=0");
+
+            // Sign injection
+            apply(build_r(FP7_FSGNJ, 5'd3, 5'd2, 5'd1, FP3_SGNJ,  OPCODE_OP_FP));
+            chk_fp(FPU_SGNJ,  1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FSGNJ.S");
+            apply(build_r(FP7_FSGNJ, 5'd3, 5'd2, 5'd1, FP3_SGNJN, OPCODE_OP_FP));
+            chk_fp(FPU_SGNJN, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FSGNJN.S");
+            apply(build_r(FP7_FSGNJ, 5'd3, 5'd2, 5'd1, FP3_SGNJX, OPCODE_OP_FP));
+            chk_fp(FPU_SGNJX, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FSGNJX.S");
+
+            // Min / Max
+            apply(build_r(FP7_FMINMAX, 5'd3, 5'd2, 5'd1, FP3_MIN, OPCODE_OP_FP));
+            chk_fp(FPU_MIN, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FMIN.S");
+            apply(build_r(FP7_FMINMAX, 5'd3, 5'd2, 5'd1, FP3_MAX, OPCODE_OP_FP));
+            chk_fp(FPU_MAX, 1'b1, 1,1,0, 1'b1,1'b0,1'b0, "FMAX.S");
+
+            // Compare → integer rd, wb_src=WB_FPU
+            apply(build_r(FP7_FCMP, 5'd3, 5'd2, 5'd1, FP3_FEQ, OPCODE_OP_FP));
+            chk_fp(FPU_EQ, 1'b1, 1,1,0, 1'b0,1'b1,1'b0, "FEQ.S");
+            if (decoded_w.wb_src !== WB_FPU) $fatal(1, "[DECODE-TEST] FAIL FEQ wb_src");
+            apply(build_r(FP7_FCMP, 5'd3, 5'd2, 5'd1, FP3_FLT, OPCODE_OP_FP));
+            chk_fp(FPU_LT, 1'b1, 1,1,0, 1'b0,1'b1,1'b0, "FLT.S");
+            apply(build_r(FP7_FCMP, 5'd3, 5'd2, 5'd1, FP3_FLE, OPCODE_OP_FP));
+            chk_fp(FPU_LE, 1'b1, 1,1,0, 1'b0,1'b1,1'b0, "FLE.S");
+
+            // Convert float→int (integer rd)
+            apply(build_r(FP7_FCVT_W, FP2_W,  5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_CVT_W_S,  1'b1, 1,0,0, 1'b0,1'b1,1'b0, "FCVT.W.S");
+            apply(build_r(FP7_FCVT_W, FP2_WU, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_CVT_WU_S, 1'b1, 1,0,0, 1'b0,1'b1,1'b0, "FCVT.WU.S");
+            expect_illegal_i(build_r(FP7_FCVT_W, 5'd2, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP),
+                           "FCVT.W.S bad rs2");
+
+            // Convert int→float (integer rs1, fp rd)
+            apply(build_r(FP7_FCVT_S, FP2_W,  5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_CVT_S_W,  1'b1, 0,0,0, 1'b1,1'b0,1'b1, "FCVT.S.W");
+            apply(build_r(FP7_FCVT_S, FP2_WU, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP));
+            chk_fp(FPU_CVT_S_WU, 1'b1, 0,0,0, 1'b1,1'b0,1'b1, "FCVT.S.WU");
+
+            // Bit moves
+            apply(build_r(FP7_FMV_X_W, 5'd0, 5'd2, 5'd1, FP3_FMV, OPCODE_OP_FP));
+            chk_fp(FPU_MV_X_W, 1'b1, 1,0,0, 1'b0,1'b1,1'b0, "FMV.X.W");
+            apply(build_r(FP7_FMV_X_W, 5'd0, 5'd2, 5'd1, FP3_FCLASS, OPCODE_OP_FP));
+            chk_fp(FPU_CLASS, 1'b1, 1,0,0, 1'b0,1'b1,1'b0, "FCLASS.S");
+            apply(build_r(FP7_FMV_W_X, 5'd0, 5'd2, 5'd1, FP3_FMV, OPCODE_OP_FP));
+            chk_fp(FPU_MV_W_X, 1'b1, 0,0,0, 1'b1,1'b0,1'b1, "FMV.W.X");
+
+            // Fused multiply-add family (fs3 in instr[31:27], fmt=00, rm=RNE).
+            // build_r's funct7 field packs {fs3[4:0], fmt[1:0]}.
+            apply(build_r({5'd3, 2'b00}, 5'd2, 5'd1, 5'd4, 3'b000, OPCODE_MADD));
+            chk_fp(FPU_MADD,  1'b1, 1,1,1, 1'b1,1'b0,1'b0, "FMADD.S");
+            if (decoded_w.fs3 !== 5'd3) $fatal(1, "[DECODE-TEST] FAIL FMADD fs3 index");
+            apply(build_r({5'd3, 2'b00}, 5'd2, 5'd1, 5'd4, 3'b000, OPCODE_MSUB));
+            chk_fp(FPU_MSUB,  1'b1, 1,1,1, 1'b1,1'b0,1'b0, "FMSUB.S");
+            apply(build_r({5'd3, 2'b00}, 5'd2, 5'd1, 5'd4, 3'b000, OPCODE_NMSUB));
+            chk_fp(FPU_NMSUB, 1'b1, 1,1,1, 1'b1,1'b0,1'b0, "FNMSUB.S");
+            apply(build_r({5'd3, 2'b00}, 5'd2, 5'd1, 5'd4, 3'b000, OPCODE_NMADD));
+            chk_fp(FPU_NMADD, 1'b1, 1,1,1, 1'b1,1'b0,1'b0, "FNMADD.S");
+            // fmt != 00 (double) is illegal in RV32F
+            expect_illegal_i(build_r({5'd3, 2'b01}, 5'd2, 5'd1, 5'd4, 3'b000, OPCODE_MADD),
+                           "FMADD fmt=01");
+
+            // FLW / FSW
+            apply(build_i(12'h004, 5'd10, 5'd1, FP3_LSW, OPCODE_LOAD_FP));
+            if (!decoded_w.legal || !decoded_w.is_load || !decoded_w.writes_frd ||
+                !decoded_w.uses_rs1 || decoded_w.mem_op !== MEM_LW || decoded_w.writes_rd)
+                $fatal(1, "[DECODE-TEST] FAIL FLW decode");
+            expect_illegal_i(build_i(12'h004, 5'd10, 5'd1, 3'b011, OPCODE_LOAD_FP),
+                           "FLW bad funct3");
+            apply(build_s(12'h008, 5'd2, 5'd10, FP3_LSW, OPCODE_STORE_FP));
+            if (!decoded_w.legal || !decoded_w.is_store || !decoded_w.uses_rs1 ||
+                !decoded_w.uses_fs2 || decoded_w.mem_op !== MEM_SW)
+                $fatal(1, "[DECODE-TEST] FAIL FSW decode");
+
+            // Reserved rounding mode (101) is illegal for rounded ops.
+            expect_illegal_i(build_r(FP7_FADD, 5'd3, 5'd2, 5'd1, 3'b101, OPCODE_OP_FP),
+                           "FADD reserved rm");
+            // DYN (111) is legal at decode.
+            apply(build_r(FP7_FADD, 5'd3, 5'd2, 5'd1, 3'b111, OPCODE_OP_FP));
+            if (!decoded_w.legal) $fatal(1, "[DECODE-TEST] FAIL FADD DYN rm should be legal");
+
+            // mstatus.FS == Off: every FP op and fcsr access is illegal.
+            fs_off_w = 1'b1;
+            expect_illegal_i(build_r(FP7_FADD, 5'd3, 5'd2, 5'd1, 3'b000, OPCODE_OP_FP),
+                           "FADD when FS=Off");
+            expect_illegal_i(build_i(12'h004, 5'd10, 5'd1, FP3_LSW, OPCODE_LOAD_FP),
+                           "FLW when FS=Off");
+            // CSRRS fcsr when FS=Off is illegal
+            expect_illegal_i(build_i(CSR_FCSR, 5'd1, 5'd2, 3'b010, OPCODE_SYSTEM),
+                           "CSRRS fcsr when FS=Off");
+            // A plain integer ADD is still legal with FS=Off.
+            apply(build_r(FUNCT7_NORMAL, 5'd2, 5'd1, 5'd3, FUNCT3_ADD_SUB, OPCODE_OP));
+            if (!decoded_w.legal)
+                $fatal(1, "[DECODE-TEST] FAIL integer ADD should stay legal with FS=Off");
+            fs_off_w = 1'b0;
+        end
+
+        // ================================================================
         // Done
         // ================================================================
         $display("[DECODE-TEST] PASS: all decoder tests passed.");
         $display("[DECODE-TEST]   LUI AUIPC JAL JALR BRANCH LOAD STORE OP-IMM OP FENCE");
         $display("[DECODE-TEST]   SYSTEM: ECALL EBREAK MRET CSRRW CSRRS CSRRC CSRRWI CSRRSI CSRRCI");
-        $display("[DECODE-TEST]   Illegal: bad opcode, funct3, funct7, system encodings, funct3=100");
+        $display("[DECODE-TEST]   RV32F: FADD FSUB FMUL FDIV FSQRT FSGNJ* FMIN/MAX FCMP FCVT FMV FCLASS FMADD* FLW FSW");
+        $display("[DECODE-TEST]   Illegal: bad opcode, funct3, funct7, system encodings, reserved rm, FS=Off");
         $finish;
 
     end : test_body

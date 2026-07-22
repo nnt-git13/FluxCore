@@ -52,11 +52,11 @@ module tb_rv32_isa_pkg;
     //   = 1+3+5+3+4+3+5+5+5+1+1+1+32+1+1+1+1+1+1+1+1+12+2+38 = 129  (exception_meta_t gained is_irq)
     localparam int EXPECTED_DECODED_INSTR_W =
         1 +  // legal
-        3 +  // op_class (op_class_e, 3-bit)
+        4 +  // op_class (op_class_e, 4-bit — widened for OPCLASS_FP)
         5 +  // alu_op (alu_op_e, 5-bit — 24 values ALU_ADD..ALU_XCLZ)
         3 +  // branch_op (branch_op_e, 3-bit)
         4 +  // mem_op (mem_op_e, 4-bit)
-        3 +  // wb_src (wb_src_e, 3-bit with WB_CSR)
+        3 +  // wb_src (wb_src_e, 3-bit with WB_CSR, WB_FPU)
         5 +  // rs1
         5 +  // rs2
         5 +  // rd
@@ -72,6 +72,15 @@ module tb_rv32_isa_pkg;
         1 +  // is_mret
         1 +  // is_long_latency
         1 +  // is_custom
+        // RV32F decode metadata
+        1 +  // is_fp
+        5 +  // fpu_op (fpu_op_e, 5-bit)
+        5 +  // fs3
+        1 +  // uses_fs1
+        1 +  // uses_fs2
+        1 +  // uses_fs3
+        1 +  // writes_frd
+        3 +  // frm (frm_e, 3-bit)
         12 + // csr_addr
         2 +  // csr_op (csr_op_e, 2-bit)
         (1 + 1 + fluxcore_pkg::EXC_CAUSE_W + fluxcore_pkg::XLEN); // exception_meta_t (valid, is_irq, cause, tval)

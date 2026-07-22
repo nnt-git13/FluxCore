@@ -113,6 +113,8 @@ module fluxcore_top
     ex_mem_payload_t ex_mem_tag_s; // EX output with interrupt tag applied
     word_t   csr_rdata_s;          // combinatorial read from csr_unit (→ execute_stage)
     word_t   mtvec_s, mepc_s;      // csr_unit outputs used for redirects
+    logic    fs_off_s;             // mstatus.FS==Off → decoder gates FP instructions
+    logic [2:0] frm_s;             // dynamic rounding mode (fcsr.frm) → FPU (Phase C)
     logic    csr_wen_s;            // CSR write enable from mem_stage
     logic [11:0] csr_waddr_s;      // CSR write address from mem_stage
     word_t   csr_wdata_s;          // CSR write data from mem_stage
@@ -125,6 +127,21 @@ module fluxcore_top
     word_t           rd_data_s;
     exception_meta_t exception_s;
     retirement_event_t retire_s;
+
+    // RV32F signals
+    word_t   fs1_data_s, fs2_data_s, fs3_data_s;      // fp_regfile read ports
+    word_t   fs1_fwd_s, fs2_fwd_s, fs3_fwd_s;          // forwarded FP operands
+    word_t   fp_result_s;                              // FPU result → execute_stage
+    fflags_t fp_fflags_s;                              // FPU flags → execute_stage
+    logic [2:0] rm_resolved_s;                         // rounding mode (DYN resolved)
+    // WB → fp_regfile write port + fcsr accrual
+    logic     frd_wen_s;
+    reg_idx_t frd_addr_s;
+    word_t    frd_data_s;
+    word_t    frd_fwd_data_s;
+    logic     fflags_wen_s;
+    fflags_t  fflags_val_s;
+    logic     fs_dirty_s;
 
     // MUL/DIV unit signals
     word_t muldiv_result_s;
@@ -152,6 +169,27 @@ module fluxcore_top
                           & id_ex_q.decoded.is_long_latency
                           & muldiv_idle_s
                           & ~div_started_q;
+
+    // FPU divide/sqrt handshake — same one-shot start pattern as the divider.
+    logic fpu_busy_s, fpu_idle_s, fpu_start_s, fpu_started_q;
+    logic fpu_is_ds_s;
+    assign fpu_is_ds_s = id_ex_q.decoded.is_fp
+                       & ((id_ex_q.decoded.fpu_op == FPU_DIV)
+                        | (id_ex_q.decoded.fpu_op == FPU_SQRT));
+
+    always_ff @(posedge clk) begin
+        if (rst || flush_id_ex_s)
+            fpu_started_q <= 1'b0;
+        else if (!stall_ex_s)
+            fpu_started_q <= 1'b0;
+        else if (fpu_start_s)
+            fpu_started_q <= 1'b1;
+    end
+
+    assign fpu_start_s = id_ex_q.valid
+                       & fpu_is_ds_s
+                       & fpu_idle_s
+                       & ~fpu_started_q;
 
     // =========================================================================
     // IF stage — fetch unit
@@ -202,6 +240,7 @@ module fluxcore_top
 
     decoder u_decoder (
         .instr_i  (if_id_q.instr),
+        .fs_off_i (fs_off_s),
         .decoded_o(decoded_s)
     );
 
@@ -220,6 +259,22 @@ module fluxcore_top
         .rd_data_i (rd_data_s)
     );
 
+    // FP register file (RV32F). Three read ports for the FMADD family; the
+    // FP register indices reuse the rs1/rs2 fields plus the dedicated fs3 field.
+    fp_regfile u_fp_regfile (
+        .clk       (clk),
+        .rst       (rst),
+        .fs1_addr_i(decoded_s.rs1),
+        .fs1_data_o(fs1_data_s),
+        .fs2_addr_i(decoded_s.rs2),
+        .fs2_data_o(fs2_data_s),
+        .fs3_addr_i(decoded_s.fs3),
+        .fs3_data_o(fs3_data_s),
+        .frd_wen_i (frd_wen_s),
+        .frd_addr_i(frd_addr_s),
+        .frd_data_i(frd_data_s)
+    );
+
     // Assemble ID/EX payload
     always_comb begin
         id_ex_s.valid    = if_id_q.valid;
@@ -228,6 +283,9 @@ module fluxcore_top
         id_ex_s.decoded  = decoded_s;
         id_ex_s.rs1_data = rs1_data_s;
         id_ex_s.rs2_data = rs2_data_s;
+        id_ex_s.fs1_data = fs1_data_s;
+        id_ex_s.fs2_data = fs2_data_s;
+        id_ex_s.fs3_data = fs3_data_s;
     end
 
     // =========================================================================
@@ -252,22 +310,29 @@ module fluxcore_top
     // =========================================================================
 
     forwarding_unit u_fwd (
-        .id_ex_i         (id_ex_q),
-        .ex_mem_i        (ex_mem_q),
-        .mem_wb_i        (mem_wb_q),
-        .mem_wb_rd_data_i(rd_data_s),
-        .id_decoded_i    (decoded_s),
-        .id_valid_i      (if_id_q.valid),
-        .rs1_fwd_o       (rs1_fwd_s),
-        .rs2_fwd_o       (rs2_fwd_s),
-        .load_use_stall_o(load_use_stall_s),
-        .csr_raw_stall_o (csr_raw_stall_s)
+        .id_ex_i          (id_ex_q),
+        .ex_mem_i         (ex_mem_q),
+        .mem_wb_i         (mem_wb_q),
+        .mem_wb_rd_data_i (rd_data_s),
+        .mem_wb_frd_data_i(frd_fwd_data_s),
+        .id_decoded_i     (decoded_s),
+        .id_valid_i       (if_id_q.valid),
+        .rs1_fwd_o        (rs1_fwd_s),
+        .rs2_fwd_o        (rs2_fwd_s),
+        .fs1_fwd_o        (fs1_fwd_s),
+        .fs2_fwd_o        (fs2_fwd_s),
+        .fs3_fwd_o        (fs3_fwd_s),
+        .load_use_stall_o (load_use_stall_s),
+        .csr_raw_stall_o  (csr_raw_stall_s)
     );
 
     always_comb begin
         id_ex_fwd_s          = id_ex_q;
         id_ex_fwd_s.rs1_data = rs1_fwd_s;
         id_ex_fwd_s.rs2_data = rs2_fwd_s;
+        id_ex_fwd_s.fs1_data = fs1_fwd_s;
+        id_ex_fwd_s.fs2_data = fs2_fwd_s;
+        id_ex_fwd_s.fs3_data = fs3_fwd_s;
     end
 
     // =========================================================================
@@ -312,6 +377,10 @@ module fluxcore_top
         // MRET commit (pulsed by MEM stage when MRET instruction is there)
         .mret_i       (mret_s),
         .retire_i     (retire_s.valid),
+        // RV32F fcsr accrual (from WB stage)
+        .fflags_wen_i (fflags_wen_s),
+        .fflags_i     (fflags_val_s),
+        .fs_dirty_i   (fs_dirty_s),
         // Interrupt lines from the CLINT
         .mtip_i       (mtip_i),
         .msip_i       (msip_i),
@@ -320,7 +389,12 @@ module fluxcore_top
         .mtvec_o      (mtvec_s),
         .mepc_o       (mepc_s),
         .irq_pending_o(irq_pending_s),
-        .irq_cause_o  (irq_cause_s)
+        .irq_cause_o  (irq_cause_s),
+        // RV32F: FP-disabled gate to the decoder + dynamic rounding mode.
+        // fflags accrual / fs-dirty inputs are tied off until the FPU lands
+        // (Phase C); they default to 0 and keep FS/fflags inert for now.
+        .fs_off_o     (fs_off_s),
+        .frm_o        (frm_s)
     );
 
     // =========================================================================
@@ -345,10 +419,39 @@ module fluxcore_top
         .idle_o   (muldiv_idle_s)
     );
 
+    // =========================================================================
+    // FPU (RV32F) — single-cycle combinational ops (mul/add/sub + short ops).
+    // Fed the forwarded FP operands and the resolved rounding mode; the result
+    // and IEEE flags are captured into ex_mem by execute_stage.  Div/sqrt and
+    // the fused multiply-add arrive in Phase D.
+    // =========================================================================
+    // Resolve the rounding mode: a static frm from the instruction, or the
+    // dynamic fcsr.frm when the encoded field is DYN (0b111).
+    assign rm_resolved_s = (id_ex_fwd_s.decoded.frm == FRM_DYN)
+                         ? frm_s : id_ex_fwd_s.decoded.frm;
+
+    fpu u_fpu (
+        .clk     (clk),
+        .rst     (rst),
+        .fs1_i   (id_ex_fwd_s.fs1_data),
+        .fs2_i   (id_ex_fwd_s.fs2_data),
+        .fs3_i   (id_ex_fwd_s.fs3_data),
+        .xrs1_i  (id_ex_fwd_s.rs1_data),   // integer rs1 for FCVT.S.W[U] / FMV.W.X
+        .op_i    (id_ex_fwd_s.decoded.fpu_op),
+        .rm_i    (rm_resolved_s),
+        .start_i (fpu_start_s),
+        .busy_o  (fpu_busy_s),
+        .idle_o  (fpu_idle_s),
+        .result_o(fp_result_s),
+        .fflags_o(fp_fflags_s)
+    );
+
     execute_stage u_execute (
         .id_ex_i        (id_ex_fwd_s),
         .csr_rdata_i    (csr_rdata_s),
         .muldiv_result_i(muldiv_result_s),
+        .fp_result_i    (fp_result_s),
+        .fp_fflags_i    (fp_fflags_s),
         .ex_mem_o       (ex_mem_s)
     );
 
@@ -451,6 +554,14 @@ module fluxcore_top
         .rd_addr_o     (rd_addr_s),
         .rd_data_o     (rd_data_s),
         .rd_wen_o      (rd_wen_s),
+        // RV32F: FP register write port + fcsr accrual
+        .frd_addr_o    (frd_addr_s),
+        .frd_data_o    (frd_data_s),
+        .frd_wen_o     (frd_wen_s),
+        .frd_fwd_data_o(frd_fwd_data_s),
+        .fflags_wen_o  (fflags_wen_s),
+        .fflags_o      (fflags_val_s),
+        .fs_dirty_o    (fs_dirty_s),
         .retire_o      (retire_s),
         .exception_o   (exception_s),
         .exception_pc_o(exception_pc_o)
@@ -480,6 +591,7 @@ module fluxcore_top
         .csr_raw_stall_i (csr_raw_stall_s),
         .dmem_stall_i    (dmem_stall_i),
         .muldiv_stall_i  (muldiv_busy_s),
+        .fpu_stall_i     (fpu_busy_s),
         .stall_if_o      (stall_if_s),
         .stall_id_o      (stall_id_s),
         .stall_ex_o      (stall_ex_s),

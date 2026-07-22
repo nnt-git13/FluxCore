@@ -1,0 +1,121 @@
+DIGEST c006d0fd95717f0e72933af2f6479218
+FFlux.Spec.FluxBranch
+R661:667 Koika.Lang.Prelude <> <> lib
+R695:704 Flux.FluxCommon <> <> lib
+ind 796:804 <> branch_op
+constr 813:817 <> BR_EQ
+constr 821:825 <> BR_NE
+constr 829:833 <> BR_LT
+constr 837:841 <> BR_GE
+constr 845:850 <> BR_LTU
+constr 854:859 <> BR_GEU
+def 874:885 <> branch_taken
+R893:901 Flux.Spec.FluxBranch <> branch_op variant
+binder 888:889 <> op:3
+R911:914 Flux.FluxCommon <> Word abbrev
+binder 905:905 <> a:4
+binder 907:907 <> b:5
+R919:922 Corelib.Init.Datatypes <> bool ind
+R935:936 Flux.Spec.FluxBranch <> op:3 var
+R947:951 Flux.Spec.FluxBranch <> BR_EQ constr
+R957:963 Koika.Common.EqDec <> beq_dec def
+R967:967 Flux.Spec.FluxBranch <> b:5 var
+R965:965 Flux.Spec.FluxBranch <> a:4 var
+R973:977 Flux.Spec.FluxBranch <> BR_NE constr
+R983:986 Corelib.Init.Datatypes <> negb def
+R989:995 Koika.Common.EqDec <> beq_dec def
+R999:999 Flux.Spec.FluxBranch <> b:5 var
+R997:997 Flux.Spec.FluxBranch <> a:4 var
+R1006:1010 Flux.Spec.FluxBranch <> BR_LT constr
+R1016:1029 Koika.Common.Vect Bits signed_lt def
+R1033:1033 Flux.Spec.FluxBranch <> b:5 var
+R1031:1031 Flux.Spec.FluxBranch <> a:4 var
+R1039:1043 Flux.Spec.FluxBranch <> BR_GE constr
+R1049:1062 Koika.Common.Vect Bits signed_ge def
+R1066:1066 Flux.Spec.FluxBranch <> b:5 var
+R1064:1064 Flux.Spec.FluxBranch <> a:4 var
+R1072:1077 Flux.Spec.FluxBranch <> BR_LTU constr
+R1082:1097 Koika.Common.Vect Bits unsigned_lt def
+R1101:1101 Flux.Spec.FluxBranch <> b:5 var
+R1099:1099 Flux.Spec.FluxBranch <> a:4 var
+R1107:1112 Flux.Spec.FluxBranch <> BR_GEU constr
+R1117:1132 Koika.Common.Vect Bits unsigned_ge def
+R1136:1136 Flux.Spec.FluxBranch <> b:5 var
+R1134:1134 Flux.Spec.FluxBranch <> a:4 var
+prf 1204:1217 <> branch_eq_refl
+R1224:1227 Flux.FluxCommon <> Word abbrev
+binder 1220:1220 <> a:7
+R1254:1256 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1232:1243 Flux.Spec.FluxBranch <> branch_taken def
+R1245:1249 Flux.Spec.FluxBranch <> BR_EQ constr
+R1251:1251 Flux.Spec.FluxBranch <> a:7 var
+R1253:1253 Flux.Spec.FluxBranch <> a:7 var
+R1257:1260 Corelib.Init.Datatypes <> true constr
+R1276:1287 Koika.Common.EqDec <> beq_dec_refl thm
+R1276:1287 Koika.Common.EqDec <> beq_dec_refl thm
+prf 1346:1364 <> branch_ne_is_not_eq
+R1373:1376 Flux.FluxCommon <> Word abbrev
+binder 1367:1367 <> a:8
+binder 1369:1369 <> b:9
+R1405:1407 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1383:1394 Flux.Spec.FluxBranch <> branch_taken def
+R1396:1400 Flux.Spec.FluxBranch <> BR_NE constr
+R1402:1402 Flux.Spec.FluxBranch <> a:8 var
+R1404:1404 Flux.Spec.FluxBranch <> b:9 var
+R1408:1411 Corelib.Init.Datatypes <> negb def
+R1414:1425 Flux.Spec.FluxBranch <> branch_taken def
+R1427:1431 Flux.Spec.FluxBranch <> BR_EQ constr
+R1433:1433 Flux.Spec.FluxBranch <> a:8 var
+R1435:1435 Flux.Spec.FluxBranch <> b:9 var
+prf 1625:1643 <> branch_ge_is_not_lt
+R1652:1655 Flux.FluxCommon <> Word abbrev
+binder 1646:1646 <> a:10
+binder 1648:1648 <> b:11
+R1684:1686 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1662:1673 Flux.Spec.FluxBranch <> branch_taken def
+R1675:1679 Flux.Spec.FluxBranch <> BR_GE constr
+R1681:1681 Flux.Spec.FluxBranch <> a:10 var
+R1683:1683 Flux.Spec.FluxBranch <> b:11 var
+R1687:1690 Corelib.Init.Datatypes <> negb def
+R1693:1704 Flux.Spec.FluxBranch <> branch_taken def
+R1706:1710 Flux.Spec.FluxBranch <> BR_LT constr
+R1712:1712 Flux.Spec.FluxBranch <> a:10 var
+R1714:1714 Flux.Spec.FluxBranch <> b:11 var
+R1732:1743 Flux.Spec.FluxBranch <> branch_taken def
+R1754:1767 Koika.Common.Vect Bits signed_ge def
+R1770:1783 Koika.Common.Vect Bits signed_lt def
+R1790:1809 Koika.Common.Vect Bits lift_comparison def
+R1812:1821 Koika.Common.Vect Bits is_ge def
+R1824:1833 Koika.Common.Vect Bits is_lt def
+R1848:1863 Stdlib.ZArith.BinInt Z compare def
+R1866:1876 Koika.Common.Vect Bits to_2cZ def
+R1882:1892 Koika.Common.Vect Bits to_2cZ def
+R1848:1863 Stdlib.ZArith.BinInt Z compare def
+R1866:1876 Koika.Common.Vect Bits to_2cZ def
+R1882:1892 Koika.Common.Vect Bits to_2cZ def
+prf 1926:1946 <> branch_geu_is_not_ltu
+R1955:1958 Flux.FluxCommon <> Word abbrev
+binder 1949:1949 <> a:12
+binder 1951:1951 <> b:13
+R1988:1990 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1965:1976 Flux.Spec.FluxBranch <> branch_taken def
+R1978:1983 Flux.Spec.FluxBranch <> BR_GEU constr
+R1985:1985 Flux.Spec.FluxBranch <> a:12 var
+R1987:1987 Flux.Spec.FluxBranch <> b:13 var
+R1991:1994 Corelib.Init.Datatypes <> negb def
+R1997:2008 Flux.Spec.FluxBranch <> branch_taken def
+R2010:2015 Flux.Spec.FluxBranch <> BR_LTU constr
+R2017:2017 Flux.Spec.FluxBranch <> a:12 var
+R2019:2019 Flux.Spec.FluxBranch <> b:13 var
+R2037:2048 Flux.Spec.FluxBranch <> branch_taken def
+R2059:2074 Koika.Common.Vect Bits unsigned_ge def
+R2077:2092 Koika.Common.Vect Bits unsigned_lt def
+R2099:2118 Koika.Common.Vect Bits lift_comparison def
+R2121:2130 Koika.Common.Vect Bits is_ge def
+R2133:2142 Koika.Common.Vect Bits is_lt def
+R2157:2165 Stdlib.NArith.BinNat N compare def
+R2168:2176 Koika.Common.Vect Bits to_N def
+R2182:2190 Koika.Common.Vect Bits to_N def
+R2157:2165 Stdlib.NArith.BinNat N compare def
+R2168:2176 Koika.Common.Vect Bits to_N def
+R2182:2190 Koika.Common.Vect Bits to_N def

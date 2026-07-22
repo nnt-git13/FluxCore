@@ -67,6 +67,12 @@ module tb_csr_unit;
     logic [63:0]   mtime_val = '0;
     logic          irq_pending_out;
     logic [3:0]    irq_cause_out;
+    // RV32F
+    logic          fflags_wen = 0;
+    fflags_t       fflags_in  = '0;
+    logic          fs_dirty   = 0;
+    logic          fs_off_out;
+    logic [2:0]    frm_out;
 
     csr_unit #(
         .MTVEC_RESET(32'h0000_2000)   // non-zero reset to test G16
@@ -85,13 +91,18 @@ module tb_csr_unit;
         .trap_tval_i  (trap_tval),
         .mret_i       (mret),
         .retire_i     (retire),
+        .fflags_wen_i (fflags_wen),
+        .fflags_i     (fflags_in),
+        .fs_dirty_i   (fs_dirty),
         .mtip_i       (mtip),
         .msip_i       (msip),
         .mtime_i      (mtime_val),
         .mtvec_o      (mtvec_out),
         .mepc_o       (mepc_out),
         .irq_pending_o(irq_pending_out),
-        .irq_cause_o  (irq_cause_out)
+        .irq_cause_o  (irq_cause_out),
+        .fs_off_o     (fs_off_out),
+        .frm_o        (frm_out)
     );
 
     // -----------------------------------------------------------------------
@@ -258,10 +269,11 @@ module tb_csr_unit;
         // G07: Unimplemented CSR read → 0; write ignored
         // -------------------------------------------------------------------
         $display("[CSR] G07: unimplemented CSR");
-        chk_read(12'h001, 32'h0, "G07 unknown CSR 0x001 reads 0");
+        // 0x001 is now fflags (implemented); use 0x7C0 — a genuinely unused CSR.
+        chk_read(12'h7C0, 32'h0, "G07 unknown CSR 0x7C0 reads 0");
         chk_read(12'hFFF, 32'h0, "G07 unknown CSR 0xFFF reads 0");
-        do_write(12'h001, 32'hDEAD_BEEF, CSR_WRITE);   // write unknown CSR
-        chk_read(12'h001, 32'h0,         "G07 unknown CSR unchanged after write");
+        do_write(12'h7C0, 32'hDEAD_BEEF, CSR_WRITE);   // write unknown CSR
+        chk_read(12'h7C0, 32'h0,         "G07 unknown CSR unchanged after write");
 
         // -------------------------------------------------------------------
         // G08: CSR_NOP with wen_i=1 does not modify register
@@ -507,7 +519,7 @@ module tb_csr_unit;
         // G21: machine information CSRs + mcountinhibit
         // -------------------------------------------------------------------
         $display("[CSR] G21: info CSRs + mcountinhibit");
-        chk_read(CSR_MISA,      32'h4000_1100, "G21 misa RV32IM");
+        chk_read(CSR_MISA,      32'h4000_1120, "G21 misa RV32IMF");
         chk_read(CSR_MVENDORID, 32'h0,         "G21 mvendorid");
         chk_read(CSR_MARCHID,   32'h0,         "G21 marchid");
         chk_read(CSR_MIMPID,    32'h2026_0702, "G21 mimpid");
@@ -523,7 +535,70 @@ module tb_csr_unit;
         end
         do_write(CSR_MCOUNTINHIBIT, 32'h0, CSR_WRITE);
 
-        $display("[CSR] PASS: all %0d test groups passed.", 21);
+        // -------------------------------------------------------------------
+        // G22: RV32F fcsr / frm / fflags, mstatus.FS, fs_off_o, fflags accrual
+        // -------------------------------------------------------------------
+        $display("[CSR] G22: floating-point CSRs");
+        // After reset mstatus.FS==Off: fs_off_o asserted, SD=0.
+        if (fs_off_out !== 1'b1)
+            $fatal(1, "[CSR] FAIL G22: fs_off_o not set when FS==Off");
+        chk_read(CSR_FCSR,   32'h0, "G22 fcsr reset 0");
+        chk_read(CSR_FFLAGS, 32'h0, "G22 fflags reset 0");
+        chk_read(CSR_FRM,    32'h0, "G22 frm reset 0");
+
+        // Enable FP: mstatus.FS = Initial (01) → bit 13 set (0x2000).
+        do_write(CSR_MSTATUS, 32'h0000_2000, CSR_SET);
+        #1;
+        if (fs_off_out !== 1'b0)
+            $fatal(1, "[CSR] FAIL G22: fs_off_o still set after enabling FS");
+        chk_read(CSR_MSTATUS, 32'h0000_3800, "G22 mstatus FS=Initial (bit13) + MPP");
+
+        // frm: write rounding mode, read back via frm/fcsr, check frm_o output.
+        do_write(CSR_FRM, 32'h0000_0003, CSR_WRITE);   // RUP
+        chk_read(CSR_FRM,  32'h0000_0003, "G22 frm=3");
+        chk_read(CSR_FCSR, 32'h0000_0060, "G22 fcsr frm in [7:5]");
+        if (frm_out !== 3'd3)
+            $fatal(1, "[CSR] FAIL G22: frm_o=%0d expected 3", frm_out);
+
+        // fflags: only low 5 bits; upper write bits ignored.
+        do_write(CSR_FFLAGS, 32'h0000_001F, CSR_WRITE);
+        chk_read(CSR_FFLAGS, 32'h0000_001F, "G22 fflags all set");
+        chk_read(CSR_FCSR,   32'h0000_007F, "G22 fcsr = {frm=3, fflags=1F}");
+        do_write(CSR_FFLAGS, 32'h0000_0000, CSR_WRITE);  // clear
+        chk_read(CSR_FFLAGS, 32'h0000_0000, "G22 fflags cleared");
+
+        // fcsr combined write: sets both frm and fflags.
+        do_write(CSR_FCSR, 32'h0000_00A5, CSR_WRITE);    // frm=101→WARL keeps 5? frm 3 bits=101=5
+        chk_read(CSR_FRM,    32'h0000_0005, "G22 fcsr write sets frm=5");
+        chk_read(CSR_FFLAGS, 32'h0000_0005, "G22 fcsr write sets fflags=5");
+
+        // fflags accrual: an FP op contributes flags via fflags_wen_i.
+        do_write(CSR_FFLAGS, 32'h0, CSR_WRITE);          // clear first
+        @(negedge clk);
+        fflags_wen = 1'b1;
+        fflags_in  = 5'b10001;                            // NV | NX
+        @(posedge clk); #1;
+        fflags_wen = 1'b0;
+        fflags_in  = '0;
+        chk_read(CSR_FFLAGS, 32'h0000_0011, "G22 fflags accrued NV|NX");
+        // Second accrual ORs in more flags.
+        @(negedge clk);
+        fflags_wen = 1'b1;
+        fflags_in  = 5'b00100;                            // OF
+        @(posedge clk); #1;
+        fflags_wen = 1'b0;
+        fflags_in  = '0;
+        chk_read(CSR_FFLAGS, 32'h0000_0015, "G22 fflags accrue is OR (NV|OF|NX)");
+
+        // fs_dirty: an FP op that modifies FP state moves FS to Dirty; SD set.
+        @(negedge clk);
+        fs_dirty = 1'b1;
+        @(posedge clk); #1;
+        fs_dirty = 1'b0;
+        // FS=Dirty(11)→0x6000, MPP(11)→0x1800, SD(bit31)→0x8000_0000.
+        chk_read(CSR_MSTATUS, 32'h8000_7800, "G22 mstatus FS=Dirty + SD");
+
+        $display("[CSR] PASS: all %0d test groups passed.", 22);
         $finish;
 
     end : stim

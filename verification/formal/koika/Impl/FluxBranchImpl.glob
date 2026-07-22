@@ -1,0 +1,91 @@
+DIGEST 0d39afe7d7150ae005a523474a355946
+FFlux.Impl.FluxBranchImpl
+R392:398 Koika.Lang.Prelude <> <> lib
+R426:435 Flux.FluxCommon <> <> lib
+sec 481:495 <> branch_circuits
+var  509:513 branch_circuits mod_t
+var  518:518 branch_circuits M
+var  540:540 branch_circuits V
+R522:530 Koika.Lang.Syntax Modules t class
+R532:536 Flux.Impl.FluxBranchImpl <> mod_t:1 var
+R547:550 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R544:546 Corelib.Init.Datatypes <> nat ind
+def 633:646 <> branch_eq_expr
+R656:656 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+binder 650:650 <> a:4
+binder 652:652 <> b:5
+R664:671 Koika.Lang.Syntax <> PureExpr def
+R673:673 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+R680:686 Koika.Lang.Syntax Abbr eq def
+R694:695 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R697:697 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R696:696 Flux.Impl.FluxBranchImpl <> b:5 var
+R689:690 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R692:692 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R691:691 Flux.Impl.FluxBranchImpl <> a:4 var
+def 713:726 <> branch_ne_expr
+R736:736 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+binder 730:730 <> a:6
+binder 732:732 <> b:7
+R744:751 Koika.Lang.Syntax <> PureExpr def
+R753:753 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+R760:767 Koika.Lang.Syntax Abbr neq def
+R774:775 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R777:777 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R776:776 Flux.Impl.FluxBranchImpl <> b:7 var
+R769:770 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R772:772 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R771:771 Flux.Impl.FluxBranchImpl <> a:6 var
+def 868:881 <> branch_lt_expr
+R891:891 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+binder 885:885 <> a:8
+binder 887:887 <> b:9
+R899:906 Koika.Lang.Syntax <> PureExpr def
+R908:908 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+R915:922 Koika.Lang.Syntax Abbr slt def
+R929:930 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R932:932 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R931:931 Flux.Impl.FluxBranchImpl <> b:9 var
+R924:925 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R927:927 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R926:926 Flux.Impl.FluxBranchImpl <> a:8 var
+def 948:961 <> branch_ge_expr
+R971:971 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+binder 965:965 <> a:10
+binder 967:967 <> b:11
+R979:986 Koika.Lang.Syntax <> PureExpr def
+R988:988 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+R995:1002 Koika.Lang.Syntax Abbr sge def
+R1009:1010 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1012:1012 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1011:1011 Flux.Impl.FluxBranchImpl <> b:11 var
+R1004:1005 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1007:1007 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1006:1006 Flux.Impl.FluxBranchImpl <> a:10 var
+def 1109:1123 <> branch_ltu_expr
+R1132:1132 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+binder 1126:1126 <> a:12
+binder 1128:1128 <> b:13
+R1140:1147 Koika.Lang.Syntax <> PureExpr def
+R1149:1149 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+R1156:1162 Koika.Lang.Syntax Abbr lt def
+R1170:1171 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1173:1173 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1172:1172 Flux.Impl.FluxBranchImpl <> b:13 var
+R1165:1166 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1168:1168 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1167:1167 Flux.Impl.FluxBranchImpl <> a:12 var
+def 1189:1203 <> branch_geu_expr
+R1212:1212 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+binder 1206:1206 <> a:14
+binder 1208:1208 <> b:15
+R1220:1227 Koika.Lang.Syntax <> PureExpr def
+R1229:1229 Flux.Impl.FluxBranchImpl <> branch_circuits.V var
+R1236:1242 Koika.Lang.Syntax Abbr ge def
+R1250:1251 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1253:1253 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1252:1252 Flux.Impl.FluxBranchImpl <> b:15 var
+R1245:1246 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1248:1248 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R1247:1247 Flux.Impl.FluxBranchImpl <> a:14 var
+R1260:1274 Flux.Impl.FluxBranchImpl branch_circuits <> sec

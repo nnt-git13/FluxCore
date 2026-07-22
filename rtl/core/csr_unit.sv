@@ -80,6 +80,16 @@ module csr_unit #(
     // Asserted for one cycle when WB retires a non-exception instruction.
     input  wire logic        retire_i,
 
+    // ── Floating-point status accrual (RV32F) ───────────────────────────────
+    // fflags_wen_i pulses for one cycle when a retiring FP op contributes IEEE
+    // exception flags; fflags_i carries the flags to OR into fcsr.fflags.
+    // fs_dirty_i marks that a retiring FP op modified FP state (an f register
+    // or fflags), which sets mstatus.FS to Dirty.  Defaults keep pre-FP
+    // instantiations inert.
+    input  wire logic        fflags_wen_i = 1'b0,
+    input  wire fflags_t     fflags_i     = 5'b0,
+    input  wire logic        fs_dirty_i   = 1'b0,
+
     // ── Interrupt inputs (from CLINT) ────────────────────────────────────────
     // Level-sensitive.  Defaults keep legacy instantiations interrupt-free.
     input  wire logic        mtip_i = 1'b0,        // machine timer interrupt pending
@@ -92,7 +102,14 @@ module csr_unit #(
     // 1 when an enabled interrupt is pending and mstatus.MIE is set.
     output logic         irq_pending_o,
     // Cause code of the highest-priority pending interrupt (MSI > MTI).
-    output logic [EXC_CAUSE_W-1:0] irq_cause_o
+    output logic [EXC_CAUSE_W-1:0] irq_cause_o,
+
+    // ── RV32F ────────────────────────────────────────────────────────────────
+    // fs_off_o = 1 when mstatus.FS == Off; wired to the decoder so it raises
+    // illegal-instruction on FP instructions / fcsr accesses while FP is disabled.
+    // frm_o exposes the dynamic rounding mode for the FPU (FRM_DYN resolution).
+    output logic         fs_off_o,
+    output logic [2:0]   frm_o
 );
 
     // -----------------------------------------------------------------------
@@ -111,9 +128,22 @@ module csr_unit #(
     word_t mtval_q;
     logic [63:0] mcycle_q;
     logic [63:0] minstret_q;
+    // RV32F floating-point CSR state
+    logic [2:0]  frm_q;             // fcsr[7:5] dynamic rounding mode
+    fflags_t     fflags_q;          // fcsr[4:0] accrued IEEE exception flags
+    logic [1:0]  fs_q;              // mstatus.FS[14:13] (00=Off,01=Init,10=Clean,11=Dirty)
 
     assign mtvec_o = mtvec_q;
     assign mepc_o  = mepc_q;
+    assign fs_off_o = (fs_q == 2'b00);
+    assign frm_o    = frm_q;
+
+    // mstatus composition helper: FS in [14:13]; SD (bit 31) = (FS==Dirty).
+    // MPP hardwired 2'b11 in [12:11]; MPIE[7], MIE[3] are the only other R/W bits.
+    function automatic word_t mstatus_compose(input logic mie, input logic mpie,
+                                              input logic [1:0] fs);
+        return {(fs == 2'b11), 16'b0, fs, 2'b11, 3'b0, mpie, 3'b0, mie, 3'b0};
+    endfunction
 
     // -----------------------------------------------------------------------
     // Combinational read
@@ -122,8 +152,7 @@ module csr_unit #(
     // -----------------------------------------------------------------------
     always_comb begin
         case (raddr_i)
-            CSR_MSTATUS : rdata_o = {19'b0, 2'b11, 3'b0, mstatus_mpie_q,
-                                      3'b0, mstatus_mie_q, 3'b0};
+            CSR_MSTATUS : rdata_o = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q);
             CSR_MIE     : rdata_o = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
             CSR_MTVEC   : rdata_o = mtvec_q;
             CSR_MSCRATCH: rdata_o = mscratch_q;
@@ -136,8 +165,12 @@ module csr_unit #(
             CSR_MCYCLEH : rdata_o = mcycle_q[63:32];
             CSR_MINSTRETH: rdata_o = minstret_q[63:32];
             CSR_MHARTID : rdata_o = '0;
+            // RV32F floating-point CSRs
+            CSR_FFLAGS  : rdata_o = {27'b0, fflags_q};
+            CSR_FRM     : rdata_o = {29'b0, frm_q};
+            CSR_FCSR    : rdata_o = {24'b0, frm_q, fflags_q};
             // Machine information / configuration registers
-            CSR_MISA    : rdata_o = 32'h4000_1100;   // RV32IM
+            CSR_MISA    : rdata_o = 32'h4000_1120;   // RV32IMF (I|M|F)
             CSR_MVENDORID : rdata_o = '0;            // non-commercial
             CSR_MARCHID   : rdata_o = '0;            // not registered
             CSR_MIMPID    : rdata_o = 32'h2026_0702; // implementation date
@@ -181,10 +214,12 @@ module csr_unit #(
     word_t mcycle_hi_rmw_s;
     word_t minstret_lo_rmw_s;
     word_t minstret_hi_rmw_s;
+    word_t fflags_rmw_s;
+    word_t frm_rmw_s;
+    word_t fcsr_rmw_s;
 
     always_comb begin
-        mstatus_current_s = {19'b0, 2'b11, 3'b0, mstatus_mpie_q,
-                             3'b0, mstatus_mie_q, 3'b0};
+        mstatus_current_s = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q);
         mstatus_rmw_s     = csr_rmw(mstatus_current_s, wdata_i, wop_i);
         mie_current_s     = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
         mie_rmw_s         = csr_rmw(mie_current_s,     wdata_i, wop_i);
@@ -194,6 +229,10 @@ module csr_unit #(
         mcycle_hi_rmw_s   = csr_rmw(mcycle_q[63:32],   wdata_i, wop_i);
         minstret_lo_rmw_s = csr_rmw(minstret_q[31:0],  wdata_i, wop_i);
         minstret_hi_rmw_s = csr_rmw(minstret_q[63:32], wdata_i, wop_i);
+        // FP CSRs: RMW against the current fcsr view; only the low bits matter.
+        fflags_rmw_s      = csr_rmw({27'b0, fflags_q},          wdata_i, wop_i);
+        frm_rmw_s         = csr_rmw({29'b0, frm_q},             wdata_i, wop_i);
+        fcsr_rmw_s        = csr_rmw({24'b0, frm_q, fflags_q},   wdata_i, wop_i);
     end
 
     // -----------------------------------------------------------------------
@@ -220,6 +259,37 @@ module csr_unit #(
     end
 
     // -----------------------------------------------------------------------
+    // FP status next-value.  fflags accrue every cycle (OR-in the flags of a
+    // retiring FP op); an FP op that changes FP state moves FS to Dirty.
+    // An explicit CSR write to fflags/frm/fcsr/mstatus overrides for that
+    // register (software intent wins over same-cycle accrual).
+    // -----------------------------------------------------------------------
+    fflags_t    fflags_next_s;
+    logic [2:0] frm_next_s;
+    logic [1:0] fs_next_s;
+
+    always_comb begin
+        fflags_next_s = fflags_q | (fflags_wen_i ? fflags_i : 5'b0);
+        frm_next_s    = frm_q;
+        fs_next_s     = fs_q;
+        // FP op modified FP state → Dirty (only meaningful while FP is enabled).
+        if (fs_dirty_i && fs_q != 2'b00)
+            fs_next_s = 2'b11;
+        if (wen_i) begin
+            case (waddr_i)
+                CSR_FFLAGS:  fflags_next_s = fflags_rmw_s[4:0];
+                CSR_FRM:     frm_next_s    = frm_rmw_s[2:0];
+                CSR_FCSR: begin
+                    frm_next_s    = fcsr_rmw_s[7:5];
+                    fflags_next_s = fcsr_rmw_s[4:0];
+                end
+                CSR_MSTATUS: fs_next_s = mstatus_rmw_s[14:13];  // WARL, all 4 legal
+                default: ;
+            endcase
+        end
+    end
+
+    // -----------------------------------------------------------------------
     // Synchronous write
     // -----------------------------------------------------------------------
     always_ff @(posedge clk) begin
@@ -237,10 +307,18 @@ module csr_unit #(
             mtval_q        <= '0;
             mcycle_q       <= '0;
             minstret_q     <= '0;
+            // RV32F: FS resets to Off (FP disabled until software enables it);
+            // rounding mode and accrued flags reset to zero.
+            fs_q           <= 2'b00;
+            frm_q          <= 3'b000;
+            fflags_q       <= '0;
 
         end else begin
             mcycle_q   <= mcycle_next_s;
             minstret_q <= minstret_next_s;
+            fs_q       <= fs_next_s;
+            frm_q      <= frm_next_s;
+            fflags_q   <= fflags_next_s;
         end
 
         if (!rst && trap_i) begin

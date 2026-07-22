@@ -1,0 +1,100 @@
+DIGEST e4e21fdb429e2454213ae575dd4e62e7
+FFlux.Refine.FluxMulRefine
+R508:514 Koika.Lang.Prelude <> <> lib
+R542:551 Flux.FluxCommon <> <> lib
+R579:590 Flux.Spec.FluxMul <> <> lib
+R618:633 Flux.Impl.FluxMulImpl <> <> lib
+sec 679:688 <> mul_refine
+var  702:706 mul_refine mod_t
+var  711:711 mul_refine M
+R715:723 Koika.Lang.Syntax Modules t class
+R725:729 Flux.Refine.FluxMulRefine <> mod_t:1 var
+prf 744:757 <> mul_lo_correct
+R766:769 Flux.FluxCommon <> Word abbrev
+binder 760:760 <> a:3
+binder 762:762 <> b:4
+R801:803 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R778:782 Koika.Lang.BigStepSemantics <> peval def
+R785:795 Flux.Impl.FluxMulImpl <> mul_lo_expr def
+R797:797 Flux.Refine.FluxMulRefine <> a:3 var
+R799:799 Flux.Refine.FluxMulRefine <> b:4 var
+R804:806 Corelib.Init.Datatypes <> inl constr
+R809:814 Flux.Spec.FluxMul <> mul_lo def
+R816:816 Flux.Refine.FluxMulRefine <> a:3 var
+R818:818 Flux.Refine.FluxMulRefine <> b:4 var
+R842:852 Flux.Impl.FluxMulImpl <> mul_lo_expr def
+R855:860 Flux.Spec.FluxMul <> mul_lo def
+R863:870 Flux.Spec.FluxMul <> mul_full def
+R878:882 Koika.Lang.BigStepSemantics <> peval def
+R884:893 Koika.Lang.Syntax Abbr slice def
+R895:902 Koika.Lang.Syntax Abbr mul def
+R910:932 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R934:956 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 991:1005 <> mul_hiu_correct
+R1014:1017 Flux.FluxCommon <> Word abbrev
+binder 1008:1008 <> a:5
+binder 1010:1010 <> b:6
+R1050:1052 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1026:1030 Koika.Lang.BigStepSemantics <> peval def
+R1033:1044 Flux.Impl.FluxMulImpl <> mul_hiu_expr def
+R1046:1046 Flux.Refine.FluxMulRefine <> a:5 var
+R1048:1048 Flux.Refine.FluxMulRefine <> b:6 var
+R1053:1055 Corelib.Init.Datatypes <> inl constr
+R1058:1064 Flux.Spec.FluxMul <> mul_hiu def
+R1066:1066 Flux.Refine.FluxMulRefine <> a:5 var
+R1068:1068 Flux.Refine.FluxMulRefine <> b:6 var
+R1092:1103 Flux.Impl.FluxMulImpl <> mul_hiu_expr def
+R1106:1112 Flux.Spec.FluxMul <> mul_hiu def
+R1115:1122 Flux.Spec.FluxMul <> mul_full def
+R1130:1134 Koika.Lang.BigStepSemantics <> peval def
+R1136:1145 Koika.Lang.Syntax Abbr slice def
+R1147:1154 Koika.Lang.Syntax Abbr mul def
+R1162:1184 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R1186:1208 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1243:1256 <> mul_hi_correct
+R1265:1268 Flux.FluxCommon <> Word abbrev
+binder 1259:1259 <> a:7
+binder 1261:1261 <> b:8
+R1300:1302 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1277:1281 Koika.Lang.BigStepSemantics <> peval def
+R1284:1294 Flux.Impl.FluxMulImpl <> mul_hi_expr def
+R1296:1296 Flux.Refine.FluxMulRefine <> a:7 var
+R1298:1298 Flux.Refine.FluxMulRefine <> b:8 var
+R1303:1305 Corelib.Init.Datatypes <> inl constr
+R1308:1313 Flux.Spec.FluxMul <> mul_hi def
+R1315:1315 Flux.Refine.FluxMulRefine <> a:7 var
+R1317:1317 Flux.Refine.FluxMulRefine <> b:8 var
+R1341:1351 Flux.Impl.FluxMulImpl <> mul_hi_expr def
+R1354:1359 Flux.Spec.FluxMul <> mul_hi def
+R1362:1367 Flux.Spec.FluxMul <> sext64 def
+R1375:1379 Koika.Lang.BigStepSemantics <> peval def
+R1381:1390 Koika.Lang.Syntax Abbr slice def
+R1392:1399 Koika.Lang.Syntax Abbr mul def
+R1407:1415 Koika.Lang.Syntax Abbr sext def
+R1417:1439 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R1441:1463 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1502:1517 <> mul_hisu_correct
+R1526:1529 Flux.FluxCommon <> Word abbrev
+binder 1520:1520 <> a:9
+binder 1522:1522 <> b:10
+R1563:1565 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1538:1542 Koika.Lang.BigStepSemantics <> peval def
+R1545:1557 Flux.Impl.FluxMulImpl <> mul_hisu_expr def
+R1559:1559 Flux.Refine.FluxMulRefine <> a:9 var
+R1561:1561 Flux.Refine.FluxMulRefine <> b:10 var
+R1566:1568 Corelib.Init.Datatypes <> inl constr
+R1571:1578 Flux.Spec.FluxMul <> mul_hisu def
+R1580:1580 Flux.Refine.FluxMulRefine <> a:9 var
+R1582:1582 Flux.Refine.FluxMulRefine <> b:10 var
+R1606:1618 Flux.Impl.FluxMulImpl <> mul_hisu_expr def
+R1621:1628 Flux.Spec.FluxMul <> mul_hisu def
+R1631:1636 Flux.Spec.FluxMul <> sext64 def
+R1639:1644 Flux.Spec.FluxMul <> zext64 def
+R1652:1656 Koika.Lang.BigStepSemantics <> peval def
+R1658:1667 Koika.Lang.Syntax Abbr slice def
+R1675:1682 Koika.Lang.Syntax Abbr mul def
+R1684:1692 Koika.Lang.Syntax Abbr sext def
+R1694:1703 Koika.Lang.Syntax Abbr zextL def
+R1711:1733 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R1735:1757 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R1790:1799 Flux.Refine.FluxMulRefine mul_refine <> sec

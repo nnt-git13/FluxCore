@@ -171,6 +171,26 @@ module tb_csr_probe;
     ) runner ();
 endmodule : tb_csr_probe
 
+// RV32F demonstration kernel (-march=rv32imf): checksum = float bits of the
+// result 166.0f = 0x43260000 = 1126563840; extra0 = its integer truncation (166).
+module tb_fp_kernel;
+    soc_bench_runner #(
+        .BENCH_NAME   ("fp_kernel"),
+        .IMEM_INIT    ("build/sw/fp_kernel/imem.hex"),
+        .EXP_CHECKSUM (1126563840),
+        .TIMEOUT_CYCS (50_000)
+    ) runner ();
+
+    // Deep check: the integer truncation of the FP result.
+    initial begin
+        wait (runner.done);
+        @(negedge runner.clk);
+        if (runner.result_shadow[4] !== 32'd166)
+            $fatal(1, "[fp_kernel] FAIL extra0 (int result)=%0d expected=166",
+                   runner.result_shadow[4]);
+    end
+endmodule : tb_fp_kernel
+
 // Timer-interrupt test: checksum = number of interrupts taken (3).
 // extra0 must additionally show mcause = 0x80000007 (machine timer);
 // the runner prints it for the transcript.

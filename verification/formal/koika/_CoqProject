@@ -1,0 +1,26 @@
+# FluxCore ↔ Kôika formal port (Path A: Impl ⊑ ISA-spec refinement).
+# Requires the ModularKoika checkout + opam Rocq 9.1 (see README.md).
+# The three external libraries below are referenced in place, not vendored.
+-R /home/lnx-141209/Desktop/CSAIL_UROP/ModularKoika/coq Koika
+-Q /home/lnx-141209/Desktop/CSAIL_UROP/ModularKoika/examples/gpu/src Gpu
+-Q /home/lnx-141209/Desktop/CSAIL_UROP/ModularKoika/examples/gpu/coqutil/src/coqutil coqutil
+-Q /home/lnx-141209/Desktop/CSAIL_UROP/ModularKoika/examples/gpu/riscv-coq/src/riscv riscv
+-Q . Flux
+
+FluxCommon.v
+Spec/FluxAlu.v
+Spec/FluxBranch.v
+Spec/FluxMul.v
+Spec/FluxIsa.v
+FluxMem.v
+FluxProc.v
+Spec/FluxProcSpec.v
+Impl/FluxAluImpl.v
+Impl/FluxBranchImpl.v
+Impl/FluxMulImpl.v
+Impl/FluxProcImpl.v
+Refine/FluxAluRefine.v
+Refine/FluxBranchRefine.v
+Refine/FluxMulRefine.v
+Refine/FluxProcRefine.v
+Refine/Top.v

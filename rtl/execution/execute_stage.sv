@@ -45,6 +45,12 @@ module execute_stage
     // For MUL ops: combinationally valid every cycle.
     // For DIV ops: valid after busy_o deasserts (pipeline stalled until then).
     input  wire word_t           muldiv_result_i,
+    // RV32F result from the FPU (instantiated in fluxcore_top).  Combinationally
+    // valid for the single-cycle FP ops; carried into ex_mem for FP writeback
+    // (writes_frd) or the FP→int mux (wb_src=WB_FPU).  fp_fflags_i are the IEEE
+    // exception flags to accrue into fcsr at retirement.
+    input  wire word_t           fp_result_i,
+    input  wire fflags_t         fp_fflags_i,
     output ex_mem_payload_t ex_mem_o
 );
 
@@ -123,6 +129,10 @@ module execute_stage
                                 ? muldiv_result_i : alu_result_s;
         ex_mem_o.branch_target = branch_target_s;
         ex_mem_o.csr_rdata    = csr_rdata_i;
+        // RV32F: FPU result / flags, and the FSW store operand (fs2, forwarded).
+        ex_mem_o.fp_result     = fp_result_i;
+        ex_mem_o.fp_store_data = id_ex_i.fs2_data;
+        ex_mem_o.fflags        = fp_fflags_i;
 
         // Gate on is_branch AND legal: no spurious redirect for illegal instrs
         ex_mem_o.branch_taken = id_ex_i.decoded.is_branch

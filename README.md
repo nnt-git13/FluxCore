@@ -6,7 +6,7 @@
 <p align="center"><em>A measurement-first RISC-V processor: one handwritten vertical slice from bare-metal C to a routed FPGA bitstream</em></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/ISA-RV32I%20%2B%20RV32M%20%2B%20XFlux-0f766e" alt="RV32I + RV32M + XFlux" />
+  <img src="https://img.shields.io/badge/ISA-RV32I%20%2B%20RV32M%20%2B%20RV32F%20%2B%20XFlux-0f766e" alt="RV32I + RV32M + RV32F + XFlux" />
   <img src="https://img.shields.io/badge/Pipeline-5--stage%20in--order-334155" alt="Five-stage in-order pipeline" />
   <img src="https://img.shields.io/badge/RTL-SystemVerilog-0f766e" alt="SystemVerilog" />
   <img src="https://img.shields.io/badge/Formal-Rocq%2FCoq-334155" alt="Rocq/Coq" />
@@ -46,7 +46,7 @@ This repository investigates a core question:
 
 The processor is the *unit of measurement*, not the endpoint. The endpoint is the evidence chain itself: a demonstration that the boundaries usually abstracted away — fetch timing against real BRAM latency, hazard control, trap sequencing, linker-to-memory-map agreement, checksum-verified retirement — can each be made visible, tested, and measured without an operating system, a host controller, or vendor-generated IP.
 
-Concretely, FluxCore holds one design fixed (five-stage, in-order, single-issue RV32I + RV32M + XFlux) and builds the full loop around it:
+Concretely, FluxCore holds one design fixed (five-stage, in-order, single-issue RV32I + RV32M + RV32F + XFlux) and builds the full loop around it:
 
 ```
 C / assembly
@@ -134,7 +134,7 @@ Selected references:
 ## The complete system
 
 <p align="center">
-  <img src="figures/readme_assets/system_overview.svg" alt="FluxCore SoC system overview" width="96%" />
+  <img src="figures/readme_assets/system_overview.png" alt="FluxCore SoC system overview" width="96%" />
 </p>
 <p align="center"><em>The measured configuration: <code>fluxcore_soc</code> exposes only <code>clk</code> and <code>rst</code>, attaches the core to local instruction and data BRAMs, and keeps retirement and exception events visible for debug.</em></p>
 
@@ -154,7 +154,7 @@ Selected references:
 ### Five-stage pipeline
 
 <p align="center">
-  <img src="figures/readme_assets/pipeline.svg" alt="FluxCore five-stage pipeline" width="96%" />
+  <img src="figures/readme_assets/pipeline.png" alt="FluxCore five-stage pipeline" width="96%" />
 </p>
 <p align="center"><em>Explicit IF/ID/EX/MEM/WB stage registers. The control path handles EX/MEM and MEM/WB forwarding, load-use stalls, branch and jump redirects, trap/MRET redirects, and stall inputs from the divider or optional cache.</em></p>
 
@@ -177,9 +177,19 @@ Selected references:
 | System | ECALL, MRET, CSR read/write/set/clear forms |
 | RV32M multiply | MUL, MULH, MULHU, MULHSU — single-cycle, LUT-only (0 DSPs used) |
 | RV32M divide | DIV, DIVU, REM, REMU — 33-cycle iterative restoring divider with pipeline stall |
+| RV32F load/store | FLW, FSW — separate 32-entry `f0`–`f31` register file |
+| RV32F arithmetic | FADD.S, FSUB.S, FMUL.S — single-cycle; FDIV.S, FSQRT.S — iterative (pipeline freeze) |
+| RV32F fused | FMADD.S, FMSUB.S, FNMSUB.S, FNMADD.S — true single-rounding fused multiply-add |
+| RV32F other | FSGNJ[N/X], FMIN/FMAX, FEQ/FLT/FLE, FCLASS, FMV.X.W/FMV.W.X, FCVT.W[U].S / FCVT.S.W[U] |
 | XFlux (CUSTOM_0) | XLIDX (indexed word load), XABS, XMIN, XMAX, XCLZ |
 
-Machine CSR subset: `mstatus`, `mtvec`, `mscratch`, `mepc`, `mcause`, `mtval`, `mip`, `mcycle`/`mcycleh`, `minstret`/`minstreth`, `mhartid`.
+RV32F is a full IEEE-754 single-precision implementation: all five rounding modes,
+subnormal inputs and results, NaN/infinity handling, and the five exception flags
+(NV/DZ/OF/UF/NX) accrued into `fcsr`. Correctness is checked bit-for-bit against a
+host IEEE reference in `verification/scripts/fp_vectors.py` (the `fp-sweep-test`
+target) in addition to the directed unit tests.
+
+Machine CSR subset: `mstatus` (with FS), `mtvec`, `mscratch`, `mepc`, `mcause`, `mtval`, `mip`, `mcycle`/`mcycleh`, `minstret`/`minstreth`, `mhartid`; FP CSRs `fflags`, `frm`, `fcsr`.
 
 > **Why the counters matter:** the benchmark runtime reads `mcycle`/`minstret` directly, so cycle counts, retired instructions, and CPI are collected on-core — no operating system, no external host.
 
@@ -216,7 +226,7 @@ Instantiated by `rtl/top/fluxcore_soc.sv` when `USE_DCACHE=1`. The routed FPGA s
 ## Software-to-silicon loop
 
 <p align="center">
-  <img src="figures/readme_assets/software_to_silicon.svg" alt="FluxCore software-to-silicon flow" width="96%" />
+  <img src="figures/readme_assets/software_to_silicon.png" alt="FluxCore software-to-silicon flow" width="96%" />
 </p>
 <p align="center"><em>The measurement loop: compile, convert, load, run, self-check.</em></p>
 
@@ -246,7 +256,7 @@ RESULT_BASE + 28  done      0x600DD00E
 ## Verification & evidence
 
 <p align="center">
-  <img src="figures/readme_assets/verification.svg" alt="FluxCore layered verification surface" width="96%" />
+  <img src="figures/readme_assets/verification.png" alt="FluxCore layered verification surface" width="96%" />
 </p>
 <p align="center"><em>Verification is a progression from small, fast, local checks toward complete software execution and physical implementation evidence.</em></p>
 

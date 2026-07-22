@@ -1,0 +1,126 @@
+DIGEST 7181b2ef0af747fc1cf333af12b06689
+FFlux.Spec.FluxIsa
+R636:642 Koika.Lang.Prelude <> <> lib
+R670:679 Flux.FluxCommon <> <> lib
+R707:718 Flux.Spec.FluxAlu <> <> lib
+def 842:849 <> RegState
+R860:863 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R854:859 Flux.FluxCommon <> RegIdx abbrev
+R864:867 Flux.FluxCommon <> Word abbrev
+def 882:888 <> rf_read
+R896:903 Flux.Spec.FluxIsa <> RegState def
+binder 891:892 <> rf:1
+R911:916 Flux.FluxCommon <> RegIdx abbrev
+binder 907:907 <> i:2
+R921:924 Flux.FluxCommon <> Word abbrev
+R929:930 Flux.Spec.FluxIsa <> rf:1 var
+R932:932 Flux.Spec.FluxIsa <> i:2 var
+def 947:954 <> rf_write
+R962:969 Flux.Spec.FluxIsa <> RegState def
+binder 957:958 <> rf:3
+R977:982 Flux.FluxCommon <> RegIdx abbrev
+binder 973:973 <> i:4
+R990:993 Flux.FluxCommon <> Word abbrev
+binder 986:986 <> v:5
+R998:1005 Flux.Spec.FluxIsa <> RegState def
+binder 1016:1016 <> j:6
+R1024:1029 Koika.Common.EqDec <> eq_dec meth
+R1033:1033 Flux.Spec.FluxIsa <> j:6 var
+R1031:1031 Flux.Spec.FluxIsa <> i:4 var
+R1047:1048 Flux.Spec.FluxIsa <> rf:3 var
+R1050:1050 Flux.Spec.FluxIsa <> j:6 var
+R1040:1040 Flux.Spec.FluxIsa <> v:5 var
+def 1231:1239 <> rf_write0
+R1247:1254 Flux.Spec.FluxIsa <> RegState def
+binder 1242:1243 <> rf:7
+R1262:1267 Flux.FluxCommon <> RegIdx abbrev
+binder 1258:1258 <> i:8
+R1275:1278 Flux.FluxCommon <> Word abbrev
+binder 1271:1271 <> v:9
+R1283:1290 Flux.Spec.FluxIsa <> RegState def
+R1300:1305 Koika.Common.EqDec <> eq_dec meth
+R1322:1327 Flux.FluxCommon <> RegIdx abbrev
+R1310:1318 Koika.Common.Vect Bits zero def
+R1307:1307 Flux.Spec.FluxIsa <> i:8 var
+R1343:1350 Flux.Spec.FluxIsa <> rf_write def
+R1352:1353 Flux.Spec.FluxIsa <> rf:7 var
+R1355:1355 Flux.Spec.FluxIsa <> i:8 var
+R1357:1357 Flux.Spec.FluxIsa <> v:9 var
+R1335:1336 Flux.Spec.FluxIsa <> rf:7 var
+prf 1493:1514 <> rf_write0_preserves_x0
+binder 1525:1526 <> rf:10
+binder 1528:1528 <> i:11
+binder 1530:1530 <> v:12
+R1572:1574 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1535:1543 Flux.Spec.FluxIsa <> rf_write0 def
+R1545:1546 Flux.Spec.FluxIsa <> rf:10 var
+R1548:1548 Flux.Spec.FluxIsa <> i:11 var
+R1550:1550 Flux.Spec.FluxIsa <> v:12 var
+R1565:1570 Flux.FluxCommon <> RegIdx abbrev
+R1553:1561 Koika.Common.Vect Bits zero def
+R1575:1576 Flux.Spec.FluxIsa <> rf:10 var
+R1591:1596 Flux.FluxCommon <> RegIdx abbrev
+R1579:1587 Koika.Common.Vect Bits zero def
+R1624:1632 Flux.Spec.FluxIsa <> rf_write0 def
+R1635:1642 Flux.Spec.FluxIsa <> rf_write def
+R1657:1662 Koika.Common.EqDec <> eq_dec meth
+R1679:1684 Flux.FluxCommon <> RegIdx abbrev
+R1667:1675 Koika.Common.Vect Bits zero def
+R1657:1662 Koika.Common.EqDec <> eq_dec meth
+R1679:1684 Flux.FluxCommon <> RegIdx abbrev
+R1667:1675 Koika.Common.Vect Bits zero def
+R1730:1735 Koika.Common.EqDec <> eq_dec meth
+R1752:1757 Flux.FluxCommon <> RegIdx abbrev
+R1740:1748 Koika.Common.Vect Bits zero def
+R1730:1735 Koika.Common.EqDec <> eq_dec meth
+R1752:1757 Flux.FluxCommon <> RegIdx abbrev
+R1740:1748 Koika.Common.Vect Bits zero def
+def 2011:2023 <> arch_step_alu
+R2031:2038 Flux.Spec.FluxIsa <> RegState def
+binder 2026:2027 <> rf:13
+R2047:2052 Flux.Spec.FluxAlu <> alu_op ind
+binder 2042:2043 <> op:14
+R2069:2074 Flux.FluxCommon <> RegIdx abbrev
+binder 2056:2057 <> rd:15
+binder 2059:2061 <> rs1:16
+binder 2063:2065 <> rs2:17
+R2081:2088 Flux.Spec.FluxIsa <> RegState def
+R2095:2102 Flux.Spec.FluxIsa <> rf_write def
+R2104:2105 Flux.Spec.FluxIsa <> rf:13 var
+R2107:2108 Flux.Spec.FluxIsa <> rd:15 var
+R2111:2118 Flux.Spec.FluxAlu <> alu_spec def
+R2120:2121 Flux.Spec.FluxIsa <> op:14 var
+R2124:2130 Flux.Spec.FluxIsa <> rf_read def
+R2132:2133 Flux.Spec.FluxIsa <> rf:13 var
+R2135:2137 Flux.Spec.FluxIsa <> rs1:16 var
+R2141:2147 Flux.Spec.FluxIsa <> rf_read def
+R2149:2150 Flux.Spec.FluxIsa <> rf:13 var
+R2152:2154 Flux.Spec.FluxIsa <> rs2:17 var
+prf 2239:2261 <> arch_step_alu_writes_rd
+binder 2272:2273 <> rf:18
+binder 2275:2276 <> op:19
+binder 2278:2279 <> rd:20
+binder 2281:2283 <> rs1:21
+binder 2285:2287 <> rs2:22
+R2335:2339 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2292:2298 Flux.Spec.FluxIsa <> rf_read def
+R2301:2313 Flux.Spec.FluxIsa <> arch_step_alu def
+R2315:2316 Flux.Spec.FluxIsa <> rf:18 var
+R2318:2319 Flux.Spec.FluxIsa <> op:19 var
+R2321:2322 Flux.Spec.FluxIsa <> rd:20 var
+R2324:2326 Flux.Spec.FluxIsa <> rs1:21 var
+R2328:2330 Flux.Spec.FluxIsa <> rs2:22 var
+R2333:2334 Flux.Spec.FluxIsa <> rd:20 var
+R2340:2347 Flux.Spec.FluxAlu <> alu_spec def
+R2349:2350 Flux.Spec.FluxIsa <> op:19 var
+R2353:2359 Flux.Spec.FluxIsa <> rf_read def
+R2361:2362 Flux.Spec.FluxIsa <> rf:18 var
+R2364:2366 Flux.Spec.FluxIsa <> rs1:21 var
+R2370:2376 Flux.Spec.FluxIsa <> rf_read def
+R2378:2379 Flux.Spec.FluxIsa <> rf:18 var
+R2381:2383 Flux.Spec.FluxIsa <> rs2:22 var
+R2411:2423 Flux.Spec.FluxIsa <> arch_step_alu def
+R2426:2432 Flux.Spec.FluxIsa <> rf_read def
+R2435:2442 Flux.Spec.FluxIsa <> rf_write def
+R2457:2462 Koika.Common.EqDec <> eq_dec meth
+R2457:2462 Koika.Common.EqDec <> eq_dec meth

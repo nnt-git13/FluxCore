@@ -1,0 +1,67 @@
+DIGEST ac5f2933bdf3571bb99797257ec91e98
+FFlux.Spec.FluxMul
+R590:596 Koika.Lang.Prelude <> <> lib
+R624:633 Flux.FluxCommon <> <> lib
+def 738:745 <> mul_full
+R754:757 Flux.FluxCommon <> Word abbrev
+binder 748:748 <> a:1
+binder 750:750 <> b:2
+R762:765 Koika.Common.Vect <> bits abbrev
+R773:780 Koika.Common.Vect Bits mul def
+R784:784 Flux.Spec.FluxMul <> b:2 var
+R782:782 Flux.Spec.FluxMul <> a:1 var
+def 948:953 <> mul_lo
+R963:966 Flux.FluxCommon <> Word abbrev
+binder 957:957 <> a:3
+binder 959:959 <> b:4
+R971:974 Flux.FluxCommon <> Word abbrev
+R979:988 Koika.Common.Vect Bits slice def
+R996:1003 Flux.Spec.FluxMul <> mul_full def
+R1005:1005 Flux.Spec.FluxMul <> a:3 var
+R1007:1007 Flux.Spec.FluxMul <> b:4 var
+def 1074:1080 <> mul_hiu
+R1089:1092 Flux.FluxCommon <> Word abbrev
+binder 1083:1083 <> a:5
+binder 1085:1085 <> b:6
+R1097:1100 Flux.FluxCommon <> Word abbrev
+R1105:1114 Koika.Common.Vect Bits slice def
+R1123:1130 Flux.Spec.FluxMul <> mul_full def
+R1132:1132 Flux.Spec.FluxMul <> a:5 var
+R1134:1134 Flux.Spec.FluxMul <> b:6 var
+def 1379:1384 <> sext64
+R1391:1394 Flux.FluxCommon <> Word abbrev
+binder 1387:1387 <> a:7
+R1399:1402 Koika.Common.Vect <> bits abbrev
+R1410:1424 Koika.Common.Vect Bits extend_end abbrev
+R1432:1439 Koika.Common.Vect Bits msb abbrev
+R1441:1441 Flux.Spec.FluxMul <> a:7 var
+R1426:1426 Flux.Spec.FluxMul <> a:7 var
+def 1456:1461 <> zext64
+R1468:1471 Flux.FluxCommon <> Word abbrev
+binder 1464:1464 <> a:8
+R1476:1479 Koika.Common.Vect <> bits abbrev
+R1487:1501 Koika.Common.Vect Bits extend_end abbrev
+R1508:1512 Corelib.Init.Datatypes <> false constr
+R1503:1503 Flux.Spec.FluxMul <> a:8 var
+def 1590:1595 <> mul_hi
+R1604:1607 Flux.FluxCommon <> Word abbrev
+binder 1598:1598 <> a:9
+binder 1600:1600 <> b:10
+R1612:1615 Flux.FluxCommon <> Word abbrev
+R1622:1631 Koika.Common.Vect Bits slice def
+R1640:1647 Koika.Common.Vect Bits mul def
+R1661:1666 Flux.Spec.FluxMul <> sext64 def
+R1668:1668 Flux.Spec.FluxMul <> b:10 var
+R1650:1655 Flux.Spec.FluxMul <> sext64 def
+R1657:1657 Flux.Spec.FluxMul <> a:9 var
+def 1752:1759 <> mul_hisu
+R1768:1771 Flux.FluxCommon <> Word abbrev
+binder 1762:1762 <> a:11
+binder 1764:1764 <> b:12
+R1776:1779 Flux.FluxCommon <> Word abbrev
+R1786:1795 Koika.Common.Vect Bits slice def
+R1804:1811 Koika.Common.Vect Bits mul def
+R1825:1830 Flux.Spec.FluxMul <> zext64 def
+R1832:1832 Flux.Spec.FluxMul <> b:12 var
+R1814:1819 Flux.Spec.FluxMul <> sext64 def
+R1821:1821 Flux.Spec.FluxMul <> a:11 var

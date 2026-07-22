@@ -131,6 +131,11 @@ module mem_stage
     // -----------------------------------------------------------------------
     logic [3:0] wstrb_s;
     word_t      wdata_s;
+    // Store data source: FSW (uses_fs2) writes the FP operand fp_store_data;
+    // integer stores use rs2_data. (Only FSW sets uses_fs2 among stores.)
+    word_t      store_src_s;
+    assign store_src_s = ex_mem_i.decoded.uses_fs2 ? ex_mem_i.fp_store_data
+                                                   : ex_mem_i.rs2_data;
 
     always_comb begin
         wstrb_s = 4'b0000;
@@ -138,15 +143,15 @@ module mem_stage
         case (ex_mem_i.decoded.mem_op)
             MEM_SB: begin
                 wstrb_s = 4'b0001 << byte_off_s;
-                wdata_s = {4{ex_mem_i.rs2_data[7:0]}};
+                wdata_s = {4{store_src_s[7:0]}};
             end
             MEM_SH: begin
                 wstrb_s = half_off_s ? 4'b1100 : 4'b0011;
-                wdata_s = {2{ex_mem_i.rs2_data[15:0]}};
+                wdata_s = {2{store_src_s[15:0]}};
             end
             MEM_SW: begin
                 wstrb_s = 4'b1111;
-                wdata_s = ex_mem_i.rs2_data;
+                wdata_s = store_src_s;
             end
             default: begin
                 wstrb_s = 4'b0000;
@@ -242,6 +247,7 @@ module mem_stage
             WB_MEM: rd_data_s = load_data_s;
             WB_PC4: rd_data_s = ex_mem_i.pc + 32'd4;
             WB_CSR: rd_data_s = ex_mem_i.csr_rdata;  // old value read in EX
+            WB_FPU: rd_data_s = ex_mem_i.fp_result;  // FP→int (FCMP/FCVT.W/FMV.X/FCLASS)
             default: rd_data_s = '0;
         endcase
     end
@@ -295,6 +301,26 @@ module mem_stage
                               & (ex_mem_i.decoded.wb_src == WB_MEM);
         mem_wb_o.mem_byte_off = ex_mem_i.alu_result[1:0];
         mem_wb_o.exception = exc_s;
+        // ---- RV32F writeback ----
+        // FP register write: FP-producing ops (writes_frd) and FLW (is_load &
+        // writes_frd, data from memory).  Gated like the integer rd write.
+        mem_wb_o.frd_wen    = ex_mem_i.decoded.writes_frd
+                            & ex_mem_i.decoded.legal
+                            & ~ex_mem_i.decoded.exception.valid
+                            & ~new_exc_s;
+        mem_wb_o.frd_addr   = ex_mem_i.decoded.rd;   // frd shares the rd field
+        // FLW routes the loaded word; compute ops route fp_result. For FLW the
+        // final word is recomputed from live memory in WB (fp_from_mem), mirroring
+        // the integer load path; frd_data holds the combinational-sim value.
+        mem_wb_o.frd_data   = ex_mem_i.decoded.is_load ? load_data_s
+                                                       : ex_mem_i.fp_result;
+        mem_wb_o.fp_from_mem = ex_mem_i.decoded.is_load & ex_mem_i.decoded.writes_frd;
+        // fflags accrual: only FP compute ops set flags (is_fp); FLW/FSW do not.
+        mem_wb_o.fflags_wen = ex_mem_i.valid
+                            & ex_mem_i.decoded.is_fp
+                            & ex_mem_i.decoded.legal
+                            & ~ex_mem_i.decoded.exception.valid;
+        mem_wb_o.fflags     = ex_mem_i.fflags;
     end
 
 endmodule : mem_stage

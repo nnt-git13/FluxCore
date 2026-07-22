@@ -1,0 +1,9 @@
+DIGEST be7a7c89d3184cdd89ec1f7d36585acb
+FFlux.FluxCommon
+R623:629 Koika.Lang.Prelude <> <> lib
+abbrev 693:696 <> Word
+R702:705 Koika.Common.Vect <> bits abbrev
+def 800:807 <> RegCount
+R811:813 Corelib.Init.Datatypes <> nat ind
+abbrev 876:881 <> RegIdx
+R887:890 Koika.Common.Vect <> bits abbrev

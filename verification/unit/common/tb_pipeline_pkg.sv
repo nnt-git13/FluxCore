@@ -31,22 +31,34 @@ module tb_pipeline_pkg;
     // Expected widths — computed from the constituent types
     // -----------------------------------------------------------------------
     // exception_meta_t : 1 + 1 + EXC_CAUSE_W + XLEN = 1 + 1 + 4 + 32 = 38  (valid, is_irq, cause, tval)
-    // decoded_instr_t  : 128  (was 127; +1 from alu_op_e 4→5 bits for RV32M+XFlux ops)
+    // decoded_instr_t  : 148  (was 128; op_class 3→4 bits +1, plus 18 RV32F bits:
+    //                          is_fp, fpu_op(5), fs3(5), uses_fs1/2/3, writes_frd, frm(3))
     //
-    // if_id   : 1 + 32 + 32                               = 65
-    // id_ex   : 1 + 32 + 32 + 128 + 32 + 32                   = 257
-    // ex_mem  : 1 + 32 + 32 + 128 + 32 + 32 + 1 + 32 + 32   = 322 (csr_rdata +32)
-    // mem_wb  : 1 + 32 + 32 + 1 + REG_IDX_W + 32 + 1 + 2 + 37 = 143
+    // FP payload additions:
+    //   id_ex  : + fs1_data + fs2_data + fs3_data                        (3×XLEN)
+    //   ex_mem : + fp_result + fp_store_data + fflags                    (2×XLEN + 5)
+    //   mem_wb : + frd_wen + frd_addr + frd_data + fp_from_mem
+    //            + fflags_wen + fflags                        (1 + REG_IDX_W + XLEN + 1 + 1 + 5)
+    //
+    // if_id   : 1 + 32 + 32                                                          = 65
+    // id_ex   : 1 + 32 + 32 + 148 + 32 + 32 + 3×32                                   = 373
+    // ex_mem  : 1 + 32 + 32 + 148 + 32 + 32 + 1 + 32 + 32 + 32 + 32 + 5              = 411
+    // mem_wb  : 1 + 32 + 32 + 1 + 5 + 32 + 1 + 2 + 38 + 1 + 5 + 32 + 1 + 1 + 5       = 189
 
     localparam int EXCEPTION_META_W =
-        1 + 1 + EXC_CAUSE_W + XLEN;   // valid + is_irq + cause + tval   // 37
+        1 + 1 + EXC_CAUSE_W + XLEN;   // valid + is_irq + cause + tval   // 38
 
-    localparam int DECODED_W = $bits(decoded_instr_t);  // 127
+    localparam int FFLAGS_W = 5;
+
+    localparam int DECODED_W = $bits(decoded_instr_t);  // 148
 
     localparam int EXP_IF_ID_W   = 1 + XLEN + INSTR_W;
-    localparam int EXP_ID_EX_W   = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN;
-    localparam int EXP_EX_MEM_W  = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN + 1 + XLEN + XLEN; // +XLEN for csr_rdata
-    localparam int EXP_MEM_WB_W  = 1 + XLEN + INSTR_W + 1 + REG_IDX_W + XLEN + 1 + 2 + EXCEPTION_META_W;
+    localparam int EXP_ID_EX_W   = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN
+                                 + XLEN + XLEN + XLEN;                    // + fs1/fs2/fs3 data
+    localparam int EXP_EX_MEM_W  = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN + 1 + XLEN + XLEN
+                                 + XLEN + XLEN + FFLAGS_W;               // + fp_result/fp_store_data/fflags
+    localparam int EXP_MEM_WB_W  = 1 + XLEN + INSTR_W + 1 + REG_IDX_W + XLEN + 1 + 2 + EXCEPTION_META_W
+                                 + 1 + REG_IDX_W + XLEN + 1 + 1 + FFLAGS_W; // + FP writeback + fflags accrual
 
     // -----------------------------------------------------------------------
     // Helper
@@ -72,9 +84,10 @@ module tb_pipeline_pkg;
 
         // Confirm computed values against constants in the package comment
         check_eq("if_id_payload_t width",   EXP_IF_ID_W,   65);
-        check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  258);
-        check_eq("ex_mem_payload_t width",  EXP_EX_MEM_W, 323);
-        check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 144);
+        check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  373);
+        check_eq("ex_mem_payload_t width",  EXP_EX_MEM_W, 411);
+        check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 189);
+        check_eq("decoded_instr_t width",   DECODED_W,    148);
 
         // ================================================================
         // 2. IF/ID payload: field accessibility and bubble invariant

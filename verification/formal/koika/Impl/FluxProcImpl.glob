@@ -1,0 +1,1468 @@
+DIGEST f9986d83fe0ec961debd694e67577b02
+FFlux.Impl.FluxProcImpl
+R1196:1202 Koika.Lang.Prelude <> <> lib
+R1229:1231 Gpu.Basic.Reg <> <> lib
+R1259:1268 Flux.FluxCommon <> <> lib
+R1296:1307 Flux.Spec.FluxAlu <> <> lib
+R1335:1349 Flux.Spec.FluxBranch <> <> lib
+R1377:1392 Flux.Impl.FluxAluImpl <> <> lib
+R1420:1438 Flux.Impl.FluxBranchImpl <> <> lib
+R1466:1481 Flux.Impl.FluxMulImpl <> <> lib
+R1509:1515 Flux.FluxMem <> <> lib
+R1543:1550 Flux.FluxProc <> <> lib
+R1561:1564 Koika.Lang.Syntax Abbr <> mod
+sec 1611:1614 <> impl
+ind 1628:1637 <> proc_mod_t
+constr 1648:1649 <> pc
+constr 1657:1659 <> mem
+constr 1667:1669 <> reg
+R1676:1681 Flux.FluxCommon <> RegIdx abbrev
+binder 1672:1672 <> i:3
+inst 1710:1722 <> EqDecProcModT
+R1726:1730 Koika.Common.EqDec <> EqDec class
+R1732:1741 Flux.Impl.FluxProcImpl <> proc_mod_t variant
+inst 1770:1779 <> submodules
+R1783:1791 Koika.Lang.Syntax Modules t class
+R1793:1802 Flux.Impl.FluxProcImpl <> proc_mod_t variant
+R1816:1831 Koika.Lang.Syntax Modules mod_list meth
+R1816:1831 Koika.Lang.Syntax Modules mod_list meth
+R1816:1831 Koika.Lang.Syntax Modules mod_list meth
+R1930:1948 Koika.Lang.Syntax Modules mod_list_wf meth
+R1930:1948 Koika.Lang.Syntax Modules mod_list_wf meth
+R1967:1982 Koika.Lang.Syntax Modules get_name meth
+R1967:1982 Koika.Lang.Syntax Modules get_name meth
+R2112:2126 Koika.Lang.Syntax Modules get_sig meth
+R2112:2126 Koika.Lang.Syntax Modules get_sig meth
+R1844:1847 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1842:1843 Flux.Impl.FluxProcImpl <> pc constr
+R1851:1860 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1848:1850 Flux.Impl.FluxProcImpl <> mem constr
+R1861:1863 Corelib.Lists.ListDef <> map def
+R1870:1872 Corelib.Lists.ListDef <> map def
+R1893:1904 Koika.Common.Vect <> vect_to_list def
+R1907:1917 Koika.Common.IndexUtils <> all_indices def
+R1875:1887 Koika.Common.Vect Bits of_index def
+R1865:1867 Flux.Impl.FluxProcImpl <> reg constr
+R1953:1960 Koika.Lang.Syntax <> :::'list_wf!' not
+binder 2128:2128 <> m:4
+R2145:2145 Flux.Impl.FluxProcImpl <> m:4 var
+R2160:2161 Flux.Impl.FluxProcImpl <> pc constr
+R2166:2172 Gpu.Basic.Reg Reg ifc def
+R2185:2187 Flux.Impl.FluxProcImpl <> mem constr
+R2192:2202 Flux.FluxMem WordMem ifc def
+R2212:2214 Flux.Impl.FluxProcImpl <> reg constr
+R2221:2227 Gpu.Basic.Reg Reg ifc def
+binder 1984:1984 <> m:6
+R2001:2001 Flux.Impl.FluxProcImpl <> m:6 var
+R2016:2017 Flux.Impl.FluxProcImpl <> pc constr
+R2035:2037 Flux.Impl.FluxProcImpl <> mem constr
+R2056:2058 Flux.Impl.FluxProcImpl <> reg constr
+R2065:2072 Koika.Lang.Syntax <> nth_name def
+R2082:2092 Koika.Common.Vect Bits to_nat def
+abbrev 2261:2264 <> VMet
+R2270:2273 Koika.Lang.Syntax <> VMet constr
+R2279:2288 Flux.Impl.FluxProcImpl <> submodules inst
+abbrev 2304:2307 <> AMet
+R2313:2316 Koika.Lang.Syntax <> AMet constr
+R2322:2331 Flux.Impl.FluxProcImpl <> submodules inst
+def 2429:2436 <> read_reg
+binder 2439:2439 <> V:8
+R2447:2447 Flux.Impl.FluxProcImpl <> V:8 var
+binder 2443:2443 <> i:9
+R2454:2461 Koika.Lang.Syntax <> PureExpr def
+R2463:2463 Flux.Impl.FluxProcImpl <> V:8 var
+R2475:2482 Koika.Lang.Syntax <> mux_expr def
+binder 2491:2492 <> iv:10
+R2497:2500 Flux.Impl.FluxProcImpl <> VMet abbrev
+R2503:2505 Flux.Impl.FluxProcImpl <> reg constr
+R2507:2508 Flux.Impl.FluxProcImpl <> iv:10 var
+R2511:2518 Gpu.Basic.Reg <> read constr
+R2520:2523 Koika.Common.CtxNotations <> ::ctx_scope:'<['_']>' not
+R2484:2484 Flux.Impl.FluxProcImpl <> i:9 var
+def 2655:2663 <> write_reg
+binder 2666:2666 <> V:11
+R2674:2674 Flux.Impl.FluxProcImpl <> V:11 var
+binder 2670:2670 <> i:12
+R2684:2684 Flux.Impl.FluxProcImpl <> V:11 var
+binder 2680:2680 <> v:13
+R2692:2698 Koika.Lang.Syntax <> EffExpr def
+R2700:2700 Flux.Impl.FluxProcImpl <> V:11 var
+R2711:2718 Koika.Lang.Syntax <> mux_expr def
+binder 2727:2728 <> iv:14
+R2742:2747 Koika.Common.EqDec <> eq_dec meth
+R2765:2770 Flux.FluxCommon <> RegIdx abbrev
+R2753:2761 Koika.Common.Vect Bits zero def
+R2749:2750 Flux.Impl.FluxProcImpl <> iv:14 var
+R2799:2802 Flux.Impl.FluxProcImpl <> AMet abbrev
+R2805:2807 Flux.Impl.FluxProcImpl <> reg constr
+R2809:2810 Flux.Impl.FluxProcImpl <> iv:14 var
+R2813:2821 Gpu.Basic.Reg <> write constr
+R2823:2824 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R2829:2830 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R2825:2826 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2828:2828 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2827:2827 Flux.Impl.FluxProcImpl <> v:13 var
+R2778:2780 Koika.Lang.Syntax <> Ret constr
+R2782:2783 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2786:2786 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2784:2785 Koika.Common.Vect <> ::bits:'Ob' not
+R2720:2720 Flux.Impl.FluxProcImpl <> i:12 var
+def 2872:2877 <> wr_pc4
+binder 2880:2880 <> V:15
+R2890:2890 Flux.Impl.FluxProcImpl <> V:15 var
+binder 2884:2886 <> pcv:16
+R2898:2904 Koika.Lang.Syntax <> EffExpr def
+R2906:2906 Flux.Impl.FluxProcImpl <> V:15 var
+R2917:2920 Flux.Impl.FluxProcImpl <> AMet abbrev
+R2922:2923 Flux.Impl.FluxProcImpl <> pc constr
+R2925:2933 Gpu.Basic.Reg <> write constr
+R2935:2936 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R2968:2969 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R2937:2940 Koika.Lang.Syntax Abbr plus def
+R2949:2950 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2967:2967 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R2951:2961 Koika.Common.Vect Bits of_nat def
+R2942:2943 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2947:2947 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R2944:2946 Flux.Impl.FluxProcImpl <> pcv:16 var
+def 3186:3196 <> alu_expr_of
+binder 3199:3199 <> V:17
+R3207:3212 Flux.Spec.FluxAlu <> alu_op ind
+binder 3203:3203 <> o:18
+R3222:3222 Flux.Impl.FluxProcImpl <> V:17 var
+binder 3216:3216 <> a:19
+binder 3218:3218 <> b:20
+R3230:3237 Koika.Lang.Syntax <> PureExpr def
+R3239:3239 Flux.Impl.FluxProcImpl <> V:17 var
+R3257:3257 Flux.Impl.FluxProcImpl <> o:18 var
+R3270:3276 Flux.Spec.FluxAlu <> ALU_AND constr
+R3284:3295 Flux.Impl.FluxAluImpl <> alu_and_expr def
+R3297:3297 Flux.Impl.FluxProcImpl <> a:19 var
+R3299:3299 Flux.Impl.FluxProcImpl <> b:20 var
+R3307:3312 Flux.Spec.FluxAlu <> ALU_OR constr
+R3321:3331 Flux.Impl.FluxAluImpl <> alu_or_expr def
+R3333:3333 Flux.Impl.FluxProcImpl <> a:19 var
+R3335:3335 Flux.Impl.FluxProcImpl <> b:20 var
+R3343:3349 Flux.Spec.FluxAlu <> ALU_XOR constr
+R3357:3368 Flux.Impl.FluxAluImpl <> alu_xor_expr def
+R3370:3370 Flux.Impl.FluxProcImpl <> a:19 var
+R3372:3372 Flux.Impl.FluxProcImpl <> b:20 var
+R3380:3386 Flux.Spec.FluxAlu <> ALU_ADD constr
+R3394:3405 Flux.Impl.FluxAluImpl <> alu_add_expr def
+R3407:3407 Flux.Impl.FluxProcImpl <> a:19 var
+R3409:3409 Flux.Impl.FluxProcImpl <> b:20 var
+R3417:3423 Flux.Spec.FluxAlu <> ALU_SUB constr
+R3431:3442 Flux.Impl.FluxAluImpl <> alu_sub_expr def
+R3444:3444 Flux.Impl.FluxProcImpl <> a:19 var
+R3446:3446 Flux.Impl.FluxProcImpl <> b:20 var
+R3454:3463 Flux.Spec.FluxAlu <> ALU_COPY_B constr
+R3468:3481 Flux.Impl.FluxAluImpl <> alu_copyb_expr def
+R3483:3483 Flux.Impl.FluxProcImpl <> a:19 var
+R3485:3485 Flux.Impl.FluxProcImpl <> b:20 var
+R3493:3499 Flux.Spec.FluxAlu <> ALU_SLL constr
+R3507:3518 Flux.Impl.FluxAluImpl <> alu_sll_expr def
+R3520:3520 Flux.Impl.FluxProcImpl <> a:19 var
+R3522:3522 Flux.Impl.FluxProcImpl <> b:20 var
+R3530:3536 Flux.Spec.FluxAlu <> ALU_SRL constr
+R3544:3555 Flux.Impl.FluxAluImpl <> alu_srl_expr def
+R3557:3557 Flux.Impl.FluxProcImpl <> a:19 var
+R3559:3559 Flux.Impl.FluxProcImpl <> b:20 var
+R3567:3573 Flux.Spec.FluxAlu <> ALU_SRA constr
+R3581:3592 Flux.Impl.FluxAluImpl <> alu_sra_expr def
+R3594:3594 Flux.Impl.FluxProcImpl <> a:19 var
+R3596:3596 Flux.Impl.FluxProcImpl <> b:20 var
+R3604:3610 Flux.Spec.FluxAlu <> ALU_SLT constr
+R3618:3629 Flux.Impl.FluxAluImpl <> alu_slt_expr def
+R3631:3631 Flux.Impl.FluxProcImpl <> a:19 var
+R3633:3633 Flux.Impl.FluxProcImpl <> b:20 var
+R3641:3648 Flux.Spec.FluxAlu <> ALU_SLTU constr
+R3655:3667 Flux.Impl.FluxAluImpl <> alu_sltu_expr def
+R3669:3669 Flux.Impl.FluxProcImpl <> a:19 var
+R3671:3671 Flux.Impl.FluxProcImpl <> b:20 var
+R3679:3686 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R3693:3705 Flux.Impl.FluxAluImpl <> alu_xmin_expr def
+R3707:3707 Flux.Impl.FluxProcImpl <> a:19 var
+R3709:3709 Flux.Impl.FluxProcImpl <> b:20 var
+R3717:3724 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R3731:3743 Flux.Impl.FluxAluImpl <> alu_xmax_expr def
+R3745:3745 Flux.Impl.FluxProcImpl <> a:19 var
+R3747:3747 Flux.Impl.FluxProcImpl <> b:20 var
+R3755:3763 Flux.Spec.FluxAlu <> ALU_XLIDX constr
+R3769:3782 Flux.Impl.FluxAluImpl <> alu_xlidx_expr def
+R3784:3784 Flux.Impl.FluxProcImpl <> a:19 var
+R3786:3786 Flux.Impl.FluxProcImpl <> b:20 var
+R3794:3801 Flux.Spec.FluxAlu <> ALU_XABS constr
+R3808:3820 Flux.Impl.FluxAluImpl <> alu_xabs_expr def
+R3822:3822 Flux.Impl.FluxProcImpl <> a:19 var
+R3824:3824 Flux.Impl.FluxProcImpl <> b:20 var
+R3832:3839 Flux.Spec.FluxAlu <> ALU_XCLZ constr
+R3846:3847 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R3849:3849 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R3848:3848 Flux.Impl.FluxProcImpl <> a:19 var
+def 3974:3983 <> br_expr_of
+binder 3986:3986 <> V:22
+R3995:4003 Flux.Spec.FluxBranch <> branch_op variant
+binder 3990:3991 <> bo:23
+R4013:4013 Flux.Impl.FluxProcImpl <> V:22 var
+binder 4007:4007 <> a:24
+binder 4009:4009 <> b:25
+R4021:4028 Koika.Lang.Syntax <> PureExpr def
+R4030:4030 Flux.Impl.FluxProcImpl <> V:22 var
+R4047:4048 Flux.Impl.FluxProcImpl <> bo:23 var
+R4061:4065 Flux.Spec.FluxBranch <> BR_EQ constr
+R4071:4084 Flux.Impl.FluxBranchImpl <> branch_eq_expr def
+R4086:4086 Flux.Impl.FluxProcImpl <> a:24 var
+R4088:4088 Flux.Impl.FluxProcImpl <> b:25 var
+R4096:4100 Flux.Spec.FluxBranch <> BR_NE constr
+R4106:4119 Flux.Impl.FluxBranchImpl <> branch_ne_expr def
+R4121:4121 Flux.Impl.FluxProcImpl <> a:24 var
+R4123:4123 Flux.Impl.FluxProcImpl <> b:25 var
+R4131:4135 Flux.Spec.FluxBranch <> BR_LT constr
+R4141:4154 Flux.Impl.FluxBranchImpl <> branch_lt_expr def
+R4156:4156 Flux.Impl.FluxProcImpl <> a:24 var
+R4158:4158 Flux.Impl.FluxProcImpl <> b:25 var
+R4166:4170 Flux.Spec.FluxBranch <> BR_GE constr
+R4176:4189 Flux.Impl.FluxBranchImpl <> branch_ge_expr def
+R4191:4191 Flux.Impl.FluxProcImpl <> a:24 var
+R4193:4193 Flux.Impl.FluxProcImpl <> b:25 var
+R4201:4206 Flux.Spec.FluxBranch <> BR_LTU constr
+R4211:4225 Flux.Impl.FluxBranchImpl <> branch_ltu_expr def
+R4227:4227 Flux.Impl.FluxProcImpl <> a:24 var
+R4229:4229 Flux.Impl.FluxProcImpl <> b:25 var
+R4237:4242 Flux.Spec.FluxBranch <> BR_GEU constr
+R4247:4261 Flux.Impl.FluxBranchImpl <> branch_geu_expr def
+R4263:4263 Flux.Impl.FluxProcImpl <> a:24 var
+R4265:4265 Flux.Impl.FluxProcImpl <> b:25 var
+def 4350:4363 <> br_nextpc_expr
+binder 4366:4366 <> V:27
+R4375:4383 Flux.Spec.FluxBranch <> branch_op variant
+binder 4370:4371 <> bo:28
+R4401:4401 Flux.Impl.FluxProcImpl <> V:27 var
+binder 4387:4387 <> a:29
+binder 4389:4389 <> b:30
+binder 4391:4393 <> pcv:31
+binder 4395:4397 <> imm:32
+R4413:4420 Koika.Lang.Syntax <> PureExpr def
+R4422:4422 Flux.Impl.FluxProcImpl <> V:27 var
+R4434:4435 Koika.Lang.Syntax <> If constr
+R4493:4496 Koika.Lang.Syntax Abbr plus def
+R4505:4506 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R4523:4523 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R4507:4517 Koika.Common.Vect Bits of_nat def
+R4498:4499 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R4503:4503 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R4500:4502 Flux.Impl.FluxProcImpl <> pcv:31 var
+R4465:4468 Koika.Lang.Syntax Abbr plus def
+R4477:4478 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R4482:4482 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R4479:4481 Flux.Impl.FluxProcImpl <> imm:32 var
+R4470:4471 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R4475:4475 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R4472:4474 Flux.Impl.FluxProcImpl <> pcv:31 var
+R4438:4447 Flux.Impl.FluxProcImpl <> br_expr_of def
+R4454:4454 Flux.Impl.FluxProcImpl <> b:30 var
+R4452:4452 Flux.Impl.FluxProcImpl <> a:29 var
+R4449:4450 Flux.Impl.FluxProcImpl <> bo:28 var
+def 4602:4612 <> mul_expr_of
+binder 4615:4615 <> V:33
+R4623:4628 Flux.FluxProc <> mul_op variant
+binder 4619:4619 <> m:34
+R4638:4638 Flux.Impl.FluxProcImpl <> V:33 var
+binder 4632:4632 <> a:35
+binder 4634:4634 <> b:36
+R4646:4653 Koika.Lang.Syntax <> PureExpr def
+R4655:4655 Flux.Impl.FluxProcImpl <> V:33 var
+R4673:4673 Flux.Impl.FluxProcImpl <> m:34 var
+R4686:4689 Flux.FluxProc <> M_LO constr
+R4696:4706 Flux.Impl.FluxMulImpl <> mul_lo_expr def
+R4708:4708 Flux.Impl.FluxProcImpl <> a:35 var
+R4710:4710 Flux.Impl.FluxProcImpl <> b:36 var
+R4718:4721 Flux.FluxProc <> M_HI constr
+R4728:4738 Flux.Impl.FluxMulImpl <> mul_hi_expr def
+R4740:4740 Flux.Impl.FluxProcImpl <> a:35 var
+R4742:4742 Flux.Impl.FluxProcImpl <> b:36 var
+R4750:4755 Flux.FluxProc <> M_HISU constr
+R4760:4772 Flux.Impl.FluxMulImpl <> mul_hisu_expr def
+R4774:4774 Flux.Impl.FluxProcImpl <> a:35 var
+R4776:4776 Flux.Impl.FluxProcImpl <> b:36 var
+R4784:4788 Flux.FluxProc <> M_HIU constr
+R4794:4805 Flux.Impl.FluxMulImpl <> mul_hiu_expr def
+R4807:4807 Flux.Impl.FluxProcImpl <> a:35 var
+R4809:4809 Flux.Impl.FluxProcImpl <> b:36 var
+def 5066:5073 <> byte_mux
+binder 5076:5076 <> V:38
+R5087:5087 Flux.Impl.FluxProcImpl <> V:38 var
+binder 5080:5083 <> lane:39
+R5097:5097 Flux.Impl.FluxProcImpl <> V:38 var
+binder 5093:5093 <> w:40
+R5105:5112 Koika.Lang.Syntax <> PureExpr def
+R5114:5114 Flux.Impl.FluxProcImpl <> V:38 var
+R5125:5132 Koika.Lang.Syntax <> mux_expr def
+binder 5144:5145 <> lv:41
+R5162:5172 Koika.Common.Vect Bits to_nat def
+R5174:5175 Flux.Impl.FluxProcImpl <> lv:41 var
+R5195:5199 Koika.Lang.Syntax Abbr slice def
+R5206:5207 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5209:5209 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5208:5208 Flux.Impl.FluxProcImpl <> w:40 var
+R5224:5228 Koika.Lang.Syntax Abbr slice def
+R5235:5236 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5238:5238 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5237:5237 Flux.Impl.FluxProcImpl <> w:40 var
+R5253:5257 Koika.Lang.Syntax Abbr slice def
+R5264:5265 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5267:5267 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5266:5266 Flux.Impl.FluxProcImpl <> w:40 var
+R5282:5286 Koika.Lang.Syntax Abbr slice def
+R5293:5294 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5296:5296 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5295:5295 Flux.Impl.FluxProcImpl <> w:40 var
+R5134:5137 Flux.Impl.FluxProcImpl <> lane:39 var
+def 5327:5334 <> half_mux
+binder 5337:5337 <> V:42
+R5348:5348 Flux.Impl.FluxProcImpl <> V:42 var
+binder 5341:5344 <> lane:43
+R5358:5358 Flux.Impl.FluxProcImpl <> V:42 var
+binder 5354:5354 <> w:44
+R5366:5373 Koika.Lang.Syntax <> PureExpr def
+R5375:5375 Flux.Impl.FluxProcImpl <> V:42 var
+R5387:5394 Koika.Lang.Syntax <> mux_expr def
+binder 5406:5407 <> lv:45
+R5424:5434 Koika.Common.Vect Bits to_nat def
+R5436:5437 Flux.Impl.FluxProcImpl <> lv:45 var
+R5457:5461 Koika.Lang.Syntax Abbr slice def
+R5469:5470 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5472:5472 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5471:5471 Flux.Impl.FluxProcImpl <> w:44 var
+R5487:5491 Koika.Lang.Syntax Abbr slice def
+R5499:5500 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5502:5502 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5501:5501 Flux.Impl.FluxProcImpl <> w:44 var
+R5396:5399 Flux.Impl.FluxProcImpl <> lane:43 var
+def 5533:5546 <> byte_subst_mux
+binder 5549:5549 <> V:46
+R5560:5560 Flux.Impl.FluxProcImpl <> V:46 var
+binder 5553:5556 <> lane:47
+R5570:5570 Flux.Impl.FluxProcImpl <> V:46 var
+binder 5566:5566 <> w:48
+R5581:5581 Flux.Impl.FluxProcImpl <> V:46 var
+binder 5577:5577 <> v:49
+R5592:5599 Koika.Lang.Syntax <> PureExpr def
+R5601:5601 Flux.Impl.FluxProcImpl <> V:46 var
+R5613:5620 Koika.Lang.Syntax <> mux_expr def
+binder 5632:5633 <> lv:50
+R5650:5660 Koika.Common.Vect Bits to_nat def
+R5662:5663 Flux.Impl.FluxProcImpl <> lv:50 var
+R5683:5685 Koika.Lang.Syntax <> BOp constr
+R5688:5707 Koika.Lang.Primitives PrimTyped SliceSubst constr
+R5718:5719 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5721:5721 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5720:5720 Flux.Impl.FluxProcImpl <> w:48 var
+R5723:5724 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5726:5726 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5725:5725 Flux.Impl.FluxProcImpl <> v:49 var
+R5741:5743 Koika.Lang.Syntax <> BOp constr
+R5746:5765 Koika.Lang.Primitives PrimTyped SliceSubst constr
+R5776:5777 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5779:5779 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5778:5778 Flux.Impl.FluxProcImpl <> w:48 var
+R5781:5782 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5784:5784 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5783:5783 Flux.Impl.FluxProcImpl <> v:49 var
+R5799:5801 Koika.Lang.Syntax <> BOp constr
+R5804:5823 Koika.Lang.Primitives PrimTyped SliceSubst constr
+R5834:5835 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5837:5837 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5836:5836 Flux.Impl.FluxProcImpl <> w:48 var
+R5839:5840 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5842:5842 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5841:5841 Flux.Impl.FluxProcImpl <> v:49 var
+R5857:5859 Koika.Lang.Syntax <> BOp constr
+R5862:5881 Koika.Lang.Primitives PrimTyped SliceSubst constr
+R5892:5893 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5895:5895 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5894:5894 Flux.Impl.FluxProcImpl <> w:48 var
+R5897:5898 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5900:5900 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R5899:5899 Flux.Impl.FluxProcImpl <> v:49 var
+R5622:5625 Flux.Impl.FluxProcImpl <> lane:47 var
+def 5931:5944 <> half_subst_mux
+binder 5947:5947 <> V:51
+R5958:5958 Flux.Impl.FluxProcImpl <> V:51 var
+binder 5951:5954 <> lane:52
+R5968:5968 Flux.Impl.FluxProcImpl <> V:51 var
+binder 5964:5964 <> w:53
+R5979:5979 Flux.Impl.FluxProcImpl <> V:51 var
+binder 5975:5975 <> v:54
+R5991:5998 Koika.Lang.Syntax <> PureExpr def
+R6000:6000 Flux.Impl.FluxProcImpl <> V:51 var
+R6012:6019 Koika.Lang.Syntax <> mux_expr def
+binder 6031:6032 <> lv:55
+R6049:6059 Koika.Common.Vect Bits to_nat def
+R6061:6062 Flux.Impl.FluxProcImpl <> lv:55 var
+R6082:6084 Koika.Lang.Syntax <> BOp constr
+R6087:6106 Koika.Lang.Primitives PrimTyped SliceSubst constr
+R6118:6119 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6121:6121 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6120:6120 Flux.Impl.FluxProcImpl <> w:53 var
+R6123:6124 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6126:6126 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6125:6125 Flux.Impl.FluxProcImpl <> v:54 var
+R6141:6143 Koika.Lang.Syntax <> BOp constr
+R6146:6165 Koika.Lang.Primitives PrimTyped SliceSubst constr
+R6177:6178 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6180:6180 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6179:6179 Flux.Impl.FluxProcImpl <> w:53 var
+R6182:6183 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6185:6185 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6184:6184 Flux.Impl.FluxProcImpl <> v:54 var
+R6021:6024 Flux.Impl.FluxProcImpl <> lane:52 var
+def 6318:6327 <> sext8_expr
+binder 6331:6331 <> V:56
+R6339:6339 Flux.Impl.FluxProcImpl <> V:56 var
+binder 6335:6335 <> b:57
+R6347:6354 Koika.Lang.Syntax <> PureExpr def
+R6356:6356 Flux.Impl.FluxProcImpl <> V:56 var
+R6364:6367 Koika.Lang.Syntax Abbr sext def
+R6372:6373 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6375:6375 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6374:6374 Flux.Impl.FluxProcImpl <> b:57 var
+def 6391:6400 <> zext8_expr
+binder 6404:6404 <> V:58
+R6412:6412 Flux.Impl.FluxProcImpl <> V:58 var
+binder 6408:6408 <> b:59
+R6420:6427 Koika.Lang.Syntax <> PureExpr def
+R6429:6429 Flux.Impl.FluxProcImpl <> V:58 var
+R6437:6441 Koika.Lang.Syntax Abbr zextL def
+R6446:6447 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6449:6449 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6448:6448 Flux.Impl.FluxProcImpl <> b:59 var
+def 6465:6475 <> sext16_expr
+binder 6478:6478 <> V:60
+R6486:6486 Flux.Impl.FluxProcImpl <> V:60 var
+binder 6482:6482 <> h:61
+R6494:6501 Koika.Lang.Syntax <> PureExpr def
+R6503:6503 Flux.Impl.FluxProcImpl <> V:60 var
+R6511:6514 Koika.Lang.Syntax Abbr sext def
+R6519:6520 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6522:6522 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6521:6521 Flux.Impl.FluxProcImpl <> h:61 var
+def 6538:6548 <> zext16_expr
+binder 6551:6551 <> V:62
+R6559:6559 Flux.Impl.FluxProcImpl <> V:62 var
+binder 6555:6555 <> h:63
+R6567:6574 Koika.Lang.Syntax <> PureExpr def
+R6576:6576 Flux.Impl.FluxProcImpl <> V:62 var
+R6584:6588 Koika.Lang.Syntax Abbr zextL def
+R6593:6594 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6596:6596 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6595:6595 Flux.Impl.FluxProcImpl <> h:63 var
+def 6650:6658 <> getPc_syn
+binder 6661:6661 <> V:64
+R6666:6673 Koika.Lang.Syntax <> PureExpr def
+R6675:6675 Flux.Impl.FluxProcImpl <> V:64 var
+R6687:6690 Flux.Impl.FluxProcImpl <> VMet abbrev
+R6692:6693 Flux.Impl.FluxProcImpl <> pc constr
+R6695:6702 Gpu.Basic.Reg <> read constr
+R6704:6707 Koika.Common.CtxNotations <> ::ctx_scope:'<['_']>' not
+def 6727:6736 <> getReg_syn
+binder 6739:6739 <> V:65
+R6750:6756 Koika.Common.Environments <> context ind
+R6760:6760 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6762:6762 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6758:6758 Flux.Impl.FluxProcImpl <> V:65 var
+binder 6743:6746 <> args:66
+R6767:6774 Koika.Lang.Syntax <> PureExpr def
+R6776:6776 Flux.Impl.FluxProcImpl <> V:65 var
+R6788:6795 Flux.Impl.FluxProcImpl <> read_reg def
+R6798:6800 Koika.Common.Environments <> chd def
+R6802:6805 Flux.Impl.FluxProcImpl <> args:66 var
+def 6826:6835 <> getMem_syn
+binder 6838:6838 <> V:67
+R6849:6855 Koika.Common.Environments <> context ind
+R6859:6859 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6862:6862 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6857:6857 Flux.Impl.FluxProcImpl <> V:67 var
+binder 6842:6845 <> args:68
+R6867:6874 Koika.Lang.Syntax <> PureExpr def
+R6876:6876 Flux.Impl.FluxProcImpl <> V:67 var
+R6888:6891 Flux.Impl.FluxProcImpl <> VMet abbrev
+R6893:6895 Flux.Impl.FluxProcImpl <> mem constr
+R6897:6901 Flux.FluxMem <> rdMem constr
+R6903:6904 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R6916:6917 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R6905:6906 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6915:6915 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R6907:6909 Koika.Common.Environments <> chd def
+R6911:6914 Flux.Impl.FluxProcImpl <> args:68 var
+def 7147:7154 <> step_syn
+binder 7157:7157 <> V:69
+R7168:7174 Koika.Common.Environments <> context ind
+R7178:7178 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7185:7185 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7179:7184 Flux.FluxProc <> CtrlSz def
+R7176:7176 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7161:7164 <> args:70
+R7190:7196 Koika.Lang.Syntax <> EffExpr def
+R7198:7198 Flux.Impl.FluxProcImpl <> V:69 var
+R7209:7216 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7220:7223 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7227:7231 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7255:7262 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7217:7219 <> cls:71
+R7232:7236 Koika.Lang.Syntax Abbr slice def
+R7244:7245 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7254:7254 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7246:7248 Koika.Common.Environments <> chd def
+R7250:7253 Flux.Impl.FluxProcImpl <> args:70 var
+R7224:7224 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7217:7219 <> cls:72
+R7263:7270 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7274:7277 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7281:7285 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7309:7316 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7271:7273 <> opb:73
+R7286:7290 Koika.Lang.Syntax Abbr slice def
+R7298:7299 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7308:7308 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7300:7302 Koika.Common.Environments <> chd def
+R7304:7307 Flux.Impl.FluxProcImpl <> args:70 var
+R7278:7278 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7271:7273 <> opb:74
+R7317:7324 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7327:7331 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7335:7339 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7363:7370 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7325:7326 <> rd:75
+R7340:7344 Koika.Lang.Syntax Abbr slice def
+R7352:7353 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7362:7362 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7354:7356 Koika.Common.Environments <> chd def
+R7358:7361 Flux.Impl.FluxProcImpl <> args:70 var
+R7332:7332 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7325:7326 <> rd:76
+R7371:7378 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7382:7385 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7389:7393 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7417:7424 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7379:7381 <> rs1:77
+R7394:7398 Koika.Lang.Syntax Abbr slice def
+R7406:7407 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7416:7416 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7408:7410 Koika.Common.Environments <> chd def
+R7412:7415 Flux.Impl.FluxProcImpl <> args:70 var
+R7386:7386 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7379:7381 <> rs1:78
+R7425:7432 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7436:7439 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7443:7447 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7471:7478 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7433:7435 <> rs2:79
+R7448:7452 Koika.Lang.Syntax Abbr slice def
+R7460:7461 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7470:7470 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7462:7464 Koika.Common.Environments <> chd def
+R7466:7469 Flux.Impl.FluxProcImpl <> args:70 var
+R7440:7440 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7433:7435 <> rs2:80
+R7479:7486 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7490:7493 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7498:7501 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7525:7532 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7487:7489 <> imm:81
+R7502:7506 Koika.Lang.Syntax Abbr slice def
+R7514:7515 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7524:7524 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R7516:7518 Koika.Common.Environments <> chd def
+R7520:7523 Flux.Impl.FluxProcImpl <> args:70 var
+R7494:7494 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7487:7489 <> imm:82
+R7533:7540 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7542:7547 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7552:7555 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7568:7575 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7541:7541 <> a:83
+R7556:7563 Flux.Impl.FluxProcImpl <> read_reg def
+R7565:7567 Flux.Impl.FluxProcImpl <> rs1:78 var
+R7548:7548 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7541:7541 <> a:84
+R7576:7583 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7585:7590 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7595:7598 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7611:7618 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7584:7584 <> b:85
+R7599:7606 Flux.Impl.FluxProcImpl <> read_reg def
+R7608:7610 Flux.Impl.FluxProcImpl <> rs2:80 var
+R7591:7591 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7584:7584 <> b:86
+R7619:7626 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7630:7633 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7638:7641 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7663:7670 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7627:7629 <> pcv:87
+R7642:7645 Flux.Impl.FluxProcImpl <> VMet abbrev
+R7647:7648 Flux.Impl.FluxProcImpl <> pc constr
+R7650:7657 Gpu.Basic.Reg <> read constr
+R7659:7662 Koika.Common.CtxNotations <> ::ctx_scope:'<['_']>' not
+R7634:7634 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7627:7629 <> pcv:88
+R7671:7678 Koika.Lang.Syntax <> mux_expr def
+binder 7689:7691 <> clv:89
+R7708:7719 Flux.FluxProc <> decode_class def
+R7721:7723 Flux.Impl.FluxProcImpl <> clv:89 var
+R7738:7741 Corelib.Init.Datatypes <> Some constr
+R7743:7748 Flux.FluxProc <> CL_ALU constr
+R7761:7768 Koika.Lang.Syntax <> mux_expr def
+binder 7779:7781 <> opv:90
+R7802:7810 Flux.FluxProc <> decode_op def
+R7812:7814 Flux.Impl.FluxProcImpl <> opv:90 var
+R7833:7836 Corelib.Init.Datatypes <> Some constr
+R7855:7862 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7866:7868 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7873:7876 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R7894:7909 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 7863:7865 <> res:91
+R7877:7887 Flux.Impl.FluxProcImpl <> alu_expr_of def
+R7893:7893 Flux.Impl.FluxProcImpl <> b:86 var
+R7891:7891 Flux.Impl.FluxProcImpl <> a:84 var
+R7869:7869 Flux.Impl.FluxProcImpl <> V:69 var
+binder 7863:7865 <> res:92
+R7926:7929 Koika.Lang.Syntax <> :::x_';;'_x not
+R7910:7918 Flux.Impl.FluxProcImpl <> write_reg def
+R7923:7925 Flux.Impl.FluxProcImpl <> res:92 var
+R7920:7921 Flux.Impl.FluxProcImpl <> rd:76 var
+R7930:7935 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R7937:7939 Flux.Impl.FluxProcImpl <> pcv:88 var
+R7953:7956 Corelib.Init.Datatypes <> None constr
+R7961:7963 Koika.Lang.Syntax <> Ret constr
+R7965:7972 Koika.Lang.Syntax <> Rollback constr
+R7770:7772 Flux.Impl.FluxProcImpl <> opb:74 var
+R7997:8000 Corelib.Init.Datatypes <> Some constr
+R8002:8008 Flux.FluxProc <> CL_ALUI constr
+R8021:8028 Koika.Lang.Syntax <> mux_expr def
+binder 8039:8041 <> opv:93
+R8062:8070 Flux.FluxProc <> decode_op def
+R8072:8074 Flux.Impl.FluxProcImpl <> opv:93 var
+R8093:8096 Corelib.Init.Datatypes <> Some constr
+R8115:8122 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8126:8128 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8133:8136 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8156:8171 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 8123:8125 <> res:94
+R8137:8147 Flux.Impl.FluxProcImpl <> alu_expr_of def
+R8153:8155 Flux.Impl.FluxProcImpl <> imm:82 var
+R8151:8151 Flux.Impl.FluxProcImpl <> a:84 var
+R8129:8129 Flux.Impl.FluxProcImpl <> V:69 var
+binder 8123:8125 <> res:95
+R8188:8191 Koika.Lang.Syntax <> :::x_';;'_x not
+R8172:8180 Flux.Impl.FluxProcImpl <> write_reg def
+R8185:8187 Flux.Impl.FluxProcImpl <> res:95 var
+R8182:8183 Flux.Impl.FluxProcImpl <> rd:76 var
+R8192:8197 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R8199:8201 Flux.Impl.FluxProcImpl <> pcv:88 var
+R8215:8218 Corelib.Init.Datatypes <> None constr
+R8223:8225 Koika.Lang.Syntax <> Ret constr
+R8227:8234 Koika.Lang.Syntax <> Rollback constr
+R8030:8032 Flux.Impl.FluxProcImpl <> opb:74 var
+R8259:8262 Corelib.Init.Datatypes <> Some constr
+R8264:8268 Flux.FluxProc <> CL_BR constr
+R8281:8288 Koika.Lang.Syntax <> mux_expr def
+binder 8299:8301 <> opv:96
+R8322:8330 Flux.FluxProc <> decode_br def
+R8332:8334 Flux.Impl.FluxProcImpl <> opv:96 var
+R8353:8356 Corelib.Init.Datatypes <> Some constr
+R8376:8383 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8387:8389 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8394:8397 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8427:8442 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 8384:8386 <> npc:97
+R8398:8411 Flux.Impl.FluxProcImpl <> br_nextpc_expr def
+R8424:8426 Flux.Impl.FluxProcImpl <> imm:82 var
+R8420:8422 Flux.Impl.FluxProcImpl <> pcv:88 var
+R8418:8418 Flux.Impl.FluxProcImpl <> b:86 var
+R8416:8416 Flux.Impl.FluxProcImpl <> a:84 var
+R8390:8390 Flux.Impl.FluxProcImpl <> V:69 var
+binder 8384:8386 <> npc:98
+R8443:8446 Flux.Impl.FluxProcImpl <> AMet abbrev
+R8448:8449 Flux.Impl.FluxProcImpl <> pc constr
+R8451:8459 Gpu.Basic.Reg <> write constr
+R8461:8462 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R8469:8470 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R8463:8464 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8468:8468 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8465:8467 Flux.Impl.FluxProcImpl <> npc:98 var
+R8484:8487 Corelib.Init.Datatypes <> None constr
+R8492:8494 Koika.Lang.Syntax <> Ret constr
+R8496:8503 Koika.Lang.Syntax <> Rollback constr
+R8290:8292 Flux.Impl.FluxProcImpl <> opb:74 var
+R8528:8531 Corelib.Init.Datatypes <> Some constr
+R8533:8538 Flux.FluxProc <> CL_JAL constr
+R8551:8558 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8562:8564 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8569:8572 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8604:8615 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 8559:8561 <> lnk:99
+R8573:8576 Koika.Lang.Syntax Abbr plus def
+R8585:8586 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R8603:8603 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R8587:8597 Koika.Common.Vect Bits of_nat def
+R8578:8579 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8583:8583 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8580:8582 Flux.Impl.FluxProcImpl <> pcv:88 var
+R8565:8565 Flux.Impl.FluxProcImpl <> V:69 var
+binder 8559:8561 <> lnk:100
+R8632:8643 Koika.Lang.Syntax <> :::x_';;'_x not
+R8616:8624 Flux.Impl.FluxProcImpl <> write_reg def
+R8629:8631 Flux.Impl.FluxProcImpl <> lnk:100 var
+R8626:8627 Flux.Impl.FluxProcImpl <> rd:76 var
+R8644:8647 Flux.Impl.FluxProcImpl <> AMet abbrev
+R8649:8650 Flux.Impl.FluxProcImpl <> pc constr
+R8652:8660 Gpu.Basic.Reg <> write constr
+R8662:8663 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R8682:8683 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R8664:8667 Koika.Lang.Syntax Abbr plus def
+R8676:8677 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8681:8681 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8678:8680 Flux.Impl.FluxProcImpl <> imm:82 var
+R8669:8670 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8674:8674 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8671:8673 Flux.Impl.FluxProcImpl <> pcv:88 var
+R8693:8696 Corelib.Init.Datatypes <> Some constr
+R8698:8704 Flux.FluxProc <> CL_JALR constr
+R8717:8724 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8728:8730 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8735:8738 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8770:8781 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 8725:8727 <> lnk:101
+R8739:8742 Koika.Lang.Syntax Abbr plus def
+R8751:8752 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R8769:8769 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R8753:8763 Koika.Common.Vect Bits of_nat def
+R8744:8745 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8749:8749 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8746:8748 Flux.Impl.FluxProcImpl <> pcv:88 var
+R8731:8731 Flux.Impl.FluxProcImpl <> V:69 var
+binder 8725:8727 <> lnk:102
+R8782:8789 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8793:8795 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8800:8803 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R8838:8849 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 8790:8792 <> tgt:103
+R8804:8806 Koika.Lang.Syntax Abbr and def
+R8827:8828 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R8837:8837 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R8829:8836 Flux.FluxProc <> maskJalr def
+R8809:8812 Koika.Lang.Syntax Abbr plus def
+R8819:8820 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8824:8824 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8821:8823 Flux.Impl.FluxProcImpl <> imm:82 var
+R8814:8815 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8817:8817 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8816:8816 Flux.Impl.FluxProcImpl <> a:84 var
+R8796:8796 Flux.Impl.FluxProcImpl <> V:69 var
+binder 8790:8792 <> tgt:104
+R8866:8877 Koika.Lang.Syntax <> :::x_';;'_x not
+R8850:8858 Flux.Impl.FluxProcImpl <> write_reg def
+R8863:8865 Flux.Impl.FluxProcImpl <> lnk:102 var
+R8860:8861 Flux.Impl.FluxProcImpl <> rd:76 var
+R8878:8881 Flux.Impl.FluxProcImpl <> AMet abbrev
+R8883:8884 Flux.Impl.FluxProcImpl <> pc constr
+R8886:8894 Gpu.Basic.Reg <> write constr
+R8896:8897 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R8904:8905 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R8898:8899 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8903:8903 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R8900:8902 Flux.Impl.FluxProcImpl <> tgt:104 var
+R8915:8918 Corelib.Init.Datatypes <> Some constr
+R8920:8925 Flux.FluxProc <> CL_LUI constr
+R8954:8957 Koika.Lang.Syntax <> :::x_';;'_x not
+R8938:8946 Flux.Impl.FluxProcImpl <> write_reg def
+R8951:8953 Flux.Impl.FluxProcImpl <> imm:82 var
+R8948:8949 Flux.Impl.FluxProcImpl <> rd:76 var
+R8958:8963 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R8965:8967 Flux.Impl.FluxProcImpl <> pcv:88 var
+R8977:8980 Corelib.Init.Datatypes <> Some constr
+R8982:8989 Flux.FluxProc <> CL_AUIPC constr
+R9002:9009 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9011:9013 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9018:9021 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9040:9051 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9010:9010 <> v:105
+R9022:9025 Koika.Lang.Syntax Abbr plus def
+R9034:9035 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9039:9039 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9036:9038 Flux.Impl.FluxProcImpl <> imm:82 var
+R9027:9028 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9032:9032 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9029:9031 Flux.Impl.FluxProcImpl <> pcv:88 var
+R9014:9014 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9010:9010 <> v:106
+R9066:9069 Koika.Lang.Syntax <> :::x_';;'_x not
+R9052:9060 Flux.Impl.FluxProcImpl <> write_reg def
+R9065:9065 Flux.Impl.FluxProcImpl <> v:106 var
+R9062:9063 Flux.Impl.FluxProcImpl <> rd:76 var
+R9070:9075 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R9077:9079 Flux.Impl.FluxProcImpl <> pcv:88 var
+R9089:9092 Corelib.Init.Datatypes <> Some constr
+R9094:9098 Flux.FluxProc <> CL_LW constr
+R9111:9118 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9123:9125 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9130:9133 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9169:9180 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9119:9122 <> addr:107
+R9134:9136 Koika.Lang.Syntax Abbr and def
+R9157:9158 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R9168:9168 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R9159:9167 Flux.FluxProc <> maskAlign def
+R9139:9142 Koika.Lang.Syntax Abbr plus def
+R9149:9150 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9154:9154 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9151:9153 Flux.Impl.FluxProcImpl <> imm:82 var
+R9144:9145 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9147:9147 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9146:9146 Flux.Impl.FluxProcImpl <> a:84 var
+R9126:9126 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9119:9122 <> addr:108
+R9181:9188 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9190:9192 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9197:9200 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9227:9238 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9189:9189 <> v:109
+R9201:9204 Flux.Impl.FluxProcImpl <> VMet abbrev
+R9206:9208 Flux.Impl.FluxProcImpl <> mem constr
+R9210:9214 Flux.FluxMem <> rdMem constr
+R9216:9217 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R9225:9226 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R9218:9219 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9224:9224 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9220:9223 Flux.Impl.FluxProcImpl <> addr:108 var
+R9193:9193 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9189:9189 <> v:110
+R9253:9256 Koika.Lang.Syntax <> :::x_';;'_x not
+R9239:9247 Flux.Impl.FluxProcImpl <> write_reg def
+R9252:9252 Flux.Impl.FluxProcImpl <> v:110 var
+R9249:9250 Flux.Impl.FluxProcImpl <> rd:76 var
+R9257:9262 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R9264:9266 Flux.Impl.FluxProcImpl <> pcv:88 var
+R9276:9279 Corelib.Init.Datatypes <> Some constr
+R9281:9285 Flux.FluxProc <> CL_SW constr
+R9298:9305 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9310:9312 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9317:9320 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9356:9367 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9306:9309 <> addr:111
+R9321:9323 Koika.Lang.Syntax Abbr and def
+R9344:9345 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R9355:9355 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R9346:9354 Flux.FluxProc <> maskAlign def
+R9326:9329 Koika.Lang.Syntax Abbr plus def
+R9336:9337 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9341:9341 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9338:9340 Flux.Impl.FluxProcImpl <> imm:82 var
+R9331:9332 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9334:9334 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9333:9333 Flux.Impl.FluxProcImpl <> a:84 var
+R9313:9313 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9306:9309 <> addr:112
+R9400:9403 Koika.Lang.Syntax <> :::x_';;'_x not
+R9368:9371 Flux.Impl.FluxProcImpl <> AMet abbrev
+R9373:9375 Flux.Impl.FluxProcImpl <> mem constr
+R9377:9381 Flux.FluxMem <> wrMem constr
+R9383:9384 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R9392:9393 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R9398:9399 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R9385:9386 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9391:9391 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9387:9390 Flux.Impl.FluxProcImpl <> addr:112 var
+R9394:9395 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9397:9397 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9396:9396 Flux.Impl.FluxProcImpl <> b:86 var
+R9404:9409 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R9411:9413 Flux.Impl.FluxProcImpl <> pcv:88 var
+R9423:9426 Corelib.Init.Datatypes <> Some constr
+R9428:9433 Flux.FluxProc <> CL_MUL constr
+R9446:9453 Koika.Lang.Syntax <> mux_expr def
+binder 9464:9466 <> opv:113
+R9487:9496 Flux.FluxProc <> decode_mop def
+R9498:9500 Flux.Impl.FluxProcImpl <> opv:113 var
+R9519:9522 Corelib.Init.Datatypes <> Some constr
+R9541:9548 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9552:9554 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9559:9562 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9580:9595 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9549:9551 <> res:114
+R9563:9573 Flux.Impl.FluxProcImpl <> mul_expr_of def
+R9579:9579 Flux.Impl.FluxProcImpl <> b:86 var
+R9577:9577 Flux.Impl.FluxProcImpl <> a:84 var
+R9555:9555 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9549:9551 <> res:115
+R9612:9615 Koika.Lang.Syntax <> :::x_';;'_x not
+R9596:9604 Flux.Impl.FluxProcImpl <> write_reg def
+R9609:9611 Flux.Impl.FluxProcImpl <> res:115 var
+R9606:9607 Flux.Impl.FluxProcImpl <> rd:76 var
+R9616:9621 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R9623:9625 Flux.Impl.FluxProcImpl <> pcv:88 var
+R9639:9642 Corelib.Init.Datatypes <> None constr
+R9647:9649 Koika.Lang.Syntax <> Ret constr
+R9651:9658 Koika.Lang.Syntax <> Rollback constr
+R9455:9457 Flux.Impl.FluxProcImpl <> opb:74 var
+R9683:9686 Corelib.Init.Datatypes <> Some constr
+R9688:9692 Flux.FluxProc <> CL_LB constr
+R9705:9712 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9715:9719 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9724:9727 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9744:9755 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9713:9714 <> ea:116
+R9728:9731 Koika.Lang.Syntax Abbr plus def
+R9738:9739 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9743:9743 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9740:9742 Flux.Impl.FluxProcImpl <> imm:82 var
+R9733:9734 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9736:9736 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9735:9735 Flux.Impl.FluxProcImpl <> a:84 var
+R9720:9720 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9713:9714 <> ea:117
+R9756:9763 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9766:9770 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9775:9778 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9801:9812 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9764:9765 <> wa:118
+R9779:9781 Koika.Lang.Syntax Abbr and def
+R9789:9790 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R9800:9800 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R9791:9799 Flux.FluxProc <> maskAlign def
+R9783:9784 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9787:9787 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9785:9786 Flux.Impl.FluxProcImpl <> ea:117 var
+R9771:9771 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9764:9765 <> wa:119
+R9813:9820 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9825:9827 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9831:9835 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9851:9862 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9821:9824 <> lane:120
+R9836:9840 Koika.Lang.Syntax Abbr slice def
+R9846:9847 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9850:9850 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9848:9849 Flux.Impl.FluxProcImpl <> ea:117 var
+R9828:9828 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9821:9824 <> lane:121
+R9863:9870 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9872:9877 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9882:9885 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9910:9921 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9871:9871 <> w:122
+R9886:9889 Flux.Impl.FluxProcImpl <> VMet abbrev
+R9891:9893 Flux.Impl.FluxProcImpl <> mem constr
+R9895:9899 Flux.FluxMem <> rdMem constr
+R9901:9902 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R9908:9909 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R9903:9904 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9907:9907 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R9905:9906 Flux.Impl.FluxProcImpl <> wa:119 var
+R9878:9878 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9871:9871 <> w:123
+R9922:9929 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9932:9936 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9940:9944 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9960:9971 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9930:9931 <> bv:124
+R9945:9952 Flux.Impl.FluxProcImpl <> byte_mux def
+R9959:9959 Flux.Impl.FluxProcImpl <> w:123 var
+R9954:9957 Flux.Impl.FluxProcImpl <> lane:121 var
+R9937:9937 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9930:9931 <> bv:125
+R9972:9979 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9983:9986 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R9991:9994 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10008:10019 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 9980:9982 <> res:126
+R9995:10004 Flux.Impl.FluxProcImpl <> sext8_expr def
+R10006:10007 Flux.Impl.FluxProcImpl <> bv:125 var
+R9987:9987 Flux.Impl.FluxProcImpl <> V:69 var
+binder 9980:9982 <> res:127
+R10036:10039 Koika.Lang.Syntax <> :::x_';;'_x not
+R10020:10028 Flux.Impl.FluxProcImpl <> write_reg def
+R10033:10035 Flux.Impl.FluxProcImpl <> res:127 var
+R10030:10031 Flux.Impl.FluxProcImpl <> rd:76 var
+R10040:10045 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R10047:10049 Flux.Impl.FluxProcImpl <> pcv:88 var
+R10059:10062 Corelib.Init.Datatypes <> Some constr
+R10064:10069 Flux.FluxProc <> CL_LBU constr
+R10082:10089 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10092:10096 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10101:10104 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10121:10132 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10090:10091 <> ea:128
+R10105:10108 Koika.Lang.Syntax Abbr plus def
+R10115:10116 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10120:10120 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10117:10119 Flux.Impl.FluxProcImpl <> imm:82 var
+R10110:10111 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10113:10113 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10112:10112 Flux.Impl.FluxProcImpl <> a:84 var
+R10097:10097 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10090:10091 <> ea:129
+R10133:10140 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10143:10147 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10152:10155 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10178:10189 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10141:10142 <> wa:130
+R10156:10158 Koika.Lang.Syntax Abbr and def
+R10166:10167 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R10177:10177 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R10168:10176 Flux.FluxProc <> maskAlign def
+R10160:10161 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10164:10164 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10162:10163 Flux.Impl.FluxProcImpl <> ea:129 var
+R10148:10148 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10141:10142 <> wa:131
+R10190:10197 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10202:10204 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10208:10212 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10228:10239 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10198:10201 <> lane:132
+R10213:10217 Koika.Lang.Syntax Abbr slice def
+R10223:10224 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10227:10227 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10225:10226 Flux.Impl.FluxProcImpl <> ea:129 var
+R10205:10205 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10198:10201 <> lane:133
+R10240:10247 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10249:10254 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10259:10262 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10287:10298 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10248:10248 <> w:134
+R10263:10266 Flux.Impl.FluxProcImpl <> VMet abbrev
+R10268:10270 Flux.Impl.FluxProcImpl <> mem constr
+R10272:10276 Flux.FluxMem <> rdMem constr
+R10278:10279 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R10285:10286 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R10280:10281 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10284:10284 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10282:10283 Flux.Impl.FluxProcImpl <> wa:131 var
+R10255:10255 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10248:10248 <> w:135
+R10299:10306 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10309:10313 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10317:10321 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10337:10348 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10307:10308 <> bv:136
+R10322:10329 Flux.Impl.FluxProcImpl <> byte_mux def
+R10336:10336 Flux.Impl.FluxProcImpl <> w:135 var
+R10331:10334 Flux.Impl.FluxProcImpl <> lane:133 var
+R10314:10314 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10307:10308 <> bv:137
+R10349:10356 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10360:10363 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10368:10371 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10385:10396 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10357:10359 <> res:138
+R10372:10381 Flux.Impl.FluxProcImpl <> zext8_expr def
+R10383:10384 Flux.Impl.FluxProcImpl <> bv:137 var
+R10364:10364 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10357:10359 <> res:139
+R10413:10416 Koika.Lang.Syntax <> :::x_';;'_x not
+R10397:10405 Flux.Impl.FluxProcImpl <> write_reg def
+R10410:10412 Flux.Impl.FluxProcImpl <> res:139 var
+R10407:10408 Flux.Impl.FluxProcImpl <> rd:76 var
+R10417:10422 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R10424:10426 Flux.Impl.FluxProcImpl <> pcv:88 var
+R10436:10439 Corelib.Init.Datatypes <> Some constr
+R10441:10445 Flux.FluxProc <> CL_LH constr
+R10458:10465 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10468:10472 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10477:10480 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10497:10508 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10466:10467 <> ea:140
+R10481:10484 Koika.Lang.Syntax Abbr plus def
+R10491:10492 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10496:10496 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10493:10495 Flux.Impl.FluxProcImpl <> imm:82 var
+R10486:10487 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10489:10489 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10488:10488 Flux.Impl.FluxProcImpl <> a:84 var
+R10473:10473 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10466:10467 <> ea:141
+R10509:10516 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10519:10523 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10528:10531 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10554:10565 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10517:10518 <> wa:142
+R10532:10534 Koika.Lang.Syntax Abbr and def
+R10542:10543 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R10553:10553 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R10544:10552 Flux.FluxProc <> maskAlign def
+R10536:10537 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10540:10540 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10538:10539 Flux.Impl.FluxProcImpl <> ea:141 var
+R10524:10524 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10517:10518 <> wa:143
+R10566:10573 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10578:10580 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10584:10588 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10604:10615 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10574:10577 <> lane:144
+R10589:10593 Koika.Lang.Syntax Abbr slice def
+R10599:10600 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10603:10603 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10601:10602 Flux.Impl.FluxProcImpl <> ea:141 var
+R10581:10581 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10574:10577 <> lane:145
+R10616:10623 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10625:10630 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10635:10638 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10663:10674 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10624:10624 <> w:146
+R10639:10642 Flux.Impl.FluxProcImpl <> VMet abbrev
+R10644:10646 Flux.Impl.FluxProcImpl <> mem constr
+R10648:10652 Flux.FluxMem <> rdMem constr
+R10654:10655 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R10661:10662 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R10656:10657 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10660:10660 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10658:10659 Flux.Impl.FluxProcImpl <> wa:143 var
+R10631:10631 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10624:10624 <> w:147
+R10675:10682 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10685:10689 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10694:10697 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10713:10724 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10683:10684 <> hv:148
+R10698:10705 Flux.Impl.FluxProcImpl <> half_mux def
+R10712:10712 Flux.Impl.FluxProcImpl <> w:147 var
+R10707:10710 Flux.Impl.FluxProcImpl <> lane:145 var
+R10690:10690 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10683:10684 <> hv:149
+R10725:10732 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10736:10739 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10744:10747 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10762:10773 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10733:10735 <> res:150
+R10748:10758 Flux.Impl.FluxProcImpl <> sext16_expr def
+R10760:10761 Flux.Impl.FluxProcImpl <> hv:149 var
+R10740:10740 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10733:10735 <> res:151
+R10790:10793 Koika.Lang.Syntax <> :::x_';;'_x not
+R10774:10782 Flux.Impl.FluxProcImpl <> write_reg def
+R10787:10789 Flux.Impl.FluxProcImpl <> res:151 var
+R10784:10785 Flux.Impl.FluxProcImpl <> rd:76 var
+R10794:10799 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R10801:10803 Flux.Impl.FluxProcImpl <> pcv:88 var
+R10813:10816 Corelib.Init.Datatypes <> Some constr
+R10818:10823 Flux.FluxProc <> CL_LHU constr
+R10836:10843 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10846:10850 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10855:10858 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10875:10886 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10844:10845 <> ea:152
+R10859:10862 Koika.Lang.Syntax Abbr plus def
+R10869:10870 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10874:10874 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10871:10873 Flux.Impl.FluxProcImpl <> imm:82 var
+R10864:10865 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10867:10867 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10866:10866 Flux.Impl.FluxProcImpl <> a:84 var
+R10851:10851 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10844:10845 <> ea:153
+R10887:10894 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10897:10901 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10906:10909 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10932:10943 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10895:10896 <> wa:154
+R10910:10912 Koika.Lang.Syntax Abbr and def
+R10920:10921 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R10931:10931 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R10922:10930 Flux.FluxProc <> maskAlign def
+R10914:10915 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10918:10918 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10916:10917 Flux.Impl.FluxProcImpl <> ea:153 var
+R10902:10902 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10895:10896 <> wa:155
+R10944:10951 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10956:10958 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10962:10966 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R10982:10993 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 10952:10955 <> lane:156
+R10967:10971 Koika.Lang.Syntax Abbr slice def
+R10977:10978 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10981:10981 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R10979:10980 Flux.Impl.FluxProcImpl <> ea:153 var
+R10959:10959 Flux.Impl.FluxProcImpl <> V:69 var
+binder 10952:10955 <> lane:157
+R10994:11001 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11003:11008 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11013:11016 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11041:11052 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11002:11002 <> w:158
+R11017:11020 Flux.Impl.FluxProcImpl <> VMet abbrev
+R11022:11024 Flux.Impl.FluxProcImpl <> mem constr
+R11026:11030 Flux.FluxMem <> rdMem constr
+R11032:11033 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R11039:11040 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R11034:11035 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11038:11038 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11036:11037 Flux.Impl.FluxProcImpl <> wa:155 var
+R11009:11009 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11002:11002 <> w:159
+R11053:11060 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11063:11067 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11072:11075 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11091:11102 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11061:11062 <> hv:160
+R11076:11083 Flux.Impl.FluxProcImpl <> half_mux def
+R11090:11090 Flux.Impl.FluxProcImpl <> w:159 var
+R11085:11088 Flux.Impl.FluxProcImpl <> lane:157 var
+R11068:11068 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11061:11062 <> hv:161
+R11103:11110 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11114:11117 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11122:11125 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11140:11151 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11111:11113 <> res:162
+R11126:11136 Flux.Impl.FluxProcImpl <> zext16_expr def
+R11138:11139 Flux.Impl.FluxProcImpl <> hv:161 var
+R11118:11118 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11111:11113 <> res:163
+R11168:11171 Koika.Lang.Syntax <> :::x_';;'_x not
+R11152:11160 Flux.Impl.FluxProcImpl <> write_reg def
+R11165:11167 Flux.Impl.FluxProcImpl <> res:163 var
+R11162:11163 Flux.Impl.FluxProcImpl <> rd:76 var
+R11172:11177 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R11179:11181 Flux.Impl.FluxProcImpl <> pcv:88 var
+R11191:11194 Corelib.Init.Datatypes <> Some constr
+R11196:11200 Flux.FluxProc <> CL_SB constr
+R11213:11220 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11223:11227 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11232:11235 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11252:11263 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11221:11222 <> ea:164
+R11236:11239 Koika.Lang.Syntax Abbr plus def
+R11246:11247 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11251:11251 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11248:11250 Flux.Impl.FluxProcImpl <> imm:82 var
+R11241:11242 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11244:11244 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11243:11243 Flux.Impl.FluxProcImpl <> a:84 var
+R11228:11228 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11221:11222 <> ea:165
+R11264:11271 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11274:11278 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11283:11286 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11309:11320 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11272:11273 <> wa:166
+R11287:11289 Koika.Lang.Syntax Abbr and def
+R11297:11298 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R11308:11308 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R11299:11307 Flux.FluxProc <> maskAlign def
+R11291:11292 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11295:11295 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11293:11294 Flux.Impl.FluxProcImpl <> ea:165 var
+R11279:11279 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11272:11273 <> wa:167
+R11321:11328 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11333:11335 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11339:11343 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11359:11370 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11329:11332 <> lane:168
+R11344:11348 Koika.Lang.Syntax Abbr slice def
+R11354:11355 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11358:11358 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11356:11357 Flux.Impl.FluxProcImpl <> ea:165 var
+R11336:11336 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11329:11332 <> lane:169
+R11371:11378 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11380:11385 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11390:11393 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11418:11429 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11379:11379 <> w:170
+R11394:11397 Flux.Impl.FluxProcImpl <> VMet abbrev
+R11399:11401 Flux.Impl.FluxProcImpl <> mem constr
+R11403:11407 Flux.FluxMem <> rdMem constr
+R11409:11410 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R11416:11417 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R11411:11412 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11415:11415 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11413:11414 Flux.Impl.FluxProcImpl <> wa:167 var
+R11386:11386 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11379:11379 <> w:171
+R11430:11437 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11440:11444 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11448:11452 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11467:11478 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11438:11439 <> bv:172
+R11453:11457 Koika.Lang.Syntax Abbr slice def
+R11463:11464 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11466:11466 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11465:11465 Flux.Impl.FluxProcImpl <> b:86 var
+R11445:11445 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11438:11439 <> bv:173
+R11479:11486 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11489:11493 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11498:11501 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11526:11537 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11487:11488 <> w':174
+R11502:11515 Flux.Impl.FluxProcImpl <> byte_subst_mux def
+R11524:11525 Flux.Impl.FluxProcImpl <> bv:173 var
+R11522:11522 Flux.Impl.FluxProcImpl <> w:171 var
+R11517:11520 Flux.Impl.FluxProcImpl <> lane:169 var
+R11494:11494 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11487:11488 <> w':175
+R11569:11572 Koika.Lang.Syntax <> :::x_';;'_x not
+R11538:11541 Flux.Impl.FluxProcImpl <> AMet abbrev
+R11543:11545 Flux.Impl.FluxProcImpl <> mem constr
+R11547:11551 Flux.FluxMem <> wrMem constr
+R11553:11554 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R11560:11561 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R11567:11568 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R11555:11556 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11559:11559 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11557:11558 Flux.Impl.FluxProcImpl <> wa:167 var
+R11562:11563 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11566:11566 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11564:11565 Flux.Impl.FluxProcImpl <> w':175 var
+R11573:11578 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R11580:11582 Flux.Impl.FluxProcImpl <> pcv:88 var
+R11592:11595 Corelib.Init.Datatypes <> Some constr
+R11597:11601 Flux.FluxProc <> CL_SH constr
+R11614:11621 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11624:11628 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11633:11636 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11653:11664 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11622:11623 <> ea:176
+R11637:11640 Koika.Lang.Syntax Abbr plus def
+R11647:11648 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11652:11652 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11649:11651 Flux.Impl.FluxProcImpl <> imm:82 var
+R11642:11643 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11645:11645 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11644:11644 Flux.Impl.FluxProcImpl <> a:84 var
+R11629:11629 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11622:11623 <> ea:177
+R11665:11672 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11675:11679 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11684:11687 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11710:11721 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11673:11674 <> wa:178
+R11688:11690 Koika.Lang.Syntax Abbr and def
+R11698:11699 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R11709:11709 Koika.Lang.Syntax <> :::'#'_'{'_x_'}' not
+R11700:11708 Flux.FluxProc <> maskAlign def
+R11692:11693 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11696:11696 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11694:11695 Flux.Impl.FluxProcImpl <> ea:177 var
+R11680:11680 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11673:11674 <> wa:179
+R11722:11729 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11734:11736 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11740:11744 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11760:11771 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11730:11733 <> lane:180
+R11745:11749 Koika.Lang.Syntax Abbr slice def
+R11755:11756 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11759:11759 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11757:11758 Flux.Impl.FluxProcImpl <> ea:177 var
+R11737:11737 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11730:11733 <> lane:181
+R11772:11779 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11781:11786 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11791:11794 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11819:11830 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11780:11780 <> w:182
+R11795:11798 Flux.Impl.FluxProcImpl <> VMet abbrev
+R11800:11802 Flux.Impl.FluxProcImpl <> mem constr
+R11804:11808 Flux.FluxMem <> rdMem constr
+R11810:11811 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R11817:11818 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_']>' not
+R11812:11813 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11816:11816 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11814:11815 Flux.Impl.FluxProcImpl <> wa:179 var
+R11787:11787 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11780:11780 <> w:183
+R11831:11838 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11841:11845 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11850:11853 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11869:11880 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11839:11840 <> hv:184
+R11854:11858 Koika.Lang.Syntax Abbr slice def
+R11865:11866 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11868:11868 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11867:11867 Flux.Impl.FluxProcImpl <> b:86 var
+R11846:11846 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11839:11840 <> hv:185
+R11881:11888 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11891:11895 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11900:11903 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+R11928:11939 Koika.Lang.Syntax <> :::'let/var'_x_':'_x_'<-'_x_'in'_x not
+binder 11889:11890 <> w':186
+R11904:11917 Flux.Impl.FluxProcImpl <> half_subst_mux def
+R11926:11927 Flux.Impl.FluxProcImpl <> hv:185 var
+R11924:11924 Flux.Impl.FluxProcImpl <> w:183 var
+R11919:11922 Flux.Impl.FluxProcImpl <> lane:181 var
+R11896:11896 Flux.Impl.FluxProcImpl <> V:69 var
+binder 11889:11890 <> w':187
+R11971:11974 Koika.Lang.Syntax <> :::x_';;'_x not
+R11940:11943 Flux.Impl.FluxProcImpl <> AMet abbrev
+R11945:11947 Flux.Impl.FluxProcImpl <> mem constr
+R11949:11953 Flux.FluxMem <> wrMem constr
+R11955:11956 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R11962:11963 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R11969:11970 Koika.Common.CtxNotations <> ::ctx_scope:'<['_x_';'_x_';'_'..'_';'_x_']>' not
+R11957:11958 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11961:11961 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11959:11960 Flux.Impl.FluxProcImpl <> wa:179 var
+R11964:11965 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11968:11968 Koika.Lang.Syntax <> :::'$'_'{'_x_'}' not
+R11966:11967 Flux.Impl.FluxProcImpl <> w':187 var
+R11975:11980 Flux.Impl.FluxProcImpl <> wr_pc4 def
+R11982:11984 Flux.Impl.FluxProcImpl <> pcv:88 var
+R11994:11997 Corelib.Init.Datatypes <> None constr
+R12002:12004 Koika.Lang.Syntax <> Ret constr
+R12006:12013 Koika.Lang.Syntax <> Rollback constr
+R7680:7682 Flux.Impl.FluxProcImpl <> cls:72 var
+def 12044:12045 <> Σ
+R12052:12061 Flux.Impl.FluxProcImpl <> proc_mod_t variant
+binder 12048:12048 <> m:188
+R12066:12070 Koika.Lang.BigStepSemantics Sem t rec
+R12073:12087 Koika.Lang.Syntax Modules get_sig meth
+R12089:12089 Flux.Impl.FluxProcImpl <> m:188 var
+R12105:12105 Flux.Impl.FluxProcImpl <> m:188 var
+R12120:12124 Koika.Lang.BigStepSemantics Sem t rec
+R12127:12141 Koika.Lang.Syntax Modules get_sig meth
+R12143:12144 Flux.Impl.FluxProcImpl <> m':189 var
+R12158:12159 Flux.Impl.FluxProcImpl <> pc constr
+R12164:12168 Gpu.Basic.Reg <> mkReg def
+R12173:12181 Koika.Common.Vect Bits zero def
+R12189:12191 Flux.Impl.FluxProcImpl <> mem constr
+R12196:12204 Flux.FluxMem <> mkWordMem def
+R12212:12214 Flux.Impl.FluxProcImpl <> reg constr
+R12221:12225 Gpu.Basic.Reg <> mkReg def
+R12230:12238 Koika.Common.Vect Bits zero def
+def 12263:12265 <> syn
+binder 12268:12268 <> V:190
+R12273:12279 Koika.Lang.Syntax <> mod_syn rec
+R12283:12294 Flux.FluxProc <> ifc def
+R12281:12281 Flux.Impl.FluxProcImpl <> V:190 var
+R12326:12337 Koika.Lang.Syntax <> rules proj
+R12326:12337 Koika.Lang.Syntax <> rules proj
+R12326:12337 Koika.Lang.Syntax <> rules proj
+R12342:12352 Koika.Lang.Syntax Rules empty inst
+R12326:12337 Koika.Lang.Syntax <> rules proj
+R12326:12337 Koika.Lang.Syntax <> rules proj
+R12326:12337 Koika.Lang.Syntax <> rules proj
+R12342:12352 Koika.Lang.Syntax Rules empty inst
+R12405:12413 Flux.Impl.FluxProcImpl <> getPc_syn def
+R12405:12413 Flux.Impl.FluxProcImpl <> getPc_syn def
+R12431:12440 Flux.Impl.FluxProcImpl <> getReg_syn def
+R12431:12440 Flux.Impl.FluxProcImpl <> getReg_syn def
+R12457:12466 Flux.Impl.FluxProcImpl <> getMem_syn def
+R12457:12466 Flux.Impl.FluxProcImpl <> getMem_syn def
+R12501:12508 Flux.Impl.FluxProcImpl <> step_syn def
+R12501:12508 Flux.Impl.FluxProcImpl <> step_syn def
+def 12554:12565 <> FluxCoreImpl
+R12569:12573 Koika.Lang.BigStepSemantics Sem t rec
+R12575:12586 Flux.FluxProc <> ifc def
+R12591:12600 Koika.Lang.MayAbortSemantics <> interp_mod def
+R12615:12617 Flux.Impl.FluxProcImpl <> syn def
+R12609:12610 Flux.Impl.FluxProcImpl <> Σ def
+R12625:12628 Flux.Impl.FluxProcImpl impl <> sec

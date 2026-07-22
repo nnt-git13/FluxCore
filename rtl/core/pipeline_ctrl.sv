@@ -77,6 +77,10 @@ module pipeline_ctrl
     // Additive — applied in a separate block below, same pattern as dmem_stall_i.
     input  wire logic             muldiv_stall_i,
 
+    // FPU divide/sqrt busy: stall all 5 stages until the iterative result is
+    // ready. Same freeze pattern as muldiv_stall_i.
+    input  wire logic             fpu_stall_i,
+
     // Stall outputs
     output logic             stall_if_o,
     output logic             stall_id_o,
@@ -165,7 +169,13 @@ module pipeline_ctrl
             flush_id_ex_o     = 1'b1;
             redirect_valid_o  = 1'b1;
             redirect_target_o = ex_mem_i.branch_target;
-        end else if (load_use_stall_i | csr_raw_stall_i) begin
+        end else if ((load_use_stall_i | csr_raw_stall_i)
+                     & ~(dmem_stall_i | muldiv_stall_i | fpu_stall_i)) begin
+            // Partial stall: hold IF+ID, bubble ID/EX.  Suppressed while a
+            // full-freeze stall is active — during a freeze the whole pipeline
+            // is already held, and flushing ID/EX (which outranks a stall in the
+            // stage register) would destroy a multi-cycle op iterating in EX.
+            // Once the freeze ends the hazard re-evaluates and stalls normally.
             stall_if_o    = 1'b1;
             stall_id_o    = 1'b1;
             flush_id_ex_o = 1'b1;
@@ -182,6 +192,14 @@ module pipeline_ctrl
         // MUL/DIV stall: same freeze pattern.  The DIV instruction stays in EX
         // until the iterative unit completes; instructions behind it stall in IF/ID.
         if (muldiv_stall_i) begin
+            stall_if_o  = 1'b1;
+            stall_id_o  = 1'b1;
+            stall_ex_o  = 1'b1;
+            stall_mem_o = 1'b1;
+            stall_wb_o  = 1'b1;
+        end
+        // FPU divide/sqrt stall: identical freeze while the iterative unit runs.
+        if (fpu_stall_i) begin
             stall_if_o  = 1'b1;
             stall_id_o  = 1'b1;
             stall_ex_o  = 1'b1;

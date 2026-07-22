@@ -262,7 +262,7 @@ def architecture_svg() -> None:
 <text x="670" y="940" class="subtitle" style="font-size:22px">for ILA hookup.</text>
 </svg>
 """
-    (OUT / "architecture.svg").write_text(svg, encoding="utf-8")
+    (OUT / "architecture.png").write_text(svg, encoding="utf-8")
 
 
 def memory_map_svg() -> None:

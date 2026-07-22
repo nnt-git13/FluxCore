@@ -57,6 +57,8 @@ module forwarding_unit
     // Instruction currently in WB (output of mem_wb_reg)
     input  wire mem_wb_payload_t mem_wb_i,
     input  wire word_t           mem_wb_rd_data_i,
+    // Canonical FP writeback value from wb_stage (for FP forwarding).
+    input  wire word_t           mem_wb_frd_data_i,
 
     // Instruction currently in ID (combinational decoder output + valid bit)
     // Used only for load-use hazard detection.
@@ -66,6 +68,10 @@ module forwarding_unit
     // Forwarded operand values for execute_stage
     output word_t           rs1_fwd_o,
     output word_t           rs2_fwd_o,
+    // Forwarded FP operand values (RV32F)
+    output word_t           fs1_fwd_o,
+    output word_t           fs2_fwd_o,
+    output word_t           fs3_fwd_o,
 
     // Load-use hazard: pipeline_ctrl stalls IF+ID and flushes ID/EX
     output logic            load_use_stall_o,
@@ -94,6 +100,7 @@ module forwarding_unit
         case (ex_mem_i.decoded.wb_src)
             WB_PC4:  ex_mem_fwd_s = ex_mem_i.pc + 32'd4;
             WB_CSR:  ex_mem_fwd_s = ex_mem_i.csr_rdata;
+            WB_FPU:  ex_mem_fwd_s = ex_mem_i.fp_result;  // FP→int (FCMP/FCVT.W/FMV.X/FCLASS)
             default: ex_mem_fwd_s = ex_mem_i.alu_result;
         endcase
     end
@@ -158,6 +165,49 @@ module forwarding_unit
                                       id_ex_i.rs2_data;
 
     // -----------------------------------------------------------------------
+    // FP operand forwarding (RV32F).
+    // FP-register indices reuse the rs1/rs2 fields (fs1=rs1, fs2=rs2) plus the
+    // dedicated fs3 field.  The integer and FP register files are independent,
+    // so an FP forward is gated on uses_fs*, never on uses_rs*.
+    //   EX/MEM → EX : producer's writes_frd value = ex_mem_i.fp_result
+    //                 (suppressed for FLW — load-use stall serialises that).
+    //   MEM/WB → EX : mem_wb_frd_data_i (canonical, incl. live FLW data).
+    // No x0 special case: f0 is an ordinary register.
+    // -----------------------------------------------------------------------
+    logic fwd_em_fs1_s, fwd_em_fs2_s, fwd_em_fs3_s;
+    logic fwd_mw_fs1_s, fwd_mw_fs2_s, fwd_mw_fs3_s;
+
+    assign fwd_em_fs1_s = ex_mem_i.valid & ex_mem_i.decoded.writes_frd
+                        & ex_mem_i.decoded.legal & ~ex_mem_i.decoded.is_load
+                        & id_ex_i.decoded.uses_fs1
+                        & (ex_mem_i.decoded.rd == id_ex_i.decoded.rs1);
+    assign fwd_em_fs2_s = ex_mem_i.valid & ex_mem_i.decoded.writes_frd
+                        & ex_mem_i.decoded.legal & ~ex_mem_i.decoded.is_load
+                        & id_ex_i.decoded.uses_fs2
+                        & (ex_mem_i.decoded.rd == id_ex_i.decoded.rs2);
+    assign fwd_em_fs3_s = ex_mem_i.valid & ex_mem_i.decoded.writes_frd
+                        & ex_mem_i.decoded.legal & ~ex_mem_i.decoded.is_load
+                        & id_ex_i.decoded.uses_fs3
+                        & (ex_mem_i.decoded.rd == id_ex_i.decoded.fs3);
+
+    assign fwd_mw_fs1_s = mem_wb_i.valid & mem_wb_i.frd_wen
+                        & id_ex_i.decoded.uses_fs1
+                        & (mem_wb_i.frd_addr == id_ex_i.decoded.rs1) & ~fwd_em_fs1_s;
+    assign fwd_mw_fs2_s = mem_wb_i.valid & mem_wb_i.frd_wen
+                        & id_ex_i.decoded.uses_fs2
+                        & (mem_wb_i.frd_addr == id_ex_i.decoded.rs2) & ~fwd_em_fs2_s;
+    assign fwd_mw_fs3_s = mem_wb_i.valid & mem_wb_i.frd_wen
+                        & id_ex_i.decoded.uses_fs3
+                        & (mem_wb_i.frd_addr == id_ex_i.decoded.fs3) & ~fwd_em_fs3_s;
+
+    assign fs1_fwd_o = fwd_em_fs1_s ? ex_mem_i.fp_result :
+                       fwd_mw_fs1_s ? mem_wb_frd_data_i  : id_ex_i.fs1_data;
+    assign fs2_fwd_o = fwd_em_fs2_s ? ex_mem_i.fp_result :
+                       fwd_mw_fs2_s ? mem_wb_frd_data_i  : id_ex_i.fs2_data;
+    assign fs3_fwd_o = fwd_em_fs3_s ? ex_mem_i.fp_result :
+                       fwd_mw_fs3_s ? mem_wb_frd_data_i  : id_ex_i.fs3_data;
+
+    // -----------------------------------------------------------------------
     // Load-use hazard detection
     //
     // The load (id_ex_i) is in EX now; its result is not available until
@@ -186,7 +236,19 @@ module forwarding_unit
                      & id_decoded_i.uses_rs2
                      & (id_ex_i.decoded.rd == id_decoded_i.rs2);
 
-    assign load_use_stall_o = ldu_rs1_s | ldu_rs2_s;
+    // FP load-use: an FLW in EX (is_load & writes_frd) whose destination f-reg
+    // is read by the FP instruction now in ID.  No forward path bridges this;
+    // one stall cycle, then the MEM/WB→EX FP forward supplies the value.
+    logic fp_ldu_s;
+    assign fp_ldu_s = id_ex_i.valid
+                    & id_ex_i.decoded.is_load
+                    & id_ex_i.decoded.writes_frd
+                    & id_valid_i
+                    & ( (id_decoded_i.uses_fs1 & (id_ex_i.decoded.rd == id_decoded_i.rs1))
+                      | (id_decoded_i.uses_fs2 & (id_ex_i.decoded.rd == id_decoded_i.rs2))
+                      | (id_decoded_i.uses_fs3 & (id_ex_i.decoded.rd == id_decoded_i.fs3)) );
+
+    assign load_use_stall_o = ldu_rs1_s | ldu_rs2_s | fp_ldu_s;
 
     // -----------------------------------------------------------------------
     // CSR RAW hazard detection
@@ -225,7 +287,46 @@ module forwarding_unit
                          & id_decoded_i.is_csr
                          & (ex_mem_i.decoded.csr_addr == id_decoded_i.csr_addr);
 
-    assign csr_raw_stall_o = csr_raw_ex_s | csr_raw_mem_s;
+    // -----------------------------------------------------------------------
+    // fcsr flag-accrual RAW hazard (RV32F)
+    //
+    // An FP compute op (is_fp) accrues its IEEE exception flags into fcsr only
+    // at its WB stage (wb_stage → csr_unit at that posedge).  A following CSR
+    // access to fflags/fcsr reads the CSR combinationally in EX, so if it is
+    // within two instructions of the FP op it would return stale flags.
+    //
+    // Stall the fflags/fcsr access in ID while an fflags-accruing FP op is still
+    // in EX or MEM (not yet committed).  When the FP op reaches WB the condition
+    // clears, and the reader — entering EX the following cycle — sees the
+    // just-committed flags.  Same stall action as the CSR-CSR RAW hazard.
+    //
+    // The stall action flushes the ID/EX register, which outranks a stall in the
+    // stage register.  For a SINGLE-CYCLE FP op that is harmless (it has already
+    // advanced EX→MEM), but a multi-cycle FDIV/FSQRT lives in EX for its whole
+    // iteration and must NOT be flushed.  While a divide/sqrt iterates, fpu_stall
+    // already holds the reader in ID; once it advances to MEM the MEM-stage term
+    // below catches it.  So the EX-stage term excludes div/sqrt.
+    //
+    // Only fflags/fcsr carry the accrued flags; frm is never modified by an FP
+    // op, so reads of frm alone are not stalled.  FLW/FSW have is_fp=0 and do
+    // not accrue flags, so they never trigger this.
+    // -----------------------------------------------------------------------
+    logic id_reads_fcsr_s, fp_flags_inflight_s, fcsr_fp_raw_s;
+
+    assign id_reads_fcsr_s = id_valid_i
+                           & id_decoded_i.is_csr
+                           & ((id_decoded_i.csr_addr == CSR_FFLAGS)
+                            | (id_decoded_i.csr_addr == CSR_FCSR));
+
+    assign fp_flags_inflight_s =
+          (id_ex_i.valid  & id_ex_i.decoded.is_fp
+                          & (id_ex_i.decoded.fpu_op != FPU_DIV)
+                          & (id_ex_i.decoded.fpu_op != FPU_SQRT))  // single-cycle FP in EX
+        | (ex_mem_i.valid & ex_mem_i.decoded.is_fp);               // any FP op in MEM
+
+    assign fcsr_fp_raw_s = id_reads_fcsr_s & fp_flags_inflight_s;
+
+    assign csr_raw_stall_o = csr_raw_ex_s | csr_raw_mem_s | fcsr_fp_raw_s;
 
 endmodule : forwarding_unit
 

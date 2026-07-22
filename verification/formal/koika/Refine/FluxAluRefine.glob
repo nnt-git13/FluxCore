@@ -1,0 +1,399 @@
+DIGEST e72e3ba95fea18d4693ad493bd284d5b
+FFlux.Refine.FluxAluRefine
+R459:465 Koika.Lang.Prelude <> <> lib
+R493:502 Flux.FluxCommon <> <> lib
+R530:541 Flux.Spec.FluxAlu <> <> lib
+R569:584 Flux.Impl.FluxAluImpl <> <> lib
+prf 778:783 <> if_inl
+binder 786:786 <> A:1
+binder 788:788 <> B:2
+R796:799 Corelib.Init.Datatypes <> bool ind
+binder 792:792 <> c:3
+R809:809 Flux.Refine.FluxAluRefine <> A:1 var
+binder 803:803 <> x:4
+binder 805:805 <> y:5
+R816:816 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R851:854 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R820:820 Flux.Refine.FluxAluRefine <> c:3 var
+R847:849 Corelib.Init.Datatypes <> ::type_scope:x_'+'_x not
+R846:846 Flux.Refine.FluxAluRefine <> A:1 var
+R850:850 Flux.Refine.FluxAluRefine <> B:2 var
+R838:840 Corelib.Init.Datatypes <> inl constr
+R842:842 Flux.Refine.FluxAluRefine <> y:5 var
+R827:829 Corelib.Init.Datatypes <> inl constr
+R831:831 Flux.Refine.FluxAluRefine <> x:4 var
+R855:857 Corelib.Init.Datatypes <> inl constr
+R863:863 Flux.Refine.FluxAluRefine <> c:3 var
+R877:877 Flux.Refine.FluxAluRefine <> y:5 var
+R870:870 Flux.Refine.FluxAluRefine <> x:4 var
+sec 927:936 <> alu_refine
+var  950:954 alu_refine mod_t
+var  959:959 alu_refine M
+R963:971 Koika.Lang.Syntax Modules t class
+R973:977 Flux.Refine.FluxAluRefine <> mod_t:6 var
+prf 1065:1079 <> alu_and_correct
+R1088:1091 Flux.FluxCommon <> Word abbrev
+binder 1082:1082 <> a:8
+binder 1084:1084 <> b:9
+R1124:1126 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1100:1104 Koika.Lang.BigStepSemantics <> peval def
+R1107:1118 Flux.Impl.FluxAluImpl <> alu_and_expr def
+R1120:1120 Flux.Refine.FluxAluRefine <> a:8 var
+R1122:1122 Flux.Refine.FluxAluRefine <> b:9 var
+R1127:1129 Corelib.Init.Datatypes <> inl constr
+R1132:1139 Flux.Spec.FluxAlu <> alu_spec def
+R1141:1147 Flux.Spec.FluxAlu <> ALU_AND constr
+R1149:1149 Flux.Refine.FluxAluRefine <> a:8 var
+R1151:1151 Flux.Refine.FluxAluRefine <> b:9 var
+R1175:1186 Flux.Impl.FluxAluImpl <> alu_and_expr def
+R1194:1201 Flux.Spec.FluxAlu <> alu_spec def
+R1203:1207 Koika.Lang.BigStepSemantics <> peval def
+R1209:1216 Koika.Lang.Syntax Abbr and def
+R1224:1246 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R1248:1270 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1309:1322 <> alu_or_correct
+R1331:1334 Flux.FluxCommon <> Word abbrev
+binder 1325:1325 <> a:10
+binder 1327:1327 <> b:11
+R1366:1368 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1343:1347 Koika.Lang.BigStepSemantics <> peval def
+R1350:1360 Flux.Impl.FluxAluImpl <> alu_or_expr def
+R1362:1362 Flux.Refine.FluxAluRefine <> a:10 var
+R1364:1364 Flux.Refine.FluxAluRefine <> b:11 var
+R1369:1371 Corelib.Init.Datatypes <> inl constr
+R1374:1381 Flux.Spec.FluxAlu <> alu_spec def
+R1383:1388 Flux.Spec.FluxAlu <> ALU_OR constr
+R1390:1390 Flux.Refine.FluxAluRefine <> a:10 var
+R1392:1392 Flux.Refine.FluxAluRefine <> b:11 var
+R1416:1426 Flux.Impl.FluxAluImpl <> alu_or_expr def
+R1434:1441 Flux.Spec.FluxAlu <> alu_spec def
+R1443:1447 Koika.Lang.BigStepSemantics <> peval def
+R1449:1455 Koika.Lang.Syntax Abbr or def
+R1463:1485 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R1487:1509 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1548:1562 <> alu_xor_correct
+R1571:1574 Flux.FluxCommon <> Word abbrev
+binder 1565:1565 <> a:12
+binder 1567:1567 <> b:13
+R1607:1609 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1583:1587 Koika.Lang.BigStepSemantics <> peval def
+R1590:1601 Flux.Impl.FluxAluImpl <> alu_xor_expr def
+R1603:1603 Flux.Refine.FluxAluRefine <> a:12 var
+R1605:1605 Flux.Refine.FluxAluRefine <> b:13 var
+R1610:1612 Corelib.Init.Datatypes <> inl constr
+R1615:1622 Flux.Spec.FluxAlu <> alu_spec def
+R1624:1630 Flux.Spec.FluxAlu <> ALU_XOR constr
+R1632:1632 Flux.Refine.FluxAluRefine <> a:12 var
+R1634:1634 Flux.Refine.FluxAluRefine <> b:13 var
+R1658:1669 Flux.Impl.FluxAluImpl <> alu_xor_expr def
+R1677:1684 Flux.Spec.FluxAlu <> alu_spec def
+R1686:1690 Koika.Lang.BigStepSemantics <> peval def
+R1692:1699 Koika.Lang.Syntax Abbr xor def
+R1707:1729 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R1731:1753 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1863:1877 <> alu_add_correct
+R1886:1889 Flux.FluxCommon <> Word abbrev
+binder 1880:1880 <> a:14
+binder 1882:1882 <> b:15
+R1922:1924 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1898:1902 Koika.Lang.BigStepSemantics <> peval def
+R1905:1916 Flux.Impl.FluxAluImpl <> alu_add_expr def
+R1918:1918 Flux.Refine.FluxAluRefine <> a:14 var
+R1920:1920 Flux.Refine.FluxAluRefine <> b:15 var
+R1925:1927 Corelib.Init.Datatypes <> inl constr
+R1930:1937 Flux.Spec.FluxAlu <> alu_spec def
+R1939:1945 Flux.Spec.FluxAlu <> ALU_ADD constr
+R1947:1947 Flux.Refine.FluxAluRefine <> a:14 var
+R1949:1949 Flux.Refine.FluxAluRefine <> b:15 var
+R1973:1984 Flux.Impl.FluxAluImpl <> alu_add_expr def
+R1992:1999 Flux.Spec.FluxAlu <> alu_spec def
+R2001:2005 Koika.Lang.BigStepSemantics <> peval def
+R2007:2015 Koika.Lang.Syntax Abbr plus def
+R2023:2045 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R2047:2069 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 2108:2122 <> alu_sub_correct
+R2131:2134 Flux.FluxCommon <> Word abbrev
+binder 2125:2125 <> a:16
+binder 2127:2127 <> b:17
+R2167:2169 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2143:2147 Koika.Lang.BigStepSemantics <> peval def
+R2150:2161 Flux.Impl.FluxAluImpl <> alu_sub_expr def
+R2163:2163 Flux.Refine.FluxAluRefine <> a:16 var
+R2165:2165 Flux.Refine.FluxAluRefine <> b:17 var
+R2170:2172 Corelib.Init.Datatypes <> inl constr
+R2175:2182 Flux.Spec.FluxAlu <> alu_spec def
+R2184:2190 Flux.Spec.FluxAlu <> ALU_SUB constr
+R2192:2192 Flux.Refine.FluxAluRefine <> a:16 var
+R2194:2194 Flux.Refine.FluxAluRefine <> b:17 var
+R2218:2229 Flux.Impl.FluxAluImpl <> alu_sub_expr def
+R2237:2244 Flux.Spec.FluxAlu <> alu_spec def
+R2246:2250 Koika.Lang.BigStepSemantics <> peval def
+R2252:2261 Koika.Lang.Syntax Abbr minus def
+R2269:2291 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R2293:2315 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 2376:2392 <> alu_copyb_correct
+R2401:2404 Flux.FluxCommon <> Word abbrev
+binder 2395:2395 <> a:18
+binder 2397:2397 <> b:19
+R2439:2441 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2413:2417 Koika.Lang.BigStepSemantics <> peval def
+R2420:2433 Flux.Impl.FluxAluImpl <> alu_copyb_expr def
+R2435:2435 Flux.Refine.FluxAluRefine <> a:18 var
+R2437:2437 Flux.Refine.FluxAluRefine <> b:19 var
+R2442:2444 Corelib.Init.Datatypes <> inl constr
+R2447:2454 Flux.Spec.FluxAlu <> alu_spec def
+R2456:2465 Flux.Spec.FluxAlu <> ALU_COPY_B constr
+R2467:2467 Flux.Refine.FluxAluRefine <> a:18 var
+R2469:2469 Flux.Refine.FluxAluRefine <> b:19 var
+prf 2587:2601 <> alu_sll_correct
+R2610:2613 Flux.FluxCommon <> Word abbrev
+binder 2604:2604 <> a:20
+binder 2606:2606 <> b:21
+R2646:2648 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2622:2626 Koika.Lang.BigStepSemantics <> peval def
+R2629:2640 Flux.Impl.FluxAluImpl <> alu_sll_expr def
+R2642:2642 Flux.Refine.FluxAluRefine <> a:20 var
+R2644:2644 Flux.Refine.FluxAluRefine <> b:21 var
+R2649:2651 Corelib.Init.Datatypes <> inl constr
+R2654:2661 Flux.Spec.FluxAlu <> alu_spec def
+R2663:2669 Flux.Spec.FluxAlu <> ALU_SLL constr
+R2671:2671 Flux.Refine.FluxAluRefine <> a:20 var
+R2673:2673 Flux.Refine.FluxAluRefine <> b:21 var
+R2697:2708 Flux.Impl.FluxAluImpl <> alu_sll_expr def
+R2711:2715 Flux.Spec.FluxAlu <> shamt def
+R2723:2730 Flux.Spec.FluxAlu <> alu_spec def
+R2732:2736 Koika.Lang.BigStepSemantics <> peval def
+R2738:2745 Koika.Lang.Syntax Abbr lsl def
+R2747:2756 Koika.Lang.Syntax Abbr slice def
+R2764:2786 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R2788:2810 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 2845:2859 <> alu_srl_correct
+R2868:2871 Flux.FluxCommon <> Word abbrev
+binder 2862:2862 <> a:22
+binder 2864:2864 <> b:23
+R2904:2906 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2880:2884 Koika.Lang.BigStepSemantics <> peval def
+R2887:2898 Flux.Impl.FluxAluImpl <> alu_srl_expr def
+R2900:2900 Flux.Refine.FluxAluRefine <> a:22 var
+R2902:2902 Flux.Refine.FluxAluRefine <> b:23 var
+R2907:2909 Corelib.Init.Datatypes <> inl constr
+R2912:2919 Flux.Spec.FluxAlu <> alu_spec def
+R2921:2927 Flux.Spec.FluxAlu <> ALU_SRL constr
+R2929:2929 Flux.Refine.FluxAluRefine <> a:22 var
+R2931:2931 Flux.Refine.FluxAluRefine <> b:23 var
+R2955:2966 Flux.Impl.FluxAluImpl <> alu_srl_expr def
+R2969:2973 Flux.Spec.FluxAlu <> shamt def
+R2981:2988 Flux.Spec.FluxAlu <> alu_spec def
+R2990:2994 Koika.Lang.BigStepSemantics <> peval def
+R2996:3003 Koika.Lang.Syntax Abbr lsr def
+R3005:3014 Koika.Lang.Syntax Abbr slice def
+R3022:3044 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R3046:3068 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 3103:3117 <> alu_sra_correct
+R3126:3129 Flux.FluxCommon <> Word abbrev
+binder 3120:3120 <> a:24
+binder 3122:3122 <> b:25
+R3162:3164 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3138:3142 Koika.Lang.BigStepSemantics <> peval def
+R3145:3156 Flux.Impl.FluxAluImpl <> alu_sra_expr def
+R3158:3158 Flux.Refine.FluxAluRefine <> a:24 var
+R3160:3160 Flux.Refine.FluxAluRefine <> b:25 var
+R3165:3167 Corelib.Init.Datatypes <> inl constr
+R3170:3177 Flux.Spec.FluxAlu <> alu_spec def
+R3179:3185 Flux.Spec.FluxAlu <> ALU_SRA constr
+R3187:3187 Flux.Refine.FluxAluRefine <> a:24 var
+R3189:3189 Flux.Refine.FluxAluRefine <> b:25 var
+R3213:3224 Flux.Impl.FluxAluImpl <> alu_sra_expr def
+R3227:3231 Flux.Spec.FluxAlu <> shamt def
+R3239:3246 Flux.Spec.FluxAlu <> alu_spec def
+R3248:3252 Koika.Lang.BigStepSemantics <> peval def
+R3254:3261 Koika.Lang.Syntax Abbr asr def
+R3263:3272 Koika.Lang.Syntax Abbr slice def
+R3280:3302 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R3304:3326 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 3553:3567 <> alu_slt_correct
+R3576:3579 Flux.FluxCommon <> Word abbrev
+binder 3570:3570 <> a:26
+binder 3572:3572 <> b:27
+R3612:3614 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3588:3592 Koika.Lang.BigStepSemantics <> peval def
+R3595:3606 Flux.Impl.FluxAluImpl <> alu_slt_expr def
+R3608:3608 Flux.Refine.FluxAluRefine <> a:26 var
+R3610:3610 Flux.Refine.FluxAluRefine <> b:27 var
+R3615:3617 Corelib.Init.Datatypes <> inl constr
+R3620:3627 Flux.Spec.FluxAlu <> alu_spec def
+R3629:3635 Flux.Spec.FluxAlu <> ALU_SLT constr
+R3637:3637 Flux.Refine.FluxAluRefine <> a:26 var
+R3639:3639 Flux.Refine.FluxAluRefine <> b:27 var
+R3663:3674 Flux.Impl.FluxAluImpl <> alu_slt_expr def
+R3682:3689 Flux.Spec.FluxAlu <> alu_spec def
+R3691:3695 Koika.Lang.BigStepSemantics <> peval def
+R3697:3704 Koika.Lang.Syntax Abbr slt def
+R3712:3734 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R3736:3758 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R3773:3799 Koika.Lang.Primitives BitFuns bitfun_of_predicate def
+R3810:3822 Koika.Lang.BitOps <> unfold_single thm
+R3831:3836 Flux.Refine.FluxAluRefine <> if_inl thm
+R3810:3822 Koika.Lang.BitOps <> unfold_single thm
+R3810:3822 Koika.Lang.BitOps <> unfold_single thm
+R3831:3836 Flux.Refine.FluxAluRefine <> if_inl thm
+prf 3857:3872 <> alu_sltu_correct
+R3881:3884 Flux.FluxCommon <> Word abbrev
+binder 3875:3875 <> a:28
+binder 3877:3877 <> b:29
+R3918:3920 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3893:3897 Koika.Lang.BigStepSemantics <> peval def
+R3900:3912 Flux.Impl.FluxAluImpl <> alu_sltu_expr def
+R3914:3914 Flux.Refine.FluxAluRefine <> a:28 var
+R3916:3916 Flux.Refine.FluxAluRefine <> b:29 var
+R3921:3923 Corelib.Init.Datatypes <> inl constr
+R3926:3933 Flux.Spec.FluxAlu <> alu_spec def
+R3935:3942 Flux.Spec.FluxAlu <> ALU_SLTU constr
+R3944:3944 Flux.Refine.FluxAluRefine <> a:28 var
+R3946:3946 Flux.Refine.FluxAluRefine <> b:29 var
+R3970:3982 Flux.Impl.FluxAluImpl <> alu_sltu_expr def
+R3990:3997 Flux.Spec.FluxAlu <> alu_spec def
+R3999:4003 Koika.Lang.BigStepSemantics <> peval def
+R4005:4011 Koika.Lang.Syntax Abbr lt def
+R4019:4041 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R4043:4065 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R4080:4106 Koika.Lang.Primitives BitFuns bitfun_of_predicate def
+R4117:4129 Koika.Lang.BitOps <> unfold_single thm
+R4138:4143 Flux.Refine.FluxAluRefine <> if_inl thm
+R4117:4129 Koika.Lang.BitOps <> unfold_single thm
+R4117:4129 Koika.Lang.BitOps <> unfold_single thm
+R4138:4143 Flux.Refine.FluxAluRefine <> if_inl thm
+prf 4196:4211 <> alu_xmin_correct
+R4220:4223 Flux.FluxCommon <> Word abbrev
+binder 4214:4214 <> a:30
+binder 4216:4216 <> b:31
+R4257:4259 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4232:4236 Koika.Lang.BigStepSemantics <> peval def
+R4239:4251 Flux.Impl.FluxAluImpl <> alu_xmin_expr def
+R4253:4253 Flux.Refine.FluxAluRefine <> a:30 var
+R4255:4255 Flux.Refine.FluxAluRefine <> b:31 var
+R4260:4262 Corelib.Init.Datatypes <> inl constr
+R4265:4272 Flux.Spec.FluxAlu <> alu_spec def
+R4274:4281 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R4283:4283 Flux.Refine.FluxAluRefine <> a:30 var
+R4285:4285 Flux.Refine.FluxAluRefine <> b:31 var
+R4309:4321 Flux.Impl.FluxAluImpl <> alu_xmin_expr def
+R4329:4336 Flux.Spec.FluxAlu <> alu_spec def
+R4338:4342 Koika.Lang.BigStepSemantics <> peval def
+R4344:4351 Koika.Lang.Syntax Abbr slt def
+R4359:4381 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R4383:4405 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R4420:4446 Koika.Lang.Primitives BitFuns bitfun_of_predicate def
+R4457:4469 Koika.Lang.BitOps <> unfold_single thm
+R4478:4483 Flux.Refine.FluxAluRefine <> if_inl thm
+R4457:4469 Koika.Lang.BitOps <> unfold_single thm
+R4457:4469 Koika.Lang.BitOps <> unfold_single thm
+R4478:4483 Flux.Refine.FluxAluRefine <> if_inl thm
+prf 4504:4519 <> alu_xmax_correct
+R4528:4531 Flux.FluxCommon <> Word abbrev
+binder 4522:4522 <> a:32
+binder 4524:4524 <> b:33
+R4565:4567 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4540:4544 Koika.Lang.BigStepSemantics <> peval def
+R4547:4559 Flux.Impl.FluxAluImpl <> alu_xmax_expr def
+R4561:4561 Flux.Refine.FluxAluRefine <> a:32 var
+R4563:4563 Flux.Refine.FluxAluRefine <> b:33 var
+R4568:4570 Corelib.Init.Datatypes <> inl constr
+R4573:4580 Flux.Spec.FluxAlu <> alu_spec def
+R4582:4589 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R4591:4591 Flux.Refine.FluxAluRefine <> a:32 var
+R4593:4593 Flux.Refine.FluxAluRefine <> b:33 var
+R4617:4629 Flux.Impl.FluxAluImpl <> alu_xmax_expr def
+R4637:4644 Flux.Spec.FluxAlu <> alu_spec def
+R4646:4650 Koika.Lang.BigStepSemantics <> peval def
+R4652:4659 Koika.Lang.Syntax Abbr slt def
+R4667:4689 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R4691:4713 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R4728:4754 Koika.Lang.Primitives BitFuns bitfun_of_predicate def
+R4765:4777 Koika.Lang.BitOps <> unfold_single thm
+R4786:4791 Flux.Refine.FluxAluRefine <> if_inl thm
+R4765:4777 Koika.Lang.BitOps <> unfold_single thm
+R4765:4777 Koika.Lang.BitOps <> unfold_single thm
+R4786:4791 Flux.Refine.FluxAluRefine <> if_inl thm
+prf 4959:4976 <> signed_lt_zero_msb
+R4983:4986 Flux.FluxCommon <> Word abbrev
+binder 4979:4979 <> a:34
+R5030:5032 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4995:5008 Koika.Common.Vect Bits signed_lt def
+R5025:5028 Flux.FluxCommon <> Word abbrev
+R5013:5021 Koika.Common.Vect Bits zero def
+R5010:5010 Flux.Refine.FluxAluRefine <> a:34 var
+R5033:5040 Koika.Common.Vect Bits msb abbrev
+R5042:5042 Flux.Refine.FluxAluRefine <> a:34 var
+R5065:5078 Koika.Common.Vect Bits signed_lt def
+R5081:5100 Koika.Common.Vect Bits lift_comparison def
+R5103:5112 Koika.Common.Vect Bits is_lt def
+R5127:5137 Koika.Common.Vect Bits to_2cZ def
+R5152:5155 Flux.FluxCommon <> Word abbrev
+R5140:5148 Koika.Common.Vect Bits zero def
+R5164:5165 Corelib.Numbers.BinNums <> Z0 constr
+R5127:5137 Koika.Common.Vect Bits to_2cZ def
+R5152:5155 Flux.FluxCommon <> Word abbrev
+R5140:5148 Koika.Common.Vect Bits zero def
+R5164:5165 Corelib.Numbers.BinNums <> Z0 constr
+R5179:5189 Koika.Common.Vect Bits to_2cZ def
+R5206:5213 Koika.Common.Vect Bits msb abbrev
+R5206:5213 Koika.Common.Vect Bits msb abbrev
+R5243:5251 Koika.Common.Vect Bits to_N def
+R5254:5261 Koika.Common.Vect Bits neg def
+R5243:5251 Koika.Common.Vect Bits to_N def
+R5254:5261 Koika.Common.Vect Bits neg def
+R5297:5305 Koika.Common.Vect Bits to_N def
+R5297:5305 Koika.Common.Vect Bits to_N def
+prf 5342:5357 <> alu_xabs_correct
+R5366:5369 Flux.FluxCommon <> Word abbrev
+binder 5360:5360 <> a:35
+binder 5362:5362 <> b:36
+R5403:5405 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5378:5382 Koika.Lang.BigStepSemantics <> peval def
+R5385:5397 Flux.Impl.FluxAluImpl <> alu_xabs_expr def
+R5399:5399 Flux.Refine.FluxAluRefine <> a:35 var
+R5401:5401 Flux.Refine.FluxAluRefine <> b:36 var
+R5406:5408 Corelib.Init.Datatypes <> inl constr
+R5411:5418 Flux.Spec.FluxAlu <> alu_spec def
+R5420:5427 Flux.Spec.FluxAlu <> ALU_XABS constr
+R5429:5429 Flux.Refine.FluxAluRefine <> a:35 var
+R5431:5431 Flux.Refine.FluxAluRefine <> b:36 var
+R5455:5467 Flux.Impl.FluxAluImpl <> alu_xabs_expr def
+R5475:5482 Flux.Spec.FluxAlu <> alu_spec def
+R5484:5488 Koika.Lang.BigStepSemantics <> peval def
+R5490:5497 Koika.Lang.Syntax Abbr slt def
+R5499:5508 Koika.Lang.Syntax Abbr minus def
+R5516:5538 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R5540:5562 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R5577:5603 Koika.Lang.Primitives BitFuns bitfun_of_predicate def
+R5614:5626 Koika.Lang.BitOps <> unfold_single thm
+R5614:5626 Koika.Lang.BitOps <> unfold_single thm
+R5614:5626 Koika.Lang.BitOps <> unfold_single thm
+R5641:5658 Flux.Refine.FluxAluRefine <> signed_lt_zero_msb thm
+R5641:5658 Flux.Refine.FluxAluRefine <> signed_lt_zero_msb thm
+R5641:5658 Flux.Refine.FluxAluRefine <> signed_lt_zero_msb thm
+R5667:5672 Flux.Refine.FluxAluRefine <> if_inl thm
+R5667:5672 Flux.Refine.FluxAluRefine <> if_inl thm
+prf 5732:5748 <> alu_xlidx_correct
+R5757:5760 Flux.FluxCommon <> Word abbrev
+binder 5751:5751 <> a:37
+binder 5753:5753 <> b:38
+R5795:5797 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5769:5773 Koika.Lang.BigStepSemantics <> peval def
+R5776:5789 Flux.Impl.FluxAluImpl <> alu_xlidx_expr def
+R5791:5791 Flux.Refine.FluxAluRefine <> a:37 var
+R5793:5793 Flux.Refine.FluxAluRefine <> b:38 var
+R5798:5800 Corelib.Init.Datatypes <> inl constr
+R5803:5810 Flux.Spec.FluxAlu <> alu_spec def
+R5812:5820 Flux.Spec.FluxAlu <> ALU_XLIDX constr
+R5822:5822 Flux.Refine.FluxAluRefine <> a:37 var
+R5824:5824 Flux.Refine.FluxAluRefine <> b:38 var
+R5848:5861 Flux.Impl.FluxAluImpl <> alu_xlidx_expr def
+R5869:5876 Flux.Spec.FluxAlu <> alu_spec def
+R5878:5882 Koika.Lang.BigStepSemantics <> peval def
+R5884:5892 Koika.Lang.Syntax Abbr plus def
+R5894:5901 Koika.Lang.Syntax Abbr lsl def
+R5909:5931 Koika.Lang.Primitives CircuitPrimSpecs sigma1 def
+R5933:5955 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R5984:5993 Flux.Refine.FluxAluRefine alu_refine <> sec

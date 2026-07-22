@@ -1,0 +1,144 @@
+DIGEST 535f78029b5df5f91c37aec506f516ed
+FFlux.Refine.FluxBranchRefine
+R529:535 Koika.Lang.Prelude <> <> lib
+R563:572 Flux.FluxCommon <> <> lib
+R600:614 Flux.Spec.FluxBranch <> <> lib
+R642:660 Flux.Impl.FluxBranchImpl <> <> lib
+sec 706:718 <> branch_refine
+var  732:736 branch_refine mod_t
+var  741:741 branch_refine M
+R745:753 Koika.Lang.Syntax Modules t class
+R755:759 Flux.Refine.FluxBranchRefine <> mod_t:1 var
+prf 774:790 <> branch_eq_correct
+R799:802 Flux.FluxCommon <> Word abbrev
+binder 793:793 <> a:3
+binder 795:795 <> b:4
+R837:839 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R811:815 Koika.Lang.BigStepSemantics <> peval def
+R818:831 Flux.Impl.FluxBranchImpl <> branch_eq_expr def
+R833:833 Flux.Refine.FluxBranchRefine <> a:3 var
+R835:835 Flux.Refine.FluxBranchRefine <> b:4 var
+R840:842 Corelib.Init.Datatypes <> inl constr
+R847:848 Koika.Common.Vect <> ::bits:x_'~'_x not
+R871:871 Koika.Common.Vect <> ::bits:x_'~'_x not
+R849:860 Flux.Spec.FluxBranch <> branch_taken def
+R862:866 Flux.Spec.FluxBranch <> BR_EQ constr
+R868:868 Flux.Refine.FluxBranchRefine <> a:3 var
+R870:870 Flux.Refine.FluxBranchRefine <> b:4 var
+R845:846 Koika.Common.Vect <> ::bits:'Ob' not
+R895:908 Flux.Impl.FluxBranchImpl <> branch_eq_expr def
+R916:927 Flux.Spec.FluxBranch <> branch_taken def
+R929:933 Koika.Lang.BigStepSemantics <> peval def
+R935:941 Koika.Lang.Syntax Abbr eq def
+R949:971 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1006:1022 <> branch_ne_correct
+R1031:1034 Flux.FluxCommon <> Word abbrev
+binder 1025:1025 <> a:5
+binder 1027:1027 <> b:6
+R1069:1071 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1043:1047 Koika.Lang.BigStepSemantics <> peval def
+R1050:1063 Flux.Impl.FluxBranchImpl <> branch_ne_expr def
+R1065:1065 Flux.Refine.FluxBranchRefine <> a:5 var
+R1067:1067 Flux.Refine.FluxBranchRefine <> b:6 var
+R1072:1074 Corelib.Init.Datatypes <> inl constr
+R1079:1080 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1103:1103 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1081:1092 Flux.Spec.FluxBranch <> branch_taken def
+R1094:1098 Flux.Spec.FluxBranch <> BR_NE constr
+R1100:1100 Flux.Refine.FluxBranchRefine <> a:5 var
+R1102:1102 Flux.Refine.FluxBranchRefine <> b:6 var
+R1077:1078 Koika.Common.Vect <> ::bits:'Ob' not
+R1127:1140 Flux.Impl.FluxBranchImpl <> branch_ne_expr def
+R1148:1159 Flux.Spec.FluxBranch <> branch_taken def
+R1161:1165 Koika.Lang.BigStepSemantics <> peval def
+R1167:1174 Koika.Lang.Syntax Abbr neq def
+R1182:1204 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1239:1255 <> branch_lt_correct
+R1264:1267 Flux.FluxCommon <> Word abbrev
+binder 1258:1258 <> a:7
+binder 1260:1260 <> b:8
+R1302:1304 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1276:1280 Koika.Lang.BigStepSemantics <> peval def
+R1283:1296 Flux.Impl.FluxBranchImpl <> branch_lt_expr def
+R1298:1298 Flux.Refine.FluxBranchRefine <> a:7 var
+R1300:1300 Flux.Refine.FluxBranchRefine <> b:8 var
+R1305:1307 Corelib.Init.Datatypes <> inl constr
+R1312:1313 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1336:1336 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1314:1325 Flux.Spec.FluxBranch <> branch_taken def
+R1327:1331 Flux.Spec.FluxBranch <> BR_LT constr
+R1333:1333 Flux.Refine.FluxBranchRefine <> a:7 var
+R1335:1335 Flux.Refine.FluxBranchRefine <> b:8 var
+R1310:1311 Koika.Common.Vect <> ::bits:'Ob' not
+R1360:1373 Flux.Impl.FluxBranchImpl <> branch_lt_expr def
+R1381:1392 Flux.Spec.FluxBranch <> branch_taken def
+R1394:1398 Koika.Lang.BigStepSemantics <> peval def
+R1400:1407 Koika.Lang.Syntax Abbr slt def
+R1415:1437 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1472:1488 <> branch_ge_correct
+R1497:1500 Flux.FluxCommon <> Word abbrev
+binder 1491:1491 <> a:9
+binder 1493:1493 <> b:10
+R1535:1537 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1509:1513 Koika.Lang.BigStepSemantics <> peval def
+R1516:1529 Flux.Impl.FluxBranchImpl <> branch_ge_expr def
+R1531:1531 Flux.Refine.FluxBranchRefine <> a:9 var
+R1533:1533 Flux.Refine.FluxBranchRefine <> b:10 var
+R1538:1540 Corelib.Init.Datatypes <> inl constr
+R1545:1546 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1569:1569 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1547:1558 Flux.Spec.FluxBranch <> branch_taken def
+R1560:1564 Flux.Spec.FluxBranch <> BR_GE constr
+R1566:1566 Flux.Refine.FluxBranchRefine <> a:9 var
+R1568:1568 Flux.Refine.FluxBranchRefine <> b:10 var
+R1543:1544 Koika.Common.Vect <> ::bits:'Ob' not
+R1593:1606 Flux.Impl.FluxBranchImpl <> branch_ge_expr def
+R1614:1625 Flux.Spec.FluxBranch <> branch_taken def
+R1627:1631 Koika.Lang.BigStepSemantics <> peval def
+R1633:1640 Koika.Lang.Syntax Abbr sge def
+R1648:1670 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1705:1722 <> branch_ltu_correct
+R1731:1734 Flux.FluxCommon <> Word abbrev
+binder 1725:1725 <> a:11
+binder 1727:1727 <> b:12
+R1770:1772 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1743:1747 Koika.Lang.BigStepSemantics <> peval def
+R1750:1764 Flux.Impl.FluxBranchImpl <> branch_ltu_expr def
+R1766:1766 Flux.Refine.FluxBranchRefine <> a:11 var
+R1768:1768 Flux.Refine.FluxBranchRefine <> b:12 var
+R1773:1775 Corelib.Init.Datatypes <> inl constr
+R1780:1781 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1805:1805 Koika.Common.Vect <> ::bits:x_'~'_x not
+R1782:1793 Flux.Spec.FluxBranch <> branch_taken def
+R1795:1800 Flux.Spec.FluxBranch <> BR_LTU constr
+R1802:1802 Flux.Refine.FluxBranchRefine <> a:11 var
+R1804:1804 Flux.Refine.FluxBranchRefine <> b:12 var
+R1778:1779 Koika.Common.Vect <> ::bits:'Ob' not
+R1829:1843 Flux.Impl.FluxBranchImpl <> branch_ltu_expr def
+R1851:1862 Flux.Spec.FluxBranch <> branch_taken def
+R1864:1868 Koika.Lang.BigStepSemantics <> peval def
+R1870:1876 Koika.Lang.Syntax Abbr lt def
+R1884:1906 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+prf 1941:1958 <> branch_geu_correct
+R1967:1970 Flux.FluxCommon <> Word abbrev
+binder 1961:1961 <> a:13
+binder 1963:1963 <> b:14
+R2006:2008 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1979:1983 Koika.Lang.BigStepSemantics <> peval def
+R1986:2000 Flux.Impl.FluxBranchImpl <> branch_geu_expr def
+R2002:2002 Flux.Refine.FluxBranchRefine <> a:13 var
+R2004:2004 Flux.Refine.FluxBranchRefine <> b:14 var
+R2009:2011 Corelib.Init.Datatypes <> inl constr
+R2016:2017 Koika.Common.Vect <> ::bits:x_'~'_x not
+R2041:2041 Koika.Common.Vect <> ::bits:x_'~'_x not
+R2018:2029 Flux.Spec.FluxBranch <> branch_taken def
+R2031:2036 Flux.Spec.FluxBranch <> BR_GEU constr
+R2038:2038 Flux.Refine.FluxBranchRefine <> a:13 var
+R2040:2040 Flux.Refine.FluxBranchRefine <> b:14 var
+R2014:2015 Koika.Common.Vect <> ::bits:'Ob' not
+R2065:2079 Flux.Impl.FluxBranchImpl <> branch_geu_expr def
+R2087:2098 Flux.Spec.FluxBranch <> branch_taken def
+R2100:2104 Koika.Lang.BigStepSemantics <> peval def
+R2106:2112 Koika.Lang.Syntax Abbr ge def
+R2120:2142 Koika.Lang.Primitives CircuitPrimSpecs sigma2 def
+R2171:2183 Flux.Refine.FluxBranchRefine branch_refine <> sec

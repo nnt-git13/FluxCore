@@ -112,6 +112,10 @@ package pipeline_pkg;
     //   substitute PC for ALU operand A when uses_rs1 = 0. rs1_data is still
     //   passed through (its value is irrelevant for those instructions).
 
+    // fs1_data / fs2_data / fs3_data carry the FP register-file read values for
+    // FP instructions (fs1=instr[19:15], fs2=instr[24:20], fs3=instr[31:27]).
+    // They are meaningful only when decoded.uses_fs1/2/3 is set; the FP
+    // forwarding path may override them before the FPU consumes them.
     typedef struct packed {
         logic           valid;
         word_t          pc;
@@ -119,7 +123,10 @@ package pipeline_pkg;
         decoded_instr_t decoded;
         word_t          rs1_data;
         word_t          rs2_data;
-    } id_ex_payload_t;  // 1 + 32 + 32 + 110 + 32 + 32 = 239 bits
+        word_t          fs1_data;
+        word_t          fs2_data;
+        word_t          fs3_data;
+    } id_ex_payload_t;  // + 3×32 FP operand words. Use $bits() in testbenches.
 
     // =========================================================================
     // 3. EX/MEM payload — carries execution result from EX to MEM stage
@@ -155,6 +162,13 @@ package pipeline_pkg;
     //                    that will be written to rd (WB_CSR writeback source).
     //                    The mem_stage selects it when wb_src = WB_CSR.
 
+    // FP additions:
+    //   fp_result  — FPU result word.  For FP→FP ops it is written to the FP
+    //                register file (writes_frd); for FP→int ops (FEQ/FCVT.W/
+    //                FMV.X.W/FCLASS) mem_stage selects it via wb_src=WB_FPU.
+    //   fp_store_data — value written to memory by FSW (the fs2 operand).
+    //   fflags     — IEEE exception flags produced by this FP op (accrued into
+    //                fcsr at retirement).
     typedef struct packed {
         logic           valid;
         word_t          pc;
@@ -165,7 +179,10 @@ package pipeline_pkg;
         logic           branch_taken;
         word_t          branch_target;
         word_t          csr_rdata;
-    } ex_mem_payload_t;  // 1 + 32 + 32 + 127 + 32 + 32 + 1 + 32 + 32 = 321 bits
+        word_t          fp_result;
+        word_t          fp_store_data;
+        fflags_t        fflags;
+    } ex_mem_payload_t;  // + fp_result(32) + fp_store_data(32) + fflags(5).
 
     // =========================================================================
     // 4. MEM/WB payload — carries writeback data from MEM to WB stage
@@ -201,6 +218,13 @@ package pipeline_pkg;
     //               EXC_STORE_ADDR_MISALIGNED, EXC_LOAD_ACCESS_FAULT, or
     //               EXC_STORE_ACCESS_FAULT.
 
+    // FP additions:
+    //   frd_wen/frd_addr/frd_data — FP register-file write port (FP→FP results
+    //                and FLW load data).  Independent of the integer rd port so
+    //                an FP op can write f[rd] while never touching x[rd].
+    //   fp_from_mem — 1 when frd_data must be taken from the live data-memory
+    //                word in WB (FLW under BRAM latency), analogous to rd_from_mem.
+    //   fflags/fflags_wen — IEEE flags to accrue into fcsr when this FP op retires.
     typedef struct packed {
         logic            valid;
         word_t           pc;
@@ -211,7 +235,13 @@ package pipeline_pkg;
         logic            rd_from_mem;
         logic [1:0]      mem_byte_off;
         exception_meta_t exception;
-    } mem_wb_payload_t;  // 1 + 32 + 32 + 1 + 5 + 32 + 1 + 2 + 37 = 143 bits
+        logic            frd_wen;
+        reg_idx_t        frd_addr;
+        word_t           frd_data;
+        logic            fp_from_mem;
+        logic            fflags_wen;
+        fflags_t         fflags;
+    } mem_wb_payload_t;  // + FP writeback + fflags accrual fields.
 
 endpackage : pipeline_pkg
 

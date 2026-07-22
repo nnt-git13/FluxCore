@@ -1,0 +1,270 @@
+DIGEST 646019a9507c65f83589bcbe013b7b9c
+FFlux.Spec.FluxAlu
+R641:647 Koika.Lang.Prelude <> <> lib
+R675:684 Flux.FluxCommon <> <> lib
+ind 958:963 <> alu_op
+constr 970:976 <> ALU_ADD
+constr 980:986 <> ALU_SUB
+constr 990:996 <> ALU_AND
+constr 1000:1005 <> ALU_OR
+constr 1010:1016 <> ALU_XOR
+constr 1020:1026 <> ALU_SLL
+constr 1030:1036 <> ALU_SRL
+constr 1040:1046 <> ALU_SRA
+constr 1050:1056 <> ALU_SLT
+constr 1060:1067 <> ALU_SLTU
+constr 1071:1080 <> ALU_COPY_B
+constr 1084:1091 <> ALU_XABS
+constr 1095:1102 <> ALU_XMIN
+constr 1106:1113 <> ALU_XMAX
+constr 1117:1124 <> ALU_XCLZ
+constr 1128:1136 <> ALU_XLIDX
+scheme 958:963 <> alu_op_rect
+scheme 958:963 <> alu_op_ind
+scheme 958:963 <> alu_op_rec
+scheme 958:963 <> alu_op_sind
+def 1219:1223 <> shamt
+R1230:1233 Flux.FluxCommon <> Word abbrev
+binder 1226:1226 <> b:3
+R1238:1240 Corelib.Init.Datatypes <> nat ind
+R1245:1255 Koika.Common.Vect Bits to_nat def
+R1258:1267 Koika.Common.Vect Bits slice def
+R1273:1273 Flux.Spec.FluxAlu <> b:3 var
+def 1449:1453 <> clz32
+R1460:1463 Flux.FluxCommon <> Word abbrev
+binder 1456:1456 <> a:4
+R1468:1471 Flux.FluxCommon <> Word abbrev
+R1487:1497 Koika.Common.Vect Bits to_nat def
+R1499:1499 Flux.Spec.FluxAlu <> a:4 var
+binder 1482:1482 <> v:5
+R1509:1515 Stdlib.Arith.PeanoNat Nat eqb def
+R1517:1517 Flux.Spec.FluxAlu <> v:5 var
+R1551:1561 Koika.Common.Vect Bits of_nat def
+R1569:1571 Corelib.Init.Peano <> ::nat_scope:x_'-'_x not
+R1572:1579 Stdlib.Arith.PeanoNat Nat log2 def
+R1581:1581 Flux.Spec.FluxAlu <> v:5 var
+R1526:1536 Koika.Common.Vect Bits of_nat def
+def 1626:1633 <> alu_spec
+R1641:1646 Flux.Spec.FluxAlu <> alu_op ind
+binder 1636:1637 <> op:6
+R1656:1659 Flux.FluxCommon <> Word abbrev
+binder 1650:1650 <> a:7
+binder 1652:1652 <> b:8
+R1664:1667 Flux.FluxCommon <> Word abbrev
+R1680:1681 Flux.Spec.FluxAlu <> op:6 var
+R1692:1698 Flux.Spec.FluxAlu <> ALU_ADD constr
+R1706:1714 Koika.Common.Vect Bits plus def
+R1718:1718 Flux.Spec.FluxAlu <> b:8 var
+R1716:1716 Flux.Spec.FluxAlu <> a:7 var
+R1724:1730 Flux.Spec.FluxAlu <> ALU_SUB constr
+R1738:1747 Koika.Common.Vect Bits minus def
+R1751:1751 Flux.Spec.FluxAlu <> b:8 var
+R1749:1749 Flux.Spec.FluxAlu <> a:7 var
+R1757:1763 Flux.Spec.FluxAlu <> ALU_AND constr
+R1771:1778 Koika.Common.Vect Bits and def
+R1782:1782 Flux.Spec.FluxAlu <> b:8 var
+R1780:1780 Flux.Spec.FluxAlu <> a:7 var
+R1788:1793 Flux.Spec.FluxAlu <> ALU_OR constr
+R1802:1808 Koika.Common.Vect Bits or def
+R1812:1812 Flux.Spec.FluxAlu <> b:8 var
+R1810:1810 Flux.Spec.FluxAlu <> a:7 var
+R1818:1824 Flux.Spec.FluxAlu <> ALU_XOR constr
+R1832:1839 Koika.Common.Vect Bits xor def
+R1843:1843 Flux.Spec.FluxAlu <> b:8 var
+R1841:1841 Flux.Spec.FluxAlu <> a:7 var
+R1849:1855 Flux.Spec.FluxAlu <> ALU_SLL constr
+R1863:1870 Koika.Common.Vect Bits lsl def
+R1882:1882 Flux.Spec.FluxAlu <> a:7 var
+R1873:1877 Flux.Spec.FluxAlu <> shamt def
+R1879:1879 Flux.Spec.FluxAlu <> b:8 var
+R1888:1894 Flux.Spec.FluxAlu <> ALU_SRL constr
+R1902:1909 Koika.Common.Vect Bits lsr def
+R1921:1921 Flux.Spec.FluxAlu <> a:7 var
+R1912:1916 Flux.Spec.FluxAlu <> shamt def
+R1918:1918 Flux.Spec.FluxAlu <> b:8 var
+R1927:1933 Flux.Spec.FluxAlu <> ALU_SRA constr
+R1941:1948 Koika.Common.Vect Bits asr def
+R1960:1960 Flux.Spec.FluxAlu <> a:7 var
+R1951:1955 Flux.Spec.FluxAlu <> shamt def
+R1957:1957 Flux.Spec.FluxAlu <> b:8 var
+R1966:1972 Flux.Spec.FluxAlu <> ALU_SLT constr
+R1983:1996 Koika.Common.Vect Bits signed_lt def
+R2002:2002 Flux.Spec.FluxAlu <> b:8 var
+R2000:2000 Flux.Spec.FluxAlu <> a:7 var
+R2023:2031 Koika.Common.Vect Bits zero def
+R2009:2016 Koika.Common.Vect Bits one def
+R2037:2044 Flux.Spec.FluxAlu <> ALU_SLTU constr
+R2054:2069 Koika.Common.Vect Bits unsigned_lt def
+R2073:2073 Flux.Spec.FluxAlu <> b:8 var
+R2071:2071 Flux.Spec.FluxAlu <> a:7 var
+R2094:2102 Koika.Common.Vect Bits zero def
+R2080:2087 Koika.Common.Vect Bits one def
+R2108:2117 Flux.Spec.FluxAlu <> ALU_COPY_B constr
+R2122:2122 Flux.Spec.FluxAlu <> b:8 var
+R2168:2175 Flux.Spec.FluxAlu <> ALU_XABS constr
+R2185:2192 Koika.Common.Vect Bits msb abbrev
+R2194:2194 Flux.Spec.FluxAlu <> a:7 var
+R2229:2229 Flux.Spec.FluxAlu <> a:7 var
+R2201:2210 Koika.Common.Vect Bits minus def
+R2222:2222 Flux.Spec.FluxAlu <> a:7 var
+R2212:2220 Koika.Common.Vect Bits zero def
+R2235:2242 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R2252:2265 Koika.Common.Vect Bits signed_lt def
+R2269:2269 Flux.Spec.FluxAlu <> b:8 var
+R2267:2267 Flux.Spec.FluxAlu <> a:7 var
+R2283:2283 Flux.Spec.FluxAlu <> b:8 var
+R2276:2276 Flux.Spec.FluxAlu <> a:7 var
+R2289:2296 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R2306:2319 Koika.Common.Vect Bits signed_lt def
+R2323:2323 Flux.Spec.FluxAlu <> a:7 var
+R2321:2321 Flux.Spec.FluxAlu <> b:8 var
+R2337:2337 Flux.Spec.FluxAlu <> b:8 var
+R2330:2330 Flux.Spec.FluxAlu <> a:7 var
+R2343:2350 Flux.Spec.FluxAlu <> ALU_XCLZ constr
+R2357:2361 Flux.Spec.FluxAlu <> clz32 def
+R2363:2363 Flux.Spec.FluxAlu <> a:7 var
+R2369:2377 Flux.Spec.FluxAlu <> ALU_XLIDX constr
+R2383:2391 Koika.Common.Vect Bits plus def
+R2396:2403 Koika.Common.Vect Bits lsl def
+R2407:2407 Flux.Spec.FluxAlu <> b:8 var
+R2393:2393 Flux.Spec.FluxAlu <> a:7 var
+prf 2769:2784 <> slt_is_signed_lt
+binder 2795:2795 <> a:10
+binder 2797:2797 <> b:11
+R2822:2825 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2876:2876 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2802:2809 Flux.Spec.FluxAlu <> alu_spec def
+R2811:2817 Flux.Spec.FluxAlu <> ALU_SLT constr
+R2819:2819 Flux.Spec.FluxAlu <> a:10 var
+R2821:2821 Flux.Spec.FluxAlu <> b:11 var
+R2829:2842 Koika.Common.Vect Bits signed_lt def
+R2846:2846 Flux.Spec.FluxAlu <> b:11 var
+R2844:2844 Flux.Spec.FluxAlu <> a:10 var
+R2867:2875 Koika.Common.Vect Bits zero def
+R2853:2860 Koika.Common.Vect Bits one def
+prf 2913:2931 <> sltu_is_unsigned_lt
+binder 2942:2942 <> a:12
+binder 2944:2944 <> b:13
+R2970:2973 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3026:3026 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2949:2956 Flux.Spec.FluxAlu <> alu_spec def
+R2958:2965 Flux.Spec.FluxAlu <> ALU_SLTU constr
+R2967:2967 Flux.Spec.FluxAlu <> a:12 var
+R2969:2969 Flux.Spec.FluxAlu <> b:13 var
+R2977:2992 Koika.Common.Vect Bits unsigned_lt def
+R2996:2996 Flux.Spec.FluxAlu <> b:13 var
+R2994:2994 Flux.Spec.FluxAlu <> a:12 var
+R3017:3025 Koika.Common.Vect Bits zero def
+R3003:3010 Koika.Common.Vect Bits one def
+prf 3208:3218 <> xabs_nonneg
+binder 3229:3229 <> a:14
+binder 3231:3231 <> b:15
+R3252:3255 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3244:3246 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3234:3241 Koika.Common.Vect Bits msb abbrev
+R3243:3243 Flux.Spec.FluxAlu <> a:14 var
+R3247:3251 Corelib.Init.Datatypes <> false constr
+R3277:3279 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3256:3263 Flux.Spec.FluxAlu <> alu_spec def
+R3265:3272 Flux.Spec.FluxAlu <> ALU_XABS constr
+R3274:3274 Flux.Spec.FluxAlu <> a:14 var
+R3276:3276 Flux.Spec.FluxAlu <> b:15 var
+R3280:3280 Flux.Spec.FluxAlu <> a:14 var
+R3309:3316 Flux.Spec.FluxAlu <> alu_spec def
+prf 3358:3365 <> xabs_neg
+binder 3376:3376 <> a:16
+binder 3378:3378 <> b:17
+R3400:3403 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R3393:3395 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3383:3390 Koika.Common.Vect Bits msb abbrev
+R3392:3392 Flux.Spec.FluxAlu <> a:16 var
+R3396:3399 Corelib.Init.Datatypes <> true constr
+R3425:3427 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3404:3411 Flux.Spec.FluxAlu <> alu_spec def
+R3413:3420 Flux.Spec.FluxAlu <> ALU_XABS constr
+R3422:3422 Flux.Spec.FluxAlu <> a:16 var
+R3424:3424 Flux.Spec.FluxAlu <> b:17 var
+R3428:3437 Koika.Common.Vect Bits minus def
+R3449:3449 Flux.Spec.FluxAlu <> a:16 var
+R3439:3447 Koika.Common.Vect Bits zero def
+R3478:3485 Flux.Spec.FluxAlu <> alu_spec def
+prf 3685:3693 <> xmin_idem
+binder 3704:3704 <> a:18
+R3728:3730 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3707:3714 Flux.Spec.FluxAlu <> alu_spec def
+R3716:3723 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R3725:3725 Flux.Spec.FluxAlu <> a:18 var
+R3727:3727 Flux.Spec.FluxAlu <> a:18 var
+R3731:3731 Flux.Spec.FluxAlu <> a:18 var
+R3755:3762 Flux.Spec.FluxAlu <> alu_spec def
+R3776:3789 Koika.Common.Vect Bits signed_lt def
+R3776:3789 Koika.Common.Vect Bits signed_lt def
+prf 3824:3832 <> xmax_idem
+binder 3843:3843 <> a:19
+R3867:3869 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3846:3853 Flux.Spec.FluxAlu <> alu_spec def
+R3855:3862 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R3864:3864 Flux.Spec.FluxAlu <> a:19 var
+R3866:3866 Flux.Spec.FluxAlu <> a:19 var
+R3870:3870 Flux.Spec.FluxAlu <> a:19 var
+R3894:3901 Flux.Spec.FluxAlu <> alu_spec def
+R3915:3928 Koika.Common.Vect Bits signed_lt def
+R3915:3928 Koika.Common.Vect Bits signed_lt def
+prf 4117:4128 <> xmin_selects
+binder 4139:4139 <> a:20
+binder 4141:4141 <> b:21
+R4171:4174 Corelib.Init.Logic <> ::type_scope:x_'\/'_x not
+R4167:4169 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4146:4153 Flux.Spec.FluxAlu <> alu_spec def
+R4155:4162 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R4164:4164 Flux.Spec.FluxAlu <> a:20 var
+R4166:4166 Flux.Spec.FluxAlu <> b:21 var
+R4170:4170 Flux.Spec.FluxAlu <> a:20 var
+R4196:4198 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4175:4182 Flux.Spec.FluxAlu <> alu_spec def
+R4184:4191 Flux.Spec.FluxAlu <> ALU_XMIN constr
+R4193:4193 Flux.Spec.FluxAlu <> a:20 var
+R4195:4195 Flux.Spec.FluxAlu <> b:21 var
+R4199:4199 Flux.Spec.FluxAlu <> b:21 var
+R4226:4233 Flux.Spec.FluxAlu <> alu_spec def
+R4247:4260 Koika.Common.Vect Bits signed_lt def
+R4247:4260 Koika.Common.Vect Bits signed_lt def
+prf 4309:4320 <> xmax_selects
+binder 4331:4331 <> a:22
+binder 4333:4333 <> b:23
+R4363:4366 Corelib.Init.Logic <> ::type_scope:x_'\/'_x not
+R4359:4361 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4338:4345 Flux.Spec.FluxAlu <> alu_spec def
+R4347:4354 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R4356:4356 Flux.Spec.FluxAlu <> a:22 var
+R4358:4358 Flux.Spec.FluxAlu <> b:23 var
+R4362:4362 Flux.Spec.FluxAlu <> a:22 var
+R4388:4390 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4367:4374 Flux.Spec.FluxAlu <> alu_spec def
+R4376:4383 Flux.Spec.FluxAlu <> ALU_XMAX constr
+R4385:4385 Flux.Spec.FluxAlu <> a:22 var
+R4387:4387 Flux.Spec.FluxAlu <> b:23 var
+R4391:4391 Flux.Spec.FluxAlu <> b:23 var
+R4418:4425 Flux.Spec.FluxAlu <> alu_spec def
+R4439:4452 Koika.Common.Vect Bits signed_lt def
+R4439:4452 Koika.Common.Vect Bits signed_lt def
+prf 4556:4564 <> xclz_zero
+binder 4575:4575 <> b:24
+R4607:4609 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4578:4585 Flux.Spec.FluxAlu <> alu_spec def
+R4587:4594 Flux.Spec.FluxAlu <> ALU_XCLZ constr
+R4596:4604 Koika.Common.Vect Bits zero def
+R4606:4606 Flux.Spec.FluxAlu <> b:24 var
+R4610:4620 Koika.Common.Vect Bits of_nat def
+prf 4758:4767 <> xlidx_addr
+binder 4778:4778 <> a:25
+binder 4780:4780 <> b:26
+R4805:4807 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4783:4790 Flux.Spec.FluxAlu <> alu_spec def
+R4792:4800 Flux.Spec.FluxAlu <> ALU_XLIDX constr
+R4802:4802 Flux.Spec.FluxAlu <> a:25 var
+R4804:4804 Flux.Spec.FluxAlu <> b:26 var
+R4808:4816 Koika.Common.Vect Bits plus def
+R4821:4828 Koika.Common.Vect Bits lsl def
+R4832:4832 Flux.Spec.FluxAlu <> b:26 var
+R4818:4818 Flux.Spec.FluxAlu <> a:25 var

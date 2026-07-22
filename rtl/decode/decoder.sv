@@ -40,6 +40,11 @@ module decoder
     import rv32_isa_pkg::*;
 (
     input  wire instr_t         instr_i,
+    // mstatus.FS == Off.  When 1, every RV32F instruction (and every fcsr /
+    // frm / fflags access) raises illegal-instruction, per the privileged spec.
+    // Wired from csr_unit.fs_off_o in fluxcore_top; defaults to 0 (FP enabled)
+    // for standalone instantiations that predate the FP milestone.
+    input  wire logic           fs_off_i = 1'b0,
     output decoded_instr_t decoded_o
 );
 
@@ -49,7 +54,7 @@ module decoder
     opcode_t  opcode_s;
     funct3_t  funct3_s;
     funct7_t  funct7_s;
-    reg_idx_t rs1_s, rs2_s, rd_s;
+    reg_idx_t rs1_s, rs2_s, rd_s, fs3_s;
 
     assign opcode_s = opcode_t'(instr_i[INSTR_OPCODE_MSB:INSTR_OPCODE_LSB]);
     assign funct3_s = funct3_t'(instr_i[INSTR_FUNCT3_MSB:INSTR_FUNCT3_LSB]);
@@ -57,6 +62,8 @@ module decoder
     assign rs1_s    = reg_idx_t'(instr_i[INSTR_RS1_MSB:INSTR_RS1_LSB]);
     assign rs2_s    = reg_idx_t'(instr_i[INSTR_RS2_MSB:INSTR_RS2_LSB]);
     assign rd_s     = reg_idx_t'(instr_i[INSTR_RD_MSB:INSTR_RD_LSB]);
+    // Third FP source operand (fused multiply-add): instr[31:27].
+    assign fs3_s    = reg_idx_t'(instr_i[31:27]);
 
     // -----------------------------------------------------------------------
     // Immediate generator
@@ -87,6 +94,15 @@ module decoder
     endfunction
 
     // -----------------------------------------------------------------------
+    // Helper: is a static rounding-mode field (instr[14:12]) legal?
+    // Valid: RNE/RTZ/RDN/RUP/RMM (000..100) and DYN (111 → resolved from
+    // fcsr.frm at execute).  Reserved values 101 and 110 are illegal-instruction.
+    // -----------------------------------------------------------------------
+    function automatic logic rm_valid(input funct3_t rm);
+        return (rm != 3'b101) && (rm != 3'b110);
+    endfunction
+
+    // -----------------------------------------------------------------------
     // Decode logic
     // -----------------------------------------------------------------------
     always_comb begin
@@ -102,6 +118,10 @@ module decoder
         decoded_o.rs1 = rs1_s;
         decoded_o.rs2 = rs2_s;
         decoded_o.rd  = rd_s;
+        // FP third source index shares the same layout across FP formats.
+        decoded_o.fs3    = fs3_s;
+        decoded_o.fpu_op = FPU_NONE;
+        decoded_o.frm    = FRM_RNE;
 
         case (opcode_s)
 
@@ -549,6 +569,193 @@ module decoder
             end
 
             // ============================================================
+            // LOAD-FP — FLW: FP word load.  Effective address = rs1 + imm.
+            // Loaded word is written to f[rd] (writes_frd), not x[rd].
+            // ============================================================
+            OPCODE_LOAD_FP: begin
+                fmt_s = IFMT_I;
+                if (funct3_s == FP3_LSW) begin
+                    decoded_o.legal      = 1'b1;
+                    decoded_o.op_class   = OPCLASS_LOAD;
+                    decoded_o.alu_op     = ALU_ADD;     // base + offset
+                    decoded_o.mem_op     = MEM_LW;
+                    decoded_o.uses_rs1   = 1'b1;        // integer base register
+                    decoded_o.is_load    = 1'b1;
+                    decoded_o.writes_frd = 1'b1;        // result to FP register file
+                end else begin
+                    decoded_o = make_illegal(instr_i);
+                end
+            end
+
+            // ============================================================
+            // STORE-FP — FSW: FP word store.  Address = rs1 + imm; data = fs2.
+            // ============================================================
+            OPCODE_STORE_FP: begin
+                fmt_s = IFMT_S;
+                if (funct3_s == FP3_LSW) begin
+                    decoded_o.legal     = 1'b1;
+                    decoded_o.op_class  = OPCLASS_STORE;
+                    decoded_o.alu_op    = ALU_ADD;      // base + offset
+                    decoded_o.mem_op    = MEM_SW;
+                    decoded_o.uses_rs1  = 1'b1;         // integer base register
+                    decoded_o.uses_fs2  = 1'b1;         // FP store data (fs2)
+                    decoded_o.is_store  = 1'b1;
+                end else begin
+                    decoded_o = make_illegal(instr_i);
+                end
+            end
+
+            // ============================================================
+            // OP-FP — register-register FP arithmetic + convert/move/compare/
+            // classify.  funct7 selects the family; funct3 is either a rounding
+            // mode (arithmetic/convert) or a sub-op selector (sgnj/minmax/cmp/
+            // fmv/classify).  rs2 sub-selects the conversion target.
+            // ============================================================
+            OPCODE_OP_FP: begin
+                fmt_s              = IFMT_R;
+                decoded_o.legal    = 1'b1;
+                decoded_o.op_class = OPCLASS_FP;
+                decoded_o.is_fp    = 1'b1;
+                decoded_o.frm      = frm_e'(funct3_s);
+                case (funct7_s)
+                    // ---- arithmetic (two FP sources, rounded) ----
+                    FP7_FADD, FP7_FSUB, FP7_FMUL, FP7_FDIV: begin
+                        decoded_o.uses_fs1   = 1'b1;
+                        decoded_o.uses_fs2   = 1'b1;
+                        decoded_o.writes_frd = 1'b1;
+                        unique case (funct7_s)
+                            FP7_FADD: decoded_o.fpu_op = FPU_ADD;
+                            FP7_FSUB: decoded_o.fpu_op = FPU_SUB;
+                            FP7_FMUL: decoded_o.fpu_op = FPU_MUL;
+                            default:  decoded_o.fpu_op = FPU_DIV;
+                        endcase
+                        if (!rm_valid(funct3_s)) decoded_o = make_illegal(instr_i);
+                    end
+                    // ---- square root (one FP source, rounded; rs2 must be 0) ----
+                    FP7_FSQRT: begin
+                        if (rs2_s == '0 && rm_valid(funct3_s)) begin
+                            decoded_o.fpu_op     = FPU_SQRT;
+                            decoded_o.uses_fs1   = 1'b1;
+                            decoded_o.writes_frd = 1'b1;
+                        end else begin
+                            decoded_o = make_illegal(instr_i);
+                        end
+                    end
+                    // ---- sign injection (no rounding) ----
+                    FP7_FSGNJ: begin
+                        decoded_o.uses_fs1   = 1'b1;
+                        decoded_o.uses_fs2   = 1'b1;
+                        decoded_o.writes_frd = 1'b1;
+                        case (funct3_s)
+                            FP3_SGNJ:  decoded_o.fpu_op = FPU_SGNJ;
+                            FP3_SGNJN: decoded_o.fpu_op = FPU_SGNJN;
+                            FP3_SGNJX: decoded_o.fpu_op = FPU_SGNJX;
+                            default:   decoded_o = make_illegal(instr_i);
+                        endcase
+                    end
+                    // ---- min / max (no rounding) ----
+                    FP7_FMINMAX: begin
+                        decoded_o.uses_fs1   = 1'b1;
+                        decoded_o.uses_fs2   = 1'b1;
+                        decoded_o.writes_frd = 1'b1;
+                        case (funct3_s)
+                            FP3_MIN: decoded_o.fpu_op = FPU_MIN;
+                            FP3_MAX: decoded_o.fpu_op = FPU_MAX;
+                            default: decoded_o = make_illegal(instr_i);
+                        endcase
+                    end
+                    // ---- compare (result to integer rd) ----
+                    FP7_FCMP: begin
+                        decoded_o.uses_fs1   = 1'b1;
+                        decoded_o.uses_fs2   = 1'b1;
+                        decoded_o.writes_rd  = 1'b1;
+                        decoded_o.wb_src     = WB_FPU;
+                        case (funct3_s)
+                            FP3_FLE: decoded_o.fpu_op = FPU_LE;
+                            FP3_FLT: decoded_o.fpu_op = FPU_LT;
+                            FP3_FEQ: decoded_o.fpu_op = FPU_EQ;
+                            default: decoded_o = make_illegal(instr_i);
+                        endcase
+                    end
+                    // ---- FP → int convert (result to integer rd, rounded) ----
+                    FP7_FCVT_W: begin
+                        decoded_o.uses_fs1  = 1'b1;
+                        decoded_o.writes_rd = 1'b1;
+                        decoded_o.wb_src    = WB_FPU;
+                        if (!rm_valid(funct3_s)) decoded_o = make_illegal(instr_i);
+                        else case (rs2_s)
+                            FP2_W:   decoded_o.fpu_op = FPU_CVT_W_S;
+                            FP2_WU:  decoded_o.fpu_op = FPU_CVT_WU_S;
+                            default: decoded_o = make_illegal(instr_i);
+                        endcase
+                    end
+                    // ---- int → FP convert (integer source rs1, result to frd) ----
+                    FP7_FCVT_S: begin
+                        decoded_o.uses_rs1   = 1'b1;   // integer source register
+                        decoded_o.writes_frd = 1'b1;
+                        if (!rm_valid(funct3_s)) decoded_o = make_illegal(instr_i);
+                        else case (rs2_s)
+                            FP2_W:   decoded_o.fpu_op = FPU_CVT_S_W;
+                            FP2_WU:  decoded_o.fpu_op = FPU_CVT_S_WU;
+                            default: decoded_o = make_illegal(instr_i);
+                        endcase
+                    end
+                    // ---- FMV.X.W (fp bits → int rd) / FCLASS.S (mask → int rd) ----
+                    FP7_FMV_X_W: begin
+                        if (rs2_s != '0) begin
+                            decoded_o = make_illegal(instr_i);
+                        end else begin
+                            decoded_o.uses_fs1  = 1'b1;
+                            decoded_o.writes_rd = 1'b1;
+                            decoded_o.wb_src    = WB_FPU;
+                            case (funct3_s)
+                                FP3_FMV:    decoded_o.fpu_op = FPU_MV_X_W;
+                                FP3_FCLASS: decoded_o.fpu_op = FPU_CLASS;
+                                default:    decoded_o = make_illegal(instr_i);
+                            endcase
+                        end
+                    end
+                    // ---- FMV.W.X (int bits → frd) ----
+                    FP7_FMV_W_X: begin
+                        if (rs2_s == '0 && funct3_s == FP3_FMV) begin
+                            decoded_o.fpu_op     = FPU_MV_W_X;
+                            decoded_o.uses_rs1   = 1'b1;   // integer source
+                            decoded_o.writes_frd = 1'b1;
+                        end else begin
+                            decoded_o = make_illegal(instr_i);
+                        end
+                    end
+                    default: decoded_o = make_illegal(instr_i);
+                endcase
+            end
+
+            // ============================================================
+            // MADD / MSUB / NMSUB / NMADD — fused multiply-add family.
+            // Three FP sources (fs1, fs2, fs3); rounded; fmt bits (instr[26:25])
+            // must be 00 for single precision.  funct3 is the rounding mode.
+            // ============================================================
+            OPCODE_MADD, OPCODE_MSUB, OPCODE_NMSUB, OPCODE_NMADD: begin
+                fmt_s              = IFMT_R;
+                decoded_o.legal    = 1'b1;
+                decoded_o.op_class = OPCLASS_FP;
+                decoded_o.is_fp    = 1'b1;
+                decoded_o.frm      = frm_e'(funct3_s);
+                decoded_o.uses_fs1   = 1'b1;
+                decoded_o.uses_fs2   = 1'b1;
+                decoded_o.uses_fs3   = 1'b1;
+                decoded_o.writes_frd = 1'b1;
+                case (opcode_s)
+                    OPCODE_MADD:  decoded_o.fpu_op = FPU_MADD;
+                    OPCODE_MSUB:  decoded_o.fpu_op = FPU_MSUB;
+                    OPCODE_NMSUB: decoded_o.fpu_op = FPU_NMSUB;
+                    default:      decoded_o.fpu_op = FPU_NMADD;
+                endcase
+                // fmt (instr[26:25]) must be 00 (single); rounding mode legal.
+                if (instr_i[26:25] != 2'b00 || !rm_valid(funct3_s))
+                    decoded_o = make_illegal(instr_i);
+            end
+
+            // ============================================================
             // Unknown opcode
             // ============================================================
             default: decoded_o = make_illegal(instr_i);
@@ -583,6 +790,28 @@ module decoder
             // Immediate forms (funct3[2]=1): 101=CSRRWI, 110=CSRRSI, 111=CSRRCI
             if (funct3_s[2] && funct3_s != 3'b101 && instr_i[19:15] == '0)
                 decoded_o.csr_op = CSR_NOP;
+        end
+
+        // -------------------------------------------------------------------
+        // mstatus.FS == Off gate (RISC-V privileged spec).
+        // When the FP unit is disabled, every FP instruction — and every access
+        // to the fcsr / frm / fflags CSRs — raises illegal-instruction.
+        // Applied last so it overrides an otherwise-legal decode.  A decode that
+        // is already illegal stays illegal.
+        // -------------------------------------------------------------------
+        if (fs_off_i) begin
+            unique case (opcode_s)
+                OPCODE_LOAD_FP, OPCODE_STORE_FP, OPCODE_OP_FP,
+                OPCODE_MADD, OPCODE_MSUB, OPCODE_NMSUB, OPCODE_NMADD:
+                    decoded_o = make_illegal(instr_i);
+                default: ;
+            endcase
+            // fcsr / frm / fflags require FP state to be enabled as well.
+            if (decoded_o.legal && decoded_o.is_csr &&
+                (decoded_o.csr_addr == CSR_FFLAGS ||
+                 decoded_o.csr_addr == CSR_FRM    ||
+                 decoded_o.csr_addr == CSR_FCSR))
+                decoded_o = make_illegal(instr_i);
         end
 
     end // always_comb
