@@ -61,6 +61,11 @@ module mem_stage
     output word_t           mem_wdata_o,  // write data aligned to 32-bit word lanes
     input  wire word_t           mem_rdata_i,  // 32-bit word returned by memory
 
+    // Non-blocking dcache: this cycle's MEM-stage miss was accepted (MSHR).
+    // The load retires with deferred=1 and no rd write; the fill port
+    // delivers the data later. Tied off in blocking configurations.
+    input  wire logic            dmem_defer_i = 1'b0,
+
     // CSR write interface (wire to csr_unit in fluxcore_top)
     output logic            csr_wen_o,    // CSR write enable
     output logic [11:0]     csr_waddr_o,  // CSR write address
@@ -289,10 +294,18 @@ module mem_stage
         mem_wb_o.instr     = ex_mem_i.instr;
         // Suppress writeback when: instruction is illegal, or a new memory
         // misalignment exception was raised in this stage.
+        // A deferred integer load must not write rd in WB (the fill write
+        // does) and must not be forwarded from (its rd_data is garbage) —
+        // clearing rd_wen accomplishes both.
+        mem_wb_o.deferred  = ex_mem_i.valid
+                           & ex_mem_i.decoded.is_load
+                           & ~ex_mem_i.decoded.writes_frd
+                           & dmem_defer_i;
         mem_wb_o.rd_wen    = ex_mem_i.decoded.writes_rd
                            & ex_mem_i.decoded.legal
                            & ~ex_mem_i.decoded.exception.valid
-                           & ~new_exc_s;
+                           & ~new_exc_s
+                           & ~mem_wb_o.deferred;
         mem_wb_o.rd_addr   = ex_mem_i.decoded.rd;
         mem_wb_o.rd_data   = rd_data_s;
         mem_wb_o.rd_from_mem  = ex_mem_i.valid

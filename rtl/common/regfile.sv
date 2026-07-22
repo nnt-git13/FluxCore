@@ -51,7 +51,16 @@ module regfile
     // --- Write port (rd) ---
     input  wire logic      rd_wen_i,
     input  wire reg_idx_t  rd_addr_i,
-    input  wire word_t     rd_data_i
+    input  wire word_t     rd_data_i,
+
+    // --- Fill write port (deferred-load return; see fluxcore_top) ---
+    // Never active for the same register as the WB port in the same cycle:
+    // the scoreboard stalls every writer of a pending rd, so the two ports
+    // cannot collide by construction. Tied off (wen=0) when the core runs
+    // with a blocking cache.
+    input  wire logic      fill_wen_i  = 1'b0,
+    input  wire reg_idx_t  fill_addr_i = '0,
+    input  wire word_t     fill_data_i = '0
 );
 
     // -----------------------------------------------------------------------
@@ -67,8 +76,11 @@ module regfile
             for (int unsigned i = 0; i < REG_COUNT; i++) begin
                 regs[i] <= '0;
             end
-        end else if (rd_wen_i && (rd_addr_i != '0)) begin
-            regs[rd_addr_i] <= rd_data_i;
+        end else begin
+            if (rd_wen_i && (rd_addr_i != '0))
+                regs[rd_addr_i] <= rd_data_i;
+            if (fill_wen_i && (fill_addr_i != '0))
+                regs[fill_addr_i] <= fill_data_i;
         end
     end
 

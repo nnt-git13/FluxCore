@@ -88,6 +88,16 @@
 //   defer_ok_i is sampled at accept time: 0 forces the legacy blocking
 //   behavior for that miss (the core uses this for FP loads and anything
 //   else it cannot scoreboard).
+//
+//   ERROR POLICY (P2.4, forward-looking): the current BRAM backend cannot
+//   fault, so a deferred access never errors. When the mem_if backend (P3)
+//   introduces MEM_SLVERR/MEM_DECERR responses, an error on a DEFERRED
+//   access is architecturally IMPRECISE — the load has already retired and
+//   younger instructions may have committed. Policy: such errors raise a
+//   non-recoverable machine error (fatal), never a precise load access
+//   fault. Precise load faults remain possible only on the blocking path
+//   (defer_ok_i=0). Misalignment is unaffected: mem_stage traps it before
+//   any request reaches this module.
 //   The CORE is responsible for: scoreboarding the deferred load's rd,
 //   stalling readers AND writers of it (RAW + WAW), suppressing the WB-stage
 //   write of the deferred load, and writing fill_data_o to the register file

@@ -1,6 +1,6 @@
-FluxCore regression — 2026-07-22 04:39:49
+FluxCore regression — 2026-07-22 05:05:18
 backend: verification/scripts/xsim_run.sh
-commit:  4bc68e5 (+ uncommitted changes)
+commit:  e07f0f6 (+ uncommitted changes)
 host:    Linux 6.17.0-40-generic
 ----------------------------------------------------------------------
 PASS  isa-pkg-test                5s
@@ -9,8 +9,8 @@ PASS  mem-model-test              6s
 PASS  alu-test                    5s
 PASS  imm-gen-test                5s
 PASS  decoder-test                5s
-PASS  regfile-test                6s
-PASS  fp-regfile-test             5s
+PASS  regfile-test                5s
+PASS  fp-regfile-test             6s
 PASS  fp-cvt-test                 5s
 PASS  fp-short-test               5s
 PASS  fp-mul-test                 5s
@@ -21,8 +21,8 @@ PASS  fp-sweep-test               7s
 PASS  branch-unit-test            5s
 PASS  pipeline-pkg-test           5s
 PASS  if-id-reg-test              5s
-PASS  id-ex-reg-test              6s
-PASS  ex-mem-reg-test             5s
+PASS  id-ex-reg-test              5s
+PASS  ex-mem-reg-test             6s
 PASS  mem-wb-reg-test             5s
 PASS  fetch-unit-test             5s
 PASS  execute-stage-test          5s
@@ -34,9 +34,10 @@ PASS  csr-unit-test               6s
 PASS  bram-imem-test              5s
 PASS  bram-dmem-test              5s
 PASS  dcache-sim                  5s
-PASS  dcache-multiword-test       5s
-PASS  dcache-assoc-test           6s
+PASS  dcache-multiword-test       6s
+PASS  dcache-assoc-test           5s
 PASS  dcache-wb-test              6s
+PASS  dcache-mshr-test            6s
 PASS  dcache-e2e-test             6s
 PASS  integration-test            5s
 PASS  lw-sw-test                  6s
@@ -44,23 +45,23 @@ PASS  branch-integ-test           6s
 PASS  jal-jalr-test               6s
 PASS  lui-auipc-test              6s
 PASS  byte-halfword-test          6s
-PASS  branch-compare-test         5s
+PASS  branch-compare-test         6s
 PASS  rv32i-alu-test              6s
 PASS  rv32m-test                  6s
 PASS  fp-arith-test               6s
-PASS  fp-loadstore-test           5s
-PASS  fp-muldiv-test              6s
+PASS  fp-loadstore-test           6s
+PASS  fp-muldiv-test              5s
 PASS  fp-csr-test                 6s
 PASS  ecall-mret-test             6s
-PASS  sim-hello-cpi               6s
+PASS  sim-hello-cpi               7s
 PASS  sim-spmv-csr                6s
 PASS  sim-csr-probe               6s
 PASS  sim-hello-uart              6s
 PASS  sim-timer-irq               6s
 PASS  sim-misalign-trap           6s
-PASS  sim-xflux                   6s
+PASS  sim-xflux                   7s
 PASS  sim-fp-kernel               6s
-PASS  sim-hello-cpi-dcache        7s
-PASS  sim-spmv-csr-dcache         6s
+PASS  sim-hello-cpi-dcache        6s
+PASS  sim-spmv-csr-dcache         7s
 ----------------------------------------------------------------------
-TOTAL: 59/59 passed in 328s
+TOTAL: 60/60 passed in 337s

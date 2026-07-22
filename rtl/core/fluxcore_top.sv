@@ -66,6 +66,14 @@ module fluxcore_top
     input  wire word_t             dmem_rdata_i,  // load read data
     input  wire logic              dmem_stall_i,  // 1 = cache miss, stall all stages
 
+    // Non-blocking dcache handshake (all tied off for blocking configs).
+    // defer_ok: the access now in MEM may be deferred (int load or store —
+    // FP loads keep blocking, the FP regfile has no fill port).
+    output logic              dmem_defer_ok_o,
+    input  wire logic         dmem_defer_i     = 1'b0,  // miss accepted this cycle
+    input  wire logic         dmem_fill_done_i = 1'b0,  // deferred read completed
+    input  wire word_t        dmem_fill_data_i = '0,    // its data
+
     // --- Interrupt inputs (from CLINT; level-sensitive) ---
     // Defaults keep legacy instantiations (unit/integration TBs) interrupt-free.
     input  wire logic         mtip_i = 1'b0,   // machine timer interrupt
@@ -244,6 +252,47 @@ module fluxcore_top
         .decoded_o(decoded_s)
     );
 
+    // =========================================================================
+    // Deferred-load scoreboard (non-blocking dcache).
+    // One entry, matching the cache's one MSHR. Set when an integer load's
+    // miss is accepted in MEM (unless the exception flush is squashing that
+    // load this very cycle); cleared when the fill returns. x0 loads defer
+    // but are not tracked - their fill is discarded at the write port.
+    // sb_*_s are the same-cycle views so a dependent sitting in ID stalls in
+    // the defer cycle itself, not one cycle late.
+    // =========================================================================
+    logic     sb_pending_q;
+    reg_idx_t sb_rd_q;
+    logic     sb_set_s, sb_pending_s, sb_stall_s;
+    reg_idx_t sb_rd_s;
+
+    assign dmem_defer_ok_o = ex_mem_q.valid
+                           & (ex_mem_q.decoded.is_store
+                              | (ex_mem_q.decoded.is_load
+                                 & ~ex_mem_q.decoded.writes_frd));
+
+    assign sb_set_s = dmem_defer_i
+                    & ex_mem_q.valid
+                    & ex_mem_q.decoded.is_load
+                    & ~ex_mem_q.decoded.writes_frd
+                    & (ex_mem_q.decoded.rd != '0)
+                    & ~flush_ex_mem_s;   // exception squashes the load: don't track
+
+    assign sb_pending_s = sb_pending_q | sb_set_s;
+    assign sb_rd_s      = sb_set_s ? ex_mem_q.decoded.rd : sb_rd_q;
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            sb_pending_q <= 1'b0;
+            sb_rd_q      <= '0;
+        end else if (sb_set_s) begin
+            sb_pending_q <= 1'b1;
+            sb_rd_q      <= ex_mem_q.decoded.rd;
+        end else if (dmem_fill_done_i) begin
+            sb_pending_q <= 1'b0;
+        end
+    end
+
     regfile u_regfile (
         .clk       (clk),
         .rst       (rst),
@@ -256,7 +305,11 @@ module fluxcore_top
         // Write port — from WB stage (wired below)
         .rd_wen_i  (rd_wen_s),
         .rd_addr_i (rd_addr_s),
-        .rd_data_i (rd_data_s)
+        .rd_data_i (rd_data_s),
+        // Fill port - deferred-load return (see scoreboard above)
+        .fill_wen_i (dmem_fill_done_i & sb_pending_q),
+        .fill_addr_i(sb_rd_q),
+        .fill_data_i(dmem_fill_data_i)
     );
 
     // FP register file (RV32F). Three read ports for the FMADD family; the
@@ -323,6 +376,9 @@ module fluxcore_top
         .fs2_fwd_o        (fs2_fwd_s),
         .fs3_fwd_o        (fs3_fwd_s),
         .load_use_stall_o (load_use_stall_s),
+        .sb_pending_i     (sb_pending_s),
+        .sb_rd_i          (sb_rd_s),
+        .sb_stall_o       (sb_stall_s),
         .csr_raw_stall_o  (csr_raw_stall_s)
     );
 
@@ -522,6 +578,7 @@ module fluxcore_top
         .mem_wstrb_o(dmem_wstrb_o),
         .mem_wdata_o(dmem_wdata_o),
         .mem_rdata_i(dmem_rdata_i),
+        .dmem_defer_i(dmem_defer_i),
         .csr_wen_o  (csr_wen_s),
         .csr_waddr_o(csr_waddr_s),
         .csr_wdata_o(csr_wdata_s),
@@ -587,7 +644,7 @@ module fluxcore_top
         .exception_i     (exception_s),
         .trap_vector_i   (mtvec_s),
         .mepc_i          (mepc_s),
-        .load_use_stall_i(load_use_stall_s),
+        .load_use_stall_i(load_use_stall_s | sb_stall_s),
         .csr_raw_stall_i (csr_raw_stall_s),
         .dmem_stall_i    (dmem_stall_i),
         .muldiv_stall_i  (muldiv_busy_s),

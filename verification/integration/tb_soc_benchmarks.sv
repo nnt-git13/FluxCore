@@ -78,6 +78,14 @@ module soc_bench_runner #(
     logic [31:0] result_shadow [0:7];
     logic        done = 0;
 
+    // Non-blocking dcache observability: count accepted (deferred) misses so
+    // a benchmark run SHOWS whether hit-under-miss actually engaged.
+    int unsigned defer_count = 0;
+    generate if (USE_DCACHE) begin : g_defer_mon
+        always_ff @(posedge clk)
+            if (u_soc.dmem_defer) defer_count <= defer_count + 1;
+    end endgenerate
+
     always_ff @(posedge clk) begin
         if (mon_wen && mon_wstrb == 4'hF
                     && mon_addr >= RESULT_BASE
@@ -126,6 +134,8 @@ module soc_bench_runner #(
             $display("[%s]  extra0    = %0d",        BENCH_NAME, result_shadow[4]);
             $display("[%s]  extra1    = %0d",        BENCH_NAME, result_shadow[5]);
             $display("[%s]  extra2    = %0d",        BENCH_NAME, result_shadow[6]);
+            if (USE_DCACHE)
+                $display("[%s]  deferred_misses = %0d", BENCH_NAME, defer_count);
             $display("[%s] --------------------------------------------------", BENCH_NAME);
 
             if (EXP_CHECKSUM >= 0 && int'(checksum_v) !== EXP_CHECKSUM)

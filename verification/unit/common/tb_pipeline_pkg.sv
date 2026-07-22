@@ -43,7 +43,7 @@ module tb_pipeline_pkg;
     // if_id   : 1 + 32 + 32                                                          = 65
     // id_ex   : 1 + 32 + 32 + 148 + 32 + 32 + 3×32                                   = 373
     // ex_mem  : 1 + 32 + 32 + 148 + 32 + 32 + 1 + 32 + 32 + 32 + 32 + 5              = 411
-    // mem_wb  : 1 + 32 + 32 + 1 + 5 + 32 + 1 + 2 + 38 + 1 + 5 + 32 + 1 + 1 + 5       = 189
+    // mem_wb  : 1 + 32 + 32 + 1 + 5 + 32 + 1 + 1 + 2 + 38 + 1 + 5 + 32 + 1 + 1 + 5   = 190 (+deferred)
 
     localparam int EXCEPTION_META_W =
         1 + 1 + EXC_CAUSE_W + XLEN;   // valid + is_irq + cause + tval   // 38
@@ -57,8 +57,8 @@ module tb_pipeline_pkg;
                                  + XLEN + XLEN + XLEN;                    // + fs1/fs2/fs3 data
     localparam int EXP_EX_MEM_W  = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN + 1 + XLEN + XLEN
                                  + XLEN + XLEN + FFLAGS_W;               // + fp_result/fp_store_data/fflags
-    localparam int EXP_MEM_WB_W  = 1 + XLEN + INSTR_W + 1 + REG_IDX_W + XLEN + 1 + 2 + EXCEPTION_META_W
-                                 + 1 + REG_IDX_W + XLEN + 1 + 1 + FFLAGS_W; // + FP writeback + fflags accrual
+    localparam int EXP_MEM_WB_W  = 1 + XLEN + INSTR_W + 1 + REG_IDX_W + XLEN + 1 + 1 + 2 + EXCEPTION_META_W
+                                 + 1 + REG_IDX_W + XLEN + 1 + 1 + FFLAGS_W; // + FP writeback + fflags + deferred
 
     // -----------------------------------------------------------------------
     // Helper
@@ -86,7 +86,7 @@ module tb_pipeline_pkg;
         check_eq("if_id_payload_t width",   EXP_IF_ID_W,   65);
         check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  373);
         check_eq("ex_mem_payload_t width",  EXP_EX_MEM_W, 411);
-        check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 189);
+        check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 190);
         check_eq("decoded_instr_t width",   DECODED_W,    148);
 
         // ================================================================

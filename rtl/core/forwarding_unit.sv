@@ -81,7 +81,16 @@ module forwarding_unit
     // (the CSR write is synchronous in csr_unit); the pipeline must stall for
     // 1 cycle (writer in MEM) or 2 cycles (writer in EX) until the write
     // completes.  Same stall action as load-use: hold IF+ID, flush ID/EX.
-    output logic            csr_raw_stall_o
+    output logic            csr_raw_stall_o,
+
+    // Deferred-load scoreboard (non-blocking dcache). sb_pending_i/sb_rd_i
+    // name a register whose load data is still in flight; any ID-stage
+    // instruction that READS it (RAW) or WRITES it (WAW — the late fill
+    // write must never clobber a younger result) stalls until the fill
+    // lands. Tied off (defaults) in blocking configurations.
+    input  wire logic       sb_pending_i = 1'b0,
+    input  wire reg_idx_t   sb_rd_i      = '0,
+    output logic            sb_stall_o
 );
 
     // -----------------------------------------------------------------------
@@ -248,7 +257,30 @@ module forwarding_unit
                       | (id_decoded_i.uses_fs2 & (id_ex_i.decoded.rd == id_decoded_i.rs2))
                       | (id_decoded_i.uses_fs3 & (id_ex_i.decoded.rd == id_decoded_i.fs3)) );
 
-    assign load_use_stall_o = ldu_rs1_s | ldu_rs2_s | fp_ldu_s;
+    // WAW guard for the non-blocking cache: a load in EX whose rd the ID
+    // instruction WRITES (without reading it — that is the load-use case)
+    // gets one bubble, so the writer is still in ID when the load's miss
+    // defers in MEM and the scoreboard rd-match can hold it there. Without
+    // this, `lw x5,..; addi x5,..` at distance 1 slips past the scoreboard
+    // and the late fill write clobbers the younger addi result.
+    logic ldu_waw_s;
+    assign ldu_waw_s = id_ex_i.valid
+                     & id_ex_i.decoded.is_load
+                     & id_ex_i.decoded.writes_rd
+                     & (id_ex_i.decoded.rd != '0)
+                     & id_valid_i
+                     & id_decoded_i.writes_rd
+                     & (id_ex_i.decoded.rd == id_decoded_i.rd);
+
+    assign load_use_stall_o = ldu_rs1_s | ldu_rs2_s | fp_ldu_s | ldu_waw_s;
+
+    // Scoreboard stall: the ID instruction touches the in-flight load's rd.
+    assign sb_stall_o = sb_pending_i
+                      & (sb_rd_i != '0)
+                      & id_valid_i
+                      & ( (id_decoded_i.uses_rs1  & (id_decoded_i.rs1 == sb_rd_i))
+                        | (id_decoded_i.uses_rs2  & (id_decoded_i.rs2 == sb_rd_i))
+                        | (id_decoded_i.writes_rd & (id_decoded_i.rd  == sb_rd_i)) );
 
     // -----------------------------------------------------------------------
     // CSR RAW hazard detection

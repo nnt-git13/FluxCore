@@ -225,6 +225,11 @@ package pipeline_pkg;
     //   fp_from_mem — 1 when frd_data must be taken from the live data-memory
     //                word in WB (FLW under BRAM latency), analogous to rd_from_mem.
     //   fflags/fflags_wen — IEEE flags to accrue into fcsr when this FP op retires.
+    // deferred — this load's miss was accepted by the non-blocking dcache
+    //            (MSHR); its data arrives later via the fill port. WB must
+    //            NOT write rd (the fill write does), but the instruction
+    //            retires normally. The core scoreboard stalls every reader
+    //            and writer of rd until the fill lands.
     typedef struct packed {
         logic            valid;
         word_t           pc;
@@ -233,6 +238,7 @@ package pipeline_pkg;
         reg_idx_t        rd_addr;
         word_t           rd_data;
         logic            rd_from_mem;
+        logic            deferred;
         logic [1:0]      mem_byte_off;
         exception_meta_t exception;
         logic            frd_wen;
@@ -241,7 +247,7 @@ package pipeline_pkg;
         logic            fp_from_mem;
         logic            fflags_wen;
         fflags_t         fflags;
-    } mem_wb_payload_t;  // + FP writeback + fflags accrual fields.
+    } mem_wb_payload_t;  // + FP writeback + fflags accrual + deferred-load.
 
 endpackage : pipeline_pkg
 

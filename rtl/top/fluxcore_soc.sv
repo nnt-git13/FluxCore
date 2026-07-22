@@ -60,6 +60,7 @@ module fluxcore_soc
     parameter int    DCACHE_WAYS       = 2,   // associativity (power of two)
     parameter bit    DCACHE_WRITE_ALLOCATE = 1'b1,
     parameter bit    DCACHE_WRITE_BACK     = 1'b1,
+    parameter bit    DCACHE_NONBLOCKING    = 1'b1,  // hit-under-miss MSHR
     // Simulation override for the UART divisor (0 = derive from CLK_HZ/BAUD)
     parameter int    UART_BAUD_DIV = 0
 )
@@ -78,6 +79,10 @@ module fluxcore_soc
     logic           dmem_ren, dmem_wen;
     logic [3:0]     dmem_wstrb;
     logic           dmem_stall;  // 0 = direct BRAM, driven by dcache when USE_DCACHE=1
+    // Non-blocking dcache handshake (tied off unless USE_DCACHE=1 with
+    // DCACHE_NONBLOCKING=1)
+    logic           dmem_defer_ok, dmem_defer, dmem_fill_done;
+    word_t          dmem_fill_data;
 
     // Bus → memory-path (dcache/BRAM) signals
     word_t          mem_addr, mem_wdata, mem_rdata;
@@ -156,6 +161,10 @@ module fluxcore_soc
         .dmem_wdata_o   (dmem_wdata),
         .dmem_rdata_i   (dmem_rdata),
         .dmem_stall_i   (dmem_stall),
+        .dmem_defer_ok_o(dmem_defer_ok),
+        .dmem_defer_i   (dmem_defer),
+        .dmem_fill_done_i(dmem_fill_done),
+        .dmem_fill_data_i(dmem_fill_data),
         .mtip_i         (mtip),
         .msip_i         (msip),
         .mtime_i        (mtime),
@@ -270,7 +279,8 @@ module fluxcore_soc
             .LINE_WORDS    (DCACHE_LINE_WORDS),
             .WAYS          (DCACHE_WAYS),
             .WRITE_ALLOCATE(DCACHE_WRITE_ALLOCATE),
-            .WRITE_BACK    (DCACHE_WRITE_BACK)
+            .WRITE_BACK    (DCACHE_WRITE_BACK),
+            .NONBLOCKING   (DCACHE_NONBLOCKING)
         ) u_dcache (
             .clk          (clk),
             .rst          (core_rst),
@@ -281,6 +291,10 @@ module fluxcore_soc
             .cpu_wdata_i  (mem_wdata),
             .cpu_rdata_o  (mem_rdata),
             .dmem_stall_o (dmem_stall),
+            .defer_ok_i   (dmem_defer_ok),
+            .miss_defer_o (dmem_defer),
+            .fill_done_o  (dmem_fill_done),
+            .fill_data_o  (dmem_fill_data),
             .mem_addr_o   (bram_addr_w),
             .mem_ren_o    (/* debug only */),
             .mem_wen_o    (bram_wen_w),
@@ -303,7 +317,10 @@ module fluxcore_soc
             .rdata_o (bram_rdata_w)
         );
     end else begin : g_no_dcache
-        assign dmem_stall = 1'b0;
+        assign dmem_stall     = 1'b0;
+        assign dmem_defer     = 1'b0;
+        assign dmem_fill_done = 1'b0;
+        assign dmem_fill_data = '0;
 
         bram_dmem #(
             .DEPTH    (DMEM_DEPTH),
