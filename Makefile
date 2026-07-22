@@ -824,6 +824,16 @@ l2-chain-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_l2_chain"
 
+icache-test:
+	@echo "--- I-cache unit test ---"
+	@mkdir -p "build/questa/icache"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/icache" \
+	     "verification/filelists/icache.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_icache"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

@@ -22,8 +22,8 @@
 //
 // Next-PC priority:
 //   1. rst=1              → RESET_VECTOR  (synchronous, highest priority)
-//   2. redirect_valid_i=1 → redirect_target_i  (overrides stall)
-//   3. stall_i=1          → hold PC       (no change)
+//   2. redirect_valid_i=1 → redirect_target_i  (overrides stall and miss)
+//   3. stall_i=1 or instr_valid_i=0 → hold PC  (no change)
 //   4. else               → PC + 4
 //
 // Redirect overrides stall because a branch/jump resolved in EX needs the
@@ -34,9 +34,14 @@
 //   asserting redirect_valid_i. This module does not modify redirect_target_i.
 //
 // Valid signal:
-//   if_id_o.valid is always 1. The pipeline control unit flushes the if_id_reg
-//   (using its flush_i port) to insert bubbles; the fetch unit itself is not
-//   responsible for producing invalid payloads.
+//   if_id_o.valid = instr_valid_i. With the pin at its default (1) the fetch
+//   unit never produces bubbles itself — the pipeline control unit flushes
+//   the if_id_reg to insert them. An instruction-side cache drives
+//   instr_valid_i LOW during a miss: fetch then holds the PC and emits
+//   bubbles until the line arrives — the entire I-cache integration is this
+//   one pin. Redirect still overrides the hold (a resolved branch restarts
+//   the front end regardless of a fetch miss in flight; the missed line
+//   fills in the background and simply is not consumed).
 
 module fetch_unit
     import fluxcore_pkg::*;
@@ -70,6 +75,12 @@ module fetch_unit
     output word_t          fetch_addr_next_o,
     input  wire instr_t         instr_i,
 
+    // Instruction-fetch handshake: 0 = the instruction for fetch_addr_o is
+    // not available this cycle (I-cache miss) — hold the PC and emit a
+    // bubble. Default 1 preserves the original always-valid behavior for
+    // every existing instantiation.
+    input  wire logic           instr_valid_i = 1'b1,
+
     // Output to if_id_reg (latched by if_id_reg on the next rising edge).
     output if_id_payload_t if_id_o
 );
@@ -85,7 +96,7 @@ module fetch_unit
             next_pc_s = RESET_VECTOR;
         else if (redirect_valid_i)
             next_pc_s = redirect_target_i;
-        else if (!stall_i)
+        else if (!stall_i && instr_valid_i)
             next_pc_s = pc_q + 32'd4;
         else
             next_pc_s = pc_q;
@@ -107,7 +118,7 @@ module fetch_unit
     // IF/ID payload (combinational, latched by if_id_reg on the next edge)
     // -----------------------------------------------------------------------
     always_comb begin
-        if_id_o.valid = 1'b1;
+        if_id_o.valid = instr_valid_i;
         if_id_o.pc    = pc_q;
         if_id_o.instr = instr_i;
     end
