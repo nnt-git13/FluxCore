@@ -764,6 +764,16 @@ dcache-assoc-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_assoc"
 
+dcache-wb-test:
+	@echo "--- dcache write-policy unit test ---"
+	@mkdir -p "build/questa/dcache_wb"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_wb" \
+	     "verification/filelists/dcache_wb.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_wb"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

@@ -73,6 +73,7 @@ DEFAULT_TARGETS=(
     dcache-sim
     dcache-multiword-test
     dcache-assoc-test
+    dcache-wb-test
     dcache-e2e-test
     # Core integration
     integration-test
