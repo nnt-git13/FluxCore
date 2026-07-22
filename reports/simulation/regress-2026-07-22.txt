@@ -1,11 +1,12 @@
-FluxCore regression — 2026-07-22 06:03:27
+FluxCore regression — 2026-07-22 06:16:14
 backend: verification/scripts/xsim_run.sh
-commit:  5270014 (+ uncommitted changes)
+commit:  cdcf6e8 (+ uncommitted changes)
 host:    Linux 6.17.0-40-generic
 ----------------------------------------------------------------------
 PASS  isa-pkg-test                5s
 PASS  mem-if-pkg-test             5s
 PASS  mem-model-test              6s
+PASS  dram-model-test             5s
 PASS  alu-test                    5s
 PASS  imm-gen-test                5s
 PASS  decoder-test                5s
@@ -20,8 +21,8 @@ PASS  fp-divsqrt-test             6s
 PASS  fp-sweep-test               6s
 PASS  branch-unit-test            5s
 PASS  pipeline-pkg-test           5s
-PASS  if-id-reg-test              6s
-PASS  id-ex-reg-test              5s
+PASS  if-id-reg-test              5s
+PASS  id-ex-reg-test              6s
 PASS  ex-mem-reg-test             5s
 PASS  mem-wb-reg-test             5s
 PASS  fetch-unit-test             5s
@@ -39,8 +40,8 @@ PASS  dcache-assoc-test           6s
 PASS  dcache-wb-test              6s
 PASS  dcache-mshr-test            5s
 PASS  dcache-latency-test         6s
-PASS  dcache-axi-test             6s
-PASS  l2-cache-test               5s
+PASS  dcache-axi-test             5s
+PASS  l2-cache-test               6s
 PASS  l2-chain-test               6s
 PASS  icache-test                 5s
 PASS  fencei-test                 6s
@@ -58,18 +59,18 @@ PASS  fp-arith-test               6s
 PASS  fp-loadstore-test           6s
 PASS  fp-muldiv-test              6s
 PASS  fp-csr-test                 6s
-PASS  ecall-mret-test             5s
-PASS  sim-hello-cpi               7s
+PASS  ecall-mret-test             6s
+PASS  sim-hello-cpi               6s
 PASS  sim-spmv-csr                6s
 PASS  sim-csr-probe               6s
-PASS  sim-hello-uart              6s
-PASS  sim-timer-irq               7s
+PASS  sim-hello-uart              7s
+PASS  sim-timer-irq               6s
 PASS  sim-misalign-trap           6s
 PASS  sim-xflux                   6s
 PASS  sim-fp-kernel               6s
 PASS  sim-hello-cpi-dcache        7s
-PASS  sim-spmv-csr-dcache         6s
-PASS  sim-hello-cpi-caches        7s
+PASS  sim-spmv-csr-dcache         7s
+PASS  sim-hello-cpi-caches        6s
 PASS  sim-spmv-csr-caches         7s
 ----------------------------------------------------------------------
-TOTAL: 68/68 passed in 386s
+TOTAL: 69/69 passed in 391s

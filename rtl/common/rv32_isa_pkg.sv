@@ -570,6 +570,13 @@ localparam logic [11:0] CSR_MVENDORID = 12'hF11;  // read-only, 0 = non-commerci
 localparam logic [11:0] CSR_MARCHID   = 12'hF12;  // read-only, 0 = not registered
 localparam logic [11:0] CSR_MIMPID    = 12'hF13;  // read-only, implementation date
 localparam logic [11:0] CSR_MCONFIGPTR = 12'hF15; // read-only, 0 = no config structure
+
+// Custom machine read-only CSRs (0xFC0+): cache hierarchy performance
+// counters, wired from the SoC-level caches (0 in cacheless configs).
+localparam logic [11:0] CSR_DCHITS   = 12'hFC0;  // D$ read hits
+localparam logic [11:0] CSR_DCMISSES = 12'hFC1;  // D$ read misses
+localparam logic [11:0] CSR_ICHITS   = 12'hFC2;  // I$ hit-lookups
+localparam logic [11:0] CSR_ICMISSES = 12'hFC3;  // I$ misses
 // Zicntr user-mode read-only shadows
 localparam logic [11:0] CSR_CYCLE     = 12'hC00;  // shadow of mcycle
 localparam logic [11:0] CSR_TIME      = 12'hC01;  // CLINT mtime (low)
@@ -596,7 +603,8 @@ function automatic logic csr_addr_valid(input logic [11:0] a);
         CSR_CYCLE, CSR_TIME, CSR_INSTRET,
         CSR_CYCLEH, CSR_TIMEH, CSR_INSTRETH,
         CSR_FFLAGS, CSR_FRM, CSR_FCSR,
-        CSR_MVENDORID, CSR_MARCHID, CSR_MIMPID, CSR_MHARTID, CSR_MCONFIGPTR:
+        CSR_MVENDORID, CSR_MARCHID, CSR_MIMPID, CSR_MHARTID, CSR_MCONFIGPTR,
+        CSR_DCHITS, CSR_DCMISSES, CSR_ICHITS, CSR_ICMISSES:
             return 1'b1;
         default:
             return 1'b0;

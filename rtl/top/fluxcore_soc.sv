@@ -84,6 +84,7 @@ module fluxcore_soc
     word_t          imem_addr, imem_addr_next, imem_rdata;
     logic           imem_valid;
     logic           fencei_flush;
+    word_t          dc_hits, dc_misses, ic_hits, ic_misses;
     word_t          dmem_addr, dmem_wdata,     dmem_rdata;
     logic           dmem_ren, dmem_wen;
     logic [3:0]     dmem_wstrb;
@@ -165,6 +166,10 @@ module fluxcore_soc
         .imem_rdata_i   (imem_rdata),
         .imem_valid_i   (imem_valid),
         .fencei_flush_o (fencei_flush),
+        .dc_hits_i      (dc_hits),
+        .dc_misses_i    (dc_misses),
+        .ic_hits_i      (ic_hits),
+        .ic_misses_i    (ic_misses),
         .dmem_addr_o    (dmem_addr),
         .dmem_ren_o     (dmem_ren),
         .dmem_wen_o     (dmem_wen),
@@ -212,7 +217,7 @@ module fluxcore_soc
             .mem_req_o(i_req),
             .mem_rsp_valid_i(i_rsp_valid), .mem_rsp_ready_o(i_rsp_ready),
             .mem_rsp_i(i_rsp),
-            .hit_count_o(), .miss_count_o()
+            .hit_count_o(ic_hits), .miss_count_o(ic_misses)
         );
 
         mem_if_bram u_imemif (
@@ -237,6 +242,8 @@ module fluxcore_soc
             .rdata_o    (ibram_rdata)
         );
     end else begin : g_no_icache
+        assign ic_hits    = '0;
+        assign ic_misses  = '0;
         assign imem_valid = 1'b1;
 
     bram_imem #(
@@ -368,8 +375,8 @@ module fluxcore_soc
             .mem_rsp_valid_i(m_rsp_valid),
             .mem_rsp_ready_o(m_rsp_ready),
             .mem_rsp_i      (m_rsp),
-            .hit_count_o  (/* connect to CSR or ILA */),
-            .miss_count_o (/* connect to CSR or ILA */)
+            .hit_count_o  (dc_hits),
+            .miss_count_o (dc_misses)
         );
 
         // Protocol-to-BRAM adapter: bare-BRAM response timing, so the cache's
@@ -402,6 +409,8 @@ module fluxcore_soc
             .rdata_o (bram_rdata_w)
         );
     end else begin : g_no_dcache
+        assign dc_hits        = '0;
+        assign dc_misses      = '0;
         assign dmem_stall     = 1'b0;
         assign dmem_defer     = 1'b0;
         assign dmem_fill_done = 1'b0;

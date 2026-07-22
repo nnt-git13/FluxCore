@@ -76,6 +76,13 @@ module fluxcore_top
     // FENCE.I sits in EX). Unconnected in cacheless configurations.
     output logic              fencei_flush_o,
 
+    // Cache hierarchy counters into the 0xFC0+ CSRs (defaults for
+    // cacheless configurations).
+    input  wire word_t        dc_hits_i   = '0,
+    input  wire word_t        dc_misses_i = '0,
+    input  wire word_t        ic_hits_i   = '0,
+    input  wire word_t        ic_misses_i = '0,
+
     output logic              dmem_defer_ok_o,
     input  wire logic         dmem_defer_i     = 1'b0,  // miss accepted this cycle
     input  wire logic         dmem_fill_done_i = 1'b0,  // deferred read completed
@@ -442,6 +449,10 @@ module fluxcore_top
         .mret_i       (mret_s),
         .retire_i     (retire_s.valid),
         // RV32F fcsr accrual (from WB stage)
+        .dc_hits_i    (dc_hits_i),
+        .dc_misses_i  (dc_misses_i),
+        .ic_hits_i    (ic_hits_i),
+        .ic_misses_i  (ic_misses_i),
         .fflags_wen_i (fflags_wen_s),
         .fflags_i     (fflags_val_s),
         .fs_dirty_i   (fs_dirty_s),

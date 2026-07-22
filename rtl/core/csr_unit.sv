@@ -86,6 +86,13 @@ module csr_unit #(
     // fs_dirty_i marks that a retiring FP op modified FP state (an f register
     // or fflags), which sets mstatus.FS to Dirty.  Defaults keep pre-FP
     // instantiations inert.
+    // Cache hierarchy counters (read-only CSRs 0xFC0-0xFC3; SoC-wired,
+    // zero in cacheless configurations).
+    input  wire word_t       dc_hits_i   = '0,
+    input  wire word_t       dc_misses_i = '0,
+    input  wire word_t       ic_hits_i   = '0,
+    input  wire word_t       ic_misses_i = '0,
+
     input  wire logic        fflags_wen_i = 1'b0,
     input  wire fflags_t     fflags_i     = 5'b0,
     input  wire logic        fs_dirty_i   = 1'b0,
@@ -155,6 +162,10 @@ module csr_unit #(
             CSR_MSTATUS : rdata_o = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q);
             CSR_MIE     : rdata_o = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
             CSR_MTVEC   : rdata_o = mtvec_q;
+            CSR_DCHITS  : rdata_o = dc_hits_i;
+            CSR_DCMISSES: rdata_o = dc_misses_i;
+            CSR_ICHITS  : rdata_o = ic_hits_i;
+            CSR_ICMISSES: rdata_o = ic_misses_i;
             CSR_MSCRATCH: rdata_o = mscratch_q;
             CSR_MEPC    : rdata_o = mepc_q;
             CSR_MCAUSE  : rdata_o = mcause_q;
