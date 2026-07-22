@@ -90,6 +90,15 @@ module pipeline_ctrl
     // read-modify-write needs (plus any miss fill under it). Same pattern.
     input  wire logic             amo_stall_i = 1'b0,
 
+    // Branch prediction verification (from fluxcore_top; defaults = the
+    // original static-not-taken behavior):
+    //   pred_correct_i    — 1 when fetch already steered to the resolved
+    //                       outcome; suppresses the taken-branch redirect.
+    //   pred_wrong_pc4_i  — fetch predicted taken but the instruction is not
+    //                       a taken branch/jump: redirect back to pc+4.
+    input  wire logic             pred_correct_i   = 1'b0,
+    input  wire logic             pred_wrong_pc4_i = 1'b0,
+
     // Stall outputs
     output logic             stall_if_o,
     output logic             stall_id_o,
@@ -132,7 +141,8 @@ module pipeline_ctrl
 
     assign redirect_branch_s = ex_mem_i.valid
                              & (ex_mem_i.branch_taken
-                                | (ex_mem_i.decoded.is_jump & ex_mem_i.decoded.legal));
+                                | (ex_mem_i.decoded.is_jump & ex_mem_i.decoded.legal))
+                             & ~pred_correct_i;   // fetch already went there
 
     // -----------------------------------------------------------------------
     // Stall / flush / redirect
@@ -178,6 +188,13 @@ module pipeline_ctrl
             flush_id_ex_o     = 1'b1;
             redirect_valid_o  = 1'b1;
             redirect_target_o = ex_mem_i.branch_target;
+        end else if (pred_wrong_pc4_i) begin
+            // Predicted-taken on a not-taken (or non-branch) instruction:
+            // squash the two wrong-path fetches, resume at pc+4.
+            flush_if_id_o     = 1'b1;
+            flush_id_ex_o     = 1'b1;
+            redirect_valid_o  = 1'b1;
+            redirect_target_o = ex_mem_i.pc + 32'd4;
         end else if (fencei_i) begin
             // FENCE.I: squash the two stale fetches behind it and refetch
             // from pc+4 — those fetches may predate the I$ flush.

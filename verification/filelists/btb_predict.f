@@ -34,4 +34,4 @@ rtl/execution/fp/fp_fma.sv
 rtl/execution/fp/fp_divsqrt.sv
 rtl/execution/fp/fpu.sv
 rtl/core/fluxcore_top.sv
-verification/integration/tb_jal_jalr.sv
+verification/integration/tb_btb_predict.sv

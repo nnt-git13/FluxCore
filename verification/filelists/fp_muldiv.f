@@ -11,6 +11,7 @@ rtl/pipeline/if_id_reg.sv
 rtl/pipeline/id_ex_reg.sv
 rtl/pipeline/ex_mem_reg.sv
 rtl/pipeline/mem_wb_reg.sv
+rtl/frontend/btb.sv
 rtl/frontend/fetch_unit.sv
 rtl/execution/execute_stage.sv
 rtl/memory/mem_stage.sv

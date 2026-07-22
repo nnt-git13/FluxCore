@@ -226,6 +226,40 @@ module fluxcore_top
     // converts a flush into a bubble (valid = 0).
     // =========================================================================
 
+    // -------------------------------------------------------------------------
+    // Branch-prediction verification (EX) and BTB update.
+    //
+    // The instruction in EX (id_ex_q) carries fetch's prediction; the EX
+    // combinational output (ex_mem_tag_s) carries the resolution:
+    //   pred_correct    — actually taken AND fetch already steered to the
+    //                     right target: suppress the redirect (the win).
+    //   pred_wrong_pc4  — fetch steered away but the instruction is not a
+    //                     taken control transfer: redirect back to pc+4.
+    //   wrong TARGET while taken falls through to the normal taken-redirect.
+    // BTB updates once per resolving control instruction (gated on the EX
+    // stage actually advancing, so freezes don't pump the counters).
+    // -------------------------------------------------------------------------
+    logic actual_taken_s, pred_correct_s, pred_wrong_pc4_s;
+    logic btb_upd_valid_s;
+
+    assign actual_taken_s = id_ex_q.valid
+                          & id_ex_q.decoded.legal
+                          & (ex_mem_tag_s.branch_taken
+                             | id_ex_q.decoded.is_jump);
+
+    assign pred_correct_s = actual_taken_s
+                          & id_ex_q.pred_taken
+                          & (id_ex_q.pred_target == ex_mem_tag_s.branch_target);
+
+    assign pred_wrong_pc4_s = id_ex_q.valid
+                            & id_ex_q.pred_taken
+                            & ~actual_taken_s;
+
+    assign btb_upd_valid_s = id_ex_q.valid
+                           & id_ex_q.decoded.legal
+                           & (id_ex_q.decoded.is_branch | id_ex_q.decoded.is_jump)
+                           & ~stall_ex_s;   // once, when EX completes
+
     fetch_unit #(
         .RESET_VECTOR(RESET_VECTOR)
     ) u_fetch (
@@ -238,6 +272,11 @@ module fluxcore_top
         .fetch_addr_next_o(imem_addr_next_o),
         .instr_i          (imem_rdata_i),
         .instr_valid_i    (imem_valid_i),
+        .btb_upd_valid_i  (btb_upd_valid_s),
+        .btb_upd_pc_i     (id_ex_q.pc),
+        .btb_upd_taken_i  (actual_taken_s),
+        .btb_upd_target_i (ex_mem_tag_s.branch_target),
+        .btb_flush_i      (fencei_flush_o),
         .if_id_o          (if_id_s)
     );
 
@@ -412,6 +451,8 @@ module fluxcore_top
         id_ex_s.fs1_data = fs1_data_s;
         id_ex_s.fs2_data = fs2_data_s;
         id_ex_s.fs3_data = fs3_data_s;
+        id_ex_s.pred_taken  = if_id_q.pred_taken;
+        id_ex_s.pred_target = if_id_q.pred_target;
     end
 
     // =========================================================================
@@ -763,6 +804,8 @@ module fluxcore_top
         .dmem_stall_i    (dmem_stall_i),
         .muldiv_stall_i  (muldiv_busy_s),
         .amo_stall_i     (amo_stall_s),
+        .pred_correct_i  (pred_correct_s),
+        .pred_wrong_pc4_i(pred_wrong_pc4_s),
         .fpu_stall_i     (fpu_busy_s),
         .stall_if_o      (stall_if_s),
         .stall_id_o      (stall_id_s),

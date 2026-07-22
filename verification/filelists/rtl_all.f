@@ -24,6 +24,7 @@ rtl/execution/fp/fp_short.sv
 rtl/execution/fp/fp_fma.sv
 rtl/execution/fp/fp_divsqrt.sv
 rtl/execution/fp/fpu.sv
+rtl/frontend/btb.sv
 rtl/frontend/fetch_unit.sv
 rtl/memory/mem_stage.sv
 rtl/pipeline/if_id_reg.sv

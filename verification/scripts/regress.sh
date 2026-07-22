@@ -84,6 +84,7 @@ DEFAULT_TARGETS=(
     icache-test
     fencei-test
     amo-test
+    btb-predict-test
     dcache-e2e-test
     # Core integration
     integration-test

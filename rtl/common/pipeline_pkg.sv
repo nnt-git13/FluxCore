@@ -84,11 +84,17 @@ package pipeline_pkg;
     //   - Retirement trace in WB (identifies which instruction retired)
     //   - Exception tval for instruction-address-misaligned (set in IF, not here)
 
+    // pred_taken/pred_target — branch prediction made at fetch (BTB): 1 if
+    // fetch speculatively redirected to pred_target after this instruction.
+    // Carried to EX, which verifies against the actual outcome and redirects
+    // only on a mispredict. Zero when prediction is disabled or missed.
     typedef struct packed {
         logic    valid;
         word_t   pc;
         instr_t  instr;
-    } if_id_payload_t;  // 1 + 32 + 32 = 65 bits
+        logic    pred_taken;
+        word_t   pred_target;
+    } if_id_payload_t;  // 1 + 32 + 32 + 1 + 32 = 98 bits
 
     // =========================================================================
     // 2. ID/EX payload — carries decode result and operands from ID to EX stage
@@ -126,6 +132,8 @@ package pipeline_pkg;
         word_t          fs1_data;
         word_t          fs2_data;
         word_t          fs3_data;
+        logic           pred_taken;
+        word_t          pred_target;
     } id_ex_payload_t;  // + 3×32 FP operand words. Use $bits() in testbenches.
 
     // =========================================================================

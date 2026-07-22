@@ -52,9 +52,10 @@ module tb_pipeline_pkg;
 
     localparam int DECODED_W = $bits(decoded_instr_t);  // 148
 
-    localparam int EXP_IF_ID_W   = 1 + XLEN + INSTR_W;
+    localparam int EXP_IF_ID_W   = 1 + XLEN + INSTR_W + 1 + XLEN;  // + prediction
     localparam int EXP_ID_EX_W   = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN
-                                 + XLEN + XLEN + XLEN;                    // + fs1/fs2/fs3 data
+                                 + XLEN + XLEN + XLEN
+                                 + 1 + XLEN;  // + prediction                    // + fs1/fs2/fs3 data
     localparam int EXP_EX_MEM_W  = 1 + XLEN + INSTR_W + DECODED_W + XLEN + XLEN + 1 + XLEN + XLEN
                                  + XLEN + XLEN + FFLAGS_W;               // + fp_result/fp_store_data/fflags
     localparam int EXP_MEM_WB_W  = 1 + XLEN + INSTR_W + 1 + REG_IDX_W + XLEN + 1 + 1 + 2 + EXCEPTION_META_W
@@ -83,8 +84,8 @@ module tb_pipeline_pkg;
         check_eq("$bits(mem_wb_payload_t)", $bits(mem_wb_payload_t), EXP_MEM_WB_W);
 
         // Confirm computed values against constants in the package comment
-        check_eq("if_id_payload_t width",   EXP_IF_ID_W,   65);
-        check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  373);
+        check_eq("if_id_payload_t width",   EXP_IF_ID_W,   98);   // +prediction
+        check_eq("id_ex_payload_t width",   EXP_ID_EX_W,  406);  // +prediction
         check_eq("ex_mem_payload_t width",  EXP_EX_MEM_W, 411);
         check_eq("mem_wb_payload_t width",  EXP_MEM_WB_W, 190);
         check_eq("decoded_instr_t width",   DECODED_W,    148);

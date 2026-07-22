@@ -874,6 +874,16 @@ amo-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_amo"
 
+btb-predict-test:
+	@echo "--- branch prediction integration test ---"
+	@mkdir -p "build/questa/btb_predict"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/btb_predict" \
+	     "verification/filelists/btb_predict.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_btb_predict"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------
