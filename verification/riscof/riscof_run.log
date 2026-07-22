@@ -1,0 +1,789 @@
+[32m    INFO[0m | [32m****** RISCOF: RISC-V Architectural Test Framework 1.25.3 *******[0m
+[32m    INFO[0m | [32musing riscv_isac version : 0.18.0[0m
+[32m    INFO[0m | [32musing riscv_config version : 3.18.3[0m
+[32m    INFO[0m | [32mReading configuration from: /home/lnx-141209/Desktop/FluxCore/verification/riscof/config.ini[0m
+[32m    INFO[0m | [32mPreparing Models[0m
+[32m    INFO[0m | [32mInput-ISA file[0m
+[32m    INFO[0m | [32mISACheck: Loading input file: /home/lnx-141209/Desktop/FluxCore/verification/riscof/fluxcore/fluxcore_isa.yaml[0m
+[32m    INFO[0m | [32mISACheck: Load Schema /home/lnx-141209/Desktop/FluxCore/.venv/lib/python3.13/site-packages/riscv_config/schemas/schema_isa.yaml[0m
+[32m    INFO[0m | [32mISACheck: Processing Hart:0[0m
+[32m    INFO[0m | [32mISACheck: Initiating Validation for Hart:0[0m
+[32m    INFO[0m | [32mISACheck: No errors for Hart:0[0m
+[32m    INFO[0m | [32mISACheck:  Updating fields node for each CSR in Hart:0[0m
+[32m    INFO[0m | [32mISACheck: Dumping out Normalized Checked YAML: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/fluxcore_isa_checked.yaml[0m
+[32m    INFO[0m | [32mInput-Platform file[0m
+[32m    INFO[0m | [32mLoading input file: /home/lnx-141209/Desktop/FluxCore/verification/riscof/fluxcore/fluxcore_platform.yaml[0m
+[32m    INFO[0m | [32mLoad Schema /home/lnx-141209/Desktop/FluxCore/.venv/lib/python3.13/site-packages/riscv_config/schemas/schema_platform.yaml[0m
+[32m    INFO[0m | [32mInitiating Validation[0m
+[32m    INFO[0m | [32mNo Syntax errors in Input Platform Yaml. :)[0m
+[32m    INFO[0m | [32mDumping out Normalized Checked YAML: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/fluxcore_platform_checked.yaml[0m
+[32m    INFO[0m | [32mGenerating database for suite: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/I[0m
+[32m    INFO[0m | [32mDatabase File Generated: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/database.yaml[0m
+[32m    INFO[0m | [32mEnv path set to/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/env[0m
+[32m    INFO[0m | [32mRunning Build for DUT[0m
+[32m    INFO[0m | [32mRunning Build for Reference[0m
+[32m    INFO[0m | [32mSelecting Tests.[0m
+[32m    INFO[0m | [32mRunning Tests on DUT.[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/add-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/add-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/add-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/add-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/addi-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/addi-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/addi-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/addi-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/and-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/and-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/and-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/and-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/andi-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/andi-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/andi-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/andi-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/auipc-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/auipc-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/auipc-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/auipc-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/beq-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/beq-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/beq-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/beq-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bge-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bge-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bge-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bge-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bgeu-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bgeu-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bgeu-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bgeu-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/blt-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/blt-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/blt-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/blt-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bltu-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bltu-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bltu-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bltu-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bne-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bne-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bne-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/bne-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/fence-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/fence-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/fence-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/fence-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jal-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jal-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jal-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jal-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jalr-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jalr-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jalr-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/jalr-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lb-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lb-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lb-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lb-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lbu-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lbu-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lbu-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lbu-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lh-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lh-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lh-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lh-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lhu-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lhu-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lhu-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lhu-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lui-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lui-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lui-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lui-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lw-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lw-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lw-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/lw-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/or-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/or-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/or-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/or-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/ori-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/ori-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/ori-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/ori-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sb-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sb-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sb-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sb-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sh-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sh-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sh-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sh-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sll-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sll-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sll-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sll-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slli-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slli-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slli-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slli-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slt-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slt-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slt-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slt-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slti-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slti-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slti-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/slti-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltiu-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltiu-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltiu-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltiu-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltu-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltu-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltu-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sltu-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sra-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sra-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sra-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sra-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srai-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srai-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srai-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srai-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srl-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srl-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srl-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srl-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srli-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srli-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srli-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/srli-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sub-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sub-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sub-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sub-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sw-align-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sw-align-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sw-align-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/sw-align-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xor-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xor-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xor-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xor-01.S/dut/dut.elf[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'[0m
+[1;31m   ERROR[0m | [1;31mTraceback (most recent call last):
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 111, in <module>
+    main()
+    ~~~~^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 107, in main
+    elf2hex(args.elf, args.hex, args.base, args.depth)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lnx-141209/Desktop/FluxCore/scripts/elf2hex.py", line 44, in elf2hex
+    with open(elf_path, 'rb') as f:
+         ~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xori-01.S/dut/dut.elf'[0m
+[1;31m   ERROR[0m | [1;31mriscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xori-01.S/dut/dut.elf': No such file[0m
+riscv64-unknown-elf-nm: '/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xori-01.S/dut/dut.elf': No such file
+[1;31m   ERROR[0m | [1;31msignature symbols missing in /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/xori-01.S/dut/dut.elf[0m
+[32m    INFO[0m | [32mRunning Tests on Reference Model.[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[1;31m   ERROR[0m | [1;31mcc1: error: requested ABI requires '-march' to subsume the 'D' extension
+cc1: error: ABI requires '-march=rv64'
+Failed to run dtc: No such file or directory
+Child dtc_output process failed[0m
+[32m    INFO[0m | [32mInitiating signature checking.[0m
+[1;31m   ERROR[0m | [1;31mSignature file : /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/src/add-01.S/dut/DUT-fluxcore.signature does not exist[0m
