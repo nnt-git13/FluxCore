@@ -13,13 +13,25 @@ Spike as the reference model.
 ## Pieces
 - `config.ini` — DUT = fluxcore, REF = spike.
 - `fluxcore/` — DUT plugin: compiles each test with `env/link.ld`
-  (Harvard split: text @0x0, data+signature @0x8000), makes one 64 KiB
-  `$readmemh` image via `scripts/elf2hex.py`, runs the pre-built
-  `tb_riscof` xsim snapshot with plusargs, TB dumps the signature.
-  Halt protocol: store 0xD0E0D0E0 to 0xFFFC (`env/model_test.h`).
+  (text @0x8000_0000 = spike's native RAM base, data+signature
+  @0x8000_8000), makes one 64 KiB `$readmemh` image via
+  `scripts/elf2hex.py --base 0x80000000`; `tb_riscof` aliases the
+  0x8000_xxxx addresses through `addr[15:2]` and boots with
+  `RESET_VECTOR=0x8000_0000`. Halt: store 0xD0E0D0E0 to 0x8000_FFFC
+  (FluxCore mailbox) then 1 to `tohost` (terminates spike).
 - `spike/` — reference plugin (`+signature=` native dumping).
 - `tb_riscof.sv` — fluxcore_top + flat word memories (one unified
   image, two views), signature writer.
+
+## Hard-won environment notes
+- spike **execs `dtc` at runtime**; keep `build/dtc` on PATH.
+- xsim snapshot reruns need `LD_LIBRARY_PATH=build/vivado-compat`
+  (libtinfo.so.5 shim) — xsim_run.sh sets it, raw `xsim` calls don't.
+- spike cannot map RAM at 0 (its boot ROM owns [0,0x1000)); hence the
+  0x8000_0000 link base.
+- gcc needs explicit `-mabi=ilp32` and a `_zicsr_zifencei` march
+  suffix; the ctp-release tests additionally need no-op `RVMODEL_IO_*`
+  macros.
 
 ## Run
 ```sh
