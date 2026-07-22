@@ -25,7 +25,7 @@ class spike(pluginTemplate):
         self.suite = suite
         self.work_dir = work_dir
         self.objdump_cmd = 'riscv64-unknown-elf-objdump -D {0} > {1};'
-        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0} '
+        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0}_zicsr_zifencei -mabi=ilp32 '
             '-static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles '
             '-g -T ' + self.pluginpath + '/env/link.ld '
             '-I ' + self.pluginpath + '/env/ '
@@ -46,6 +46,7 @@ class spike(pluginTemplate):
             testentry = testList[testname]
             test = testentry['test_path']
             test_dir = testentry['work_dir']
+            os.makedirs(test_dir, exist_ok=True)
             elf = 'ref.elf'
             sig_file = os.path.join(test_dir, self.name[:-1] + ".signature")
             compile_macros = ' -D' + " -D".join(testentry['macros'])
@@ -53,6 +54,7 @@ class spike(pluginTemplate):
             cmd = self.compile_cmd.format(marchstr, test, elf, compile_macros)
             simcmd = (self.ref_exe + ' --isa={0} +signature={1} '
                       '+signature-granularity=4 {2}').format(self.isa, sig_file, elf)
-            execute = ('cd {0}; {1}; {2};').format(test_dir, cmd, simcmd)
+            execute = ('export PATH=/home/lnx-141209/Desktop/FluxCore/build/dtc:$PATH; '
+                       'cd {0}; {1}; {2};').format(test_dir, cmd, simcmd)
             logger.debug('Executing on Spike ' + execute)
             utils.shellCommand(execute).run()

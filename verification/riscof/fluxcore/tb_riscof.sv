@@ -7,7 +7,8 @@
 //                 text is fetched from the imem view, data read/written via
 //                 the dmem view — the Harvard split of the real SoC without
 //                 needing two extractions)
-//   +sigb=<addr>  begin_signature byte address
+//   +sigb=<addr>  begin_signature byte address (0x8000_xxxx; the
+//                 [15:2] slice aliases into the 64 KiB array)
 //   +sige=<addr>  end_signature byte address
 //   +sig=<file>   signature output (one 32-bit lowercase hex word per line)
 //   +timeout=<n>  cycle limit (default 2,000,000)
@@ -37,8 +38,8 @@ module tb_riscof;
     word_t             exc_pc;
 
     fluxcore_top #(
-        .RESET_VECTOR(32'h0000_0000),
-        .TRAP_VECTOR (32'h0000_0000)
+        .RESET_VECTOR(32'h8000_0000),
+        .TRAP_VECTOR (32'h8000_0000)
     ) dut (
         .clk           (clk),
         .rst           (rst),
@@ -76,7 +77,7 @@ module tb_riscof;
     logic done = 0;
     always_ff @(posedge clk)
         if (!rst && dmem_wen && dmem_wstrb == 4'hF
-            && dmem_addr == 32'h0000_FFFC && dmem_wdata == 32'hD0E0_D0E0)
+            && dmem_addr == 32'h8000_FFFC && dmem_wdata == 32'hD0E0_D0E0)
             done <= 1'b1;
 
     string       hex_f, sig_f;

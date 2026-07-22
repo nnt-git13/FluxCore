@@ -30,7 +30,7 @@ class fluxcore(pluginTemplate):
     def initialise(self, suite, work_dir, archtest_env):
         self.work_dir = work_dir
         self.suite_dir = suite
-        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0} '
+        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0}_zicsr_zifencei -mabi=ilp32 '
             '-static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles '
             '-g -T ' + self.pluginpath + '/env/link.ld '
             '-I ' + self.pluginpath + '/env/ '
@@ -75,7 +75,7 @@ class fluxcore(pluginTemplate):
             hexf = os.path.join(test_dir, 'image.hex')
             utils.shellCommand(
                 'cd {repo} && python3 scripts/elf2hex.py {elf} {hex} '
-                '--base 0x0 --depth 16384'.format(
+                '--base 0x80000000 --depth 16384'.format(
                     repo=self.repo, elf=elf, hex=hexf)).run()
             nm = utils.shellCommand(
                 'riscv64-unknown-elf-nm {0}'.format(elf)).run(shell=True)
@@ -93,7 +93,9 @@ class fluxcore(pluginTemplate):
 
             # Run the pre-built snapshot from its build dir (xsim resolves
             # the snapshot from CWD/xsim.dir).
-            runcmd = ('cd {tb} && {xsim} tb_riscof_snap -runall '
+            runcmd = ('export LD_LIBRARY_PATH=' + self.repo +
+                      '/build/vivado-compat:$LD_LIBRARY_PATH; '
+                      'cd {tb} && {xsim} tb_riscof_snap -runall '
                       '-testplusarg hex={hex} -testplusarg sig={sig} '
                       '-testplusarg sigb={sigb} -testplusarg sige={sige} '
                       '> {log} 2>&1').format(
