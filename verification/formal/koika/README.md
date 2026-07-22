@@ -24,6 +24,24 @@ into a whole-core theorem.
 Theorem FluxCore_refines : refines FluxCoreImpl ISASpec.
 ```
 
+### Scope of the theorem (read before citing it)
+
+`FluxCoreImpl` is the **transactional** machine: `step` retires one whole
+instruction against `WordMem` (combinational read). The theorem therefore
+covers the architectural datapath — decode dispatch, the proven ALU/branch/
+mul circuits, byte/halfword lanes, x0 hardwiring, PC update — and does NOT
+cover pipeline microarchitecture (stalls, forwarding, cache behavior, MSHR /
+hit-under-miss timing). Microarchitectural changes in `rtl/` (e.g. the P1/P2
+memory-hierarchy work) do not touch this proof; what they change is the
+obligation of the FUTURE pipelined Impl, to be proven against the same spec
+via `refines_trans (pipelined ⊑ transactional ⊑ ISASpec)` — the "later Impl"
+already anticipated in Impl/FluxProcImpl.v's header.
+
+`FluxMem.v` now also provides `BramWordMem` / `mkBramWordMem`: the req/resp
+BRAM-latency leaf (state = memory × pending read; `respRd` refuses unless a
+request is pending) matching the RTL `bram_dmem` contract. The transactional
+Impl keeps `WordMem`; the pipelined Impl builds on `BramWordMem`.
+
 `Refine/FluxProcRefine.v`, verified with `Print Assumptions` → *Closed under
 the global context*. This is a **machine-level refinement in the framework's
 own simulation relation** (`refines := mod_init ⊑ sim`, the same statement

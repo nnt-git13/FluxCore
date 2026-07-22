@@ -1,4 +1,4 @@
-DIGEST cf7b011b72d46f439701c69468f3a3eb
+DIGEST 4417f436bafb8cc25ea195530a38f571
 FFlux.FluxMem
 R664:670 Koika.Lang.Prelude <> <> lib
 R698:707 Flux.FluxCommon <> <> lib
@@ -152,3 +152,178 @@ R2437:2446 Flux.FluxMem <> wrMem_spec def
 binder 2472:2472 <> r:28
 R2477:2486 Corelib.Init.Logic <> False_rect scheme
 R2490:2490 Flux.FluxMem <> r:28 var
+ind 3696:3706 <> bmem_vmet_t
+constr 3715:3720 <> respRd
+ind 3733:3743 <> bmem_amet_t
+constr 3752:3757 <> breqRd
+constr 3763:3768 <> bwrMem
+def 3784:3793 <> respRd_sig
+R3797:3807 Koika.Lang.Syntax Methods sig rec
+R3817:3825 Koika.Lang.Syntax Methods a proj
+R3817:3825 Koika.Lang.Syntax Methods a proj
+R3817:3825 Koika.Lang.Syntax Methods a proj
+R3834:3842 Koika.Lang.Syntax Methods r proj
+R3834:3842 Koika.Lang.Syntax Methods r proj
+R3830:3831 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+def 3865:3874 <> breqRd_sig
+R3878:3888 Koika.Lang.Syntax Methods sig rec
+R3898:3906 Koika.Lang.Syntax Methods a proj
+R3898:3906 Koika.Lang.Syntax Methods a proj
+R3898:3906 Koika.Lang.Syntax Methods a proj
+R3917:3925 Koika.Lang.Syntax Methods r proj
+R3917:3925 Koika.Lang.Syntax Methods r proj
+R3911:3911 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3914:3914 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+mod 3944:3954 <> BramWordMem
+sec 3965:3975 BramWordMem BramWordMem
+inst 4000:4004 BramWordMem VMets
+R4008:4016 Koika.Lang.Syntax Methods t class
+R4018:4028 Flux.FluxMem <> bmem_vmet_t variant
+R4042:4057 Koika.Lang.Syntax Methods met_list meth
+R4042:4057 Koika.Lang.Syntax Methods met_list meth
+R4042:4057 Koika.Lang.Syntax Methods met_list meth
+R4076:4090 Koika.Lang.Syntax Methods get_sig meth
+R4076:4090 Koika.Lang.Syntax Methods get_sig meth
+R4164:4179 Koika.Lang.Syntax Methods get_name meth
+R4164:4179 Koika.Lang.Syntax Methods get_name meth
+R4062:4062 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R4069:4069 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R4063:4068 Flux.FluxMem <> respRd constr
+binder 4092:4094 <> met:33
+R4111:4113 Flux.FluxMem <> met:33 var
+R4128:4133 Flux.FluxMem <> respRd constr
+R4138:4147 Flux.FluxMem <> respRd_sig def
+binder 4181:4183 <> met:35
+R4200:4202 Flux.FluxMem <> met:35 var
+R4217:4222 Flux.FluxMem <> respRd constr
+inst 4275:4279 BramWordMem AMets
+R4283:4291 Koika.Lang.Syntax Methods t class
+R4293:4303 Flux.FluxMem <> bmem_amet_t variant
+R4317:4332 Koika.Lang.Syntax Methods met_list meth
+R4317:4332 Koika.Lang.Syntax Methods met_list meth
+R4317:4332 Koika.Lang.Syntax Methods met_list meth
+R4359:4373 Koika.Lang.Syntax Methods get_sig meth
+R4359:4373 Koika.Lang.Syntax Methods get_sig meth
+R4475:4490 Koika.Lang.Syntax Methods get_name meth
+R4475:4490 Koika.Lang.Syntax Methods get_name meth
+R4337:4337 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4344:4345 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4352:4352 Stdlib.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4338:4343 Flux.FluxMem <> breqRd constr
+R4346:4351 Flux.FluxMem <> bwrMem constr
+binder 4375:4377 <> met:37
+R4394:4396 Flux.FluxMem <> met:37 var
+R4411:4416 Flux.FluxMem <> breqRd constr
+R4421:4430 Flux.FluxMem <> breqRd_sig def
+R4440:4445 Flux.FluxMem <> bwrMem constr
+R4450:4458 Flux.FluxMem <> wrMem_sig def
+binder 4492:4494 <> met:39
+R4511:4513 Flux.FluxMem <> met:39 var
+R4528:4533 Flux.FluxMem <> breqRd constr
+R4554:4559 Flux.FluxMem <> bwrMem constr
+def 4603:4605 BramWordMem ifc
+R4610:4628 Koika.Lang.Syntax Modules mkInterface constr
+R4634:4638 Flux.FluxMem BramWordMem VMets inst
+R4640:4644 Flux.FluxMem BramWordMem AMets inst
+R4652:4662 Flux.FluxMem BramWordMem.BramWordMem <> sec
+R4669:4679 Flux.FluxMem BramWordMem <> mod
+def 4694:4702 <> BramState
+R4716:4718 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R4708:4715 Flux.FluxMem <> MemState def
+R4719:4724 Corelib.Init.Datatypes <> option ind
+R4726:4729 Flux.FluxCommon <> Word abbrev
+def 4750:4760 <> respRd_spec
+R4764:4768 Koika.Lang.BigStepSemantics Sem v def
+R4770:4779 Flux.FluxMem <> respRd_sig def
+R4781:4789 Flux.FluxMem <> BramState def
+binder 4800:4804 <> _args:41
+binder 4806:4807 <> st:42
+binder 4809:4811 <> ret:43
+R4826:4828 Corelib.Init.Datatypes <> snd def
+R4830:4831 Flux.FluxMem <> st:42 var
+R4844:4847 Corelib.Init.Datatypes <> Some constr
+R4857:4859 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4854:4856 Flux.FluxMem <> ret:43 var
+R4860:4862 Corelib.Init.Datatypes <> fst def
+R4864:4865 Flux.FluxMem <> st:42 var
+R4875:4878 Corelib.Init.Datatypes <> None constr
+R4885:4889 Corelib.Init.Logic <> False ind
+def 4965:4975 <> breqRd_spec
+R4979:4983 Koika.Lang.BigStepSemantics Sem a def
+R4985:4994 Flux.FluxMem <> breqRd_sig def
+R4996:5004 Flux.FluxMem <> BramState def
+binder 5015:5018 <> args:44
+binder 5020:5021 <> st:45
+binder 5023:5026 <> _ret:46
+binder 5028:5030 <> st':47
+R5038:5040 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5035:5037 Flux.FluxMem <> st':47 var
+R5041:5041 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5048:5049 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5065:5065 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5042:5044 Corelib.Init.Datatypes <> fst def
+R5046:5047 Flux.FluxMem <> st:45 var
+R5050:5053 Corelib.Init.Datatypes <> Some constr
+R5056:5058 Koika.Common.Environments <> chd def
+R5060:5063 Flux.FluxMem <> args:44 var
+def 5081:5091 <> bwrMem_spec
+R5095:5099 Koika.Lang.BigStepSemantics Sem a def
+R5101:5109 Flux.FluxMem <> wrMem_sig def
+R5111:5119 Flux.FluxMem <> BramState def
+binder 5130:5133 <> args:48
+binder 5135:5136 <> st:49
+binder 5138:5141 <> _ret:50
+binder 5143:5145 <> st':51
+R5157:5159 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5154:5156 Flux.FluxMem <> st':51 var
+R5160:5160 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5205:5206 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5213:5213 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5161:5167 Flux.FluxMem <> mem_upd def
+R5170:5172 Corelib.Init.Datatypes <> fst def
+R5174:5175 Flux.FluxMem <> st:49 var
+R5179:5181 Koika.Common.Environments <> chd def
+R5183:5186 Flux.FluxMem <> args:48 var
+R5190:5192 Koika.Common.Environments <> chd def
+R5195:5197 Koika.Common.Environments <> ctl def
+R5199:5202 Flux.FluxMem <> args:48 var
+R5207:5209 Corelib.Init.Datatypes <> snd def
+R5211:5212 Flux.FluxMem <> st:49 var
+def 5229:5241 <> mkBramWordMem
+R5245:5249 Koika.Lang.BigStepSemantics Sem t rec
+R5251:5265 Flux.FluxMem <> ifc def
+R5275:5285 Koika.Lang.BigStepSemantics Sem state_t proj
+R5275:5285 Koika.Lang.BigStepSemantics Sem state_t proj
+R5275:5285 Koika.Lang.BigStepSemantics Sem state_t proj
+R5303:5310 Koika.Lang.BigStepSemantics Sem init proj
+R5303:5310 Koika.Lang.BigStepSemantics Sem init proj
+R5345:5353 Koika.Lang.BigStepSemantics Sem rules proj
+R5345:5353 Koika.Lang.BigStepSemantics Sem rules proj
+R5373:5384 Koika.Lang.BigStepSemantics Sem vmet_sem proj
+R5373:5384 Koika.Lang.BigStepSemantics Sem vmet_sem proj
+R5482:5493 Koika.Lang.BigStepSemantics Sem amet_sem proj
+R5482:5493 Koika.Lang.BigStepSemantics Sem amet_sem proj
+R5584:5595 Koika.Lang.BigStepSemantics Sem rule_sem proj
+R5584:5595 Koika.Lang.BigStepSemantics Sem rule_sem proj
+R5290:5298 Flux.FluxMem <> BramState def
+R5315:5315 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5334:5335 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5340:5340 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5325:5333 Koika.Common.Vect Bits zero def
+R5336:5339 Corelib.Init.Datatypes <> None constr
+R5358:5368 Koika.Lang.Syntax Rules empty inst
+R5391:5404 Koika.Lang.Syntax Modules vmet_t proj
+R5406:5420 Flux.FluxMem <> ifc def
+binder 5387:5387 <> v:52
+R5436:5436 Flux.FluxMem <> v:52 var
+R5449:5454 Flux.FluxMem <> respRd constr
+R5459:5469 Flux.FluxMem <> respRd_spec def
+binder 5495:5495 <> a:54
+R5510:5510 Flux.FluxMem <> a:54 var
+R5523:5528 Flux.FluxMem <> breqRd constr
+R5533:5543 Flux.FluxMem <> breqRd_spec def
+R5551:5556 Flux.FluxMem <> bwrMem constr
+R5561:5571 Flux.FluxMem <> bwrMem_spec def
+binder 5597:5597 <> r:56
+R5602:5611 Corelib.Init.Logic <> False_rect scheme
+R5615:5615 Flux.FluxMem <> r:56 var

@@ -11,7 +11,10 @@
 #   make clean
 
 MK ?= $(HOME)/Desktop/CSAIL_UROP/ModularKoika
-COQC ?= coqc
+# Prefer the opam Rocq 9.1 coqc that built ModularKoika; the system coqc
+# (Coq 8.18 on this host) cannot read its .vo files.
+OPAM_COQC := $(HOME)/.opam/default/bin/coqc
+COQC ?= $(if $(wildcard $(OPAM_COQC)),$(OPAM_COQC),coqc)
 
 FLAGS := -R $(MK)/coq Koika \
          -Q $(MK)/examples/gpu/src Gpu \
