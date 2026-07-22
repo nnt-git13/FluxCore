@@ -794,6 +794,16 @@ dcache-latency-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_latency"
 
+dcache-axi-test:
+	@echo "--- dcache over AXI4 adapter + behavioral slave ---"
+	@mkdir -p "build/questa/dcache_axi"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_axi" \
+	     "verification/filelists/dcache_axi.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_axi"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

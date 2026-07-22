@@ -76,6 +76,7 @@ DEFAULT_TARGETS=(
     dcache-wb-test
     dcache-mshr-test
     dcache-latency-test
+    dcache-axi-test
     dcache-e2e-test
     # Core integration
     integration-test

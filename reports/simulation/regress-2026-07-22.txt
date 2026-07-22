@@ -1,6 +1,6 @@
-FluxCore regression — 2026-07-22 05:24:15
+FluxCore regression — 2026-07-22 05:33:09
 backend: verification/scripts/xsim_run.sh
-commit:  3de0e18 (+ uncommitted changes)
+commit:  1268289 (+ uncommitted changes)
 host:    Linux 6.17.0-40-generic
 ----------------------------------------------------------------------
 PASS  isa-pkg-test                5s
@@ -16,37 +16,38 @@ PASS  fp-short-test               5s
 PASS  fp-mul-test                 5s
 PASS  fp-addsub-test              6s
 PASS  fp-fma-test                 5s
-PASS  fp-divsqrt-test             5s
-PASS  fp-sweep-test               7s
+PASS  fp-divsqrt-test             6s
+PASS  fp-sweep-test               6s
 PASS  branch-unit-test            5s
 PASS  pipeline-pkg-test           5s
-PASS  if-id-reg-test              5s
+PASS  if-id-reg-test              6s
 PASS  id-ex-reg-test              5s
 PASS  ex-mem-reg-test             5s
 PASS  mem-wb-reg-test             5s
-PASS  fetch-unit-test             6s
+PASS  fetch-unit-test             5s
 PASS  execute-stage-test          5s
-PASS  mem-stage-test              5s
+PASS  mem-stage-test              6s
 PASS  wb-stage-test               5s
-PASS  pipeline-ctrl-test          6s
-PASS  forwarding-unit-test        5s
-PASS  csr-unit-test               6s
+PASS  pipeline-ctrl-test          5s
+PASS  forwarding-unit-test        6s
+PASS  csr-unit-test               5s
 PASS  bram-imem-test              5s
 PASS  bram-dmem-test              5s
-PASS  dcache-sim                  5s
-PASS  dcache-multiword-test       6s
+PASS  dcache-sim                  6s
+PASS  dcache-multiword-test       5s
 PASS  dcache-assoc-test           6s
-PASS  dcache-wb-test              5s
-PASS  dcache-mshr-test            6s
+PASS  dcache-wb-test              6s
+PASS  dcache-mshr-test            5s
 PASS  dcache-latency-test         6s
+PASS  dcache-axi-test             6s
 PASS  dcache-e2e-test             6s
 PASS  integration-test            6s
 PASS  lw-sw-test                  6s
 PASS  branch-integ-test           6s
 PASS  jal-jalr-test               6s
 PASS  lui-auipc-test              6s
-PASS  byte-halfword-test          5s
-PASS  branch-compare-test         6s
+PASS  byte-halfword-test          6s
+PASS  branch-compare-test         5s
 PASS  rv32i-alu-test              6s
 PASS  rv32m-test                  6s
 PASS  fp-arith-test               6s
@@ -65,4 +66,4 @@ PASS  sim-fp-kernel               6s
 PASS  sim-hello-cpi-dcache        7s
 PASS  sim-spmv-csr-dcache         6s
 ----------------------------------------------------------------------
-TOTAL: 61/61 passed in 343s
+TOTAL: 62/62 passed in 349s
