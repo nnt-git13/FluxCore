@@ -804,6 +804,26 @@ dcache-axi-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_axi"
 
+l2-cache-test:
+	@echo "--- L2 cache unit test ---"
+	@mkdir -p "build/questa/l2_cache"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/l2_cache" \
+	     "verification/filelists/l2_cache.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_l2_cache"
+
+l2-chain-test:
+	@echo "--- D\$$ -> arbiter -> L2 -> memory chain test ---"
+	@mkdir -p "build/questa/l2_chain"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/l2_chain" \
+	     "verification/filelists/l2_chain.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_l2_chain"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------
