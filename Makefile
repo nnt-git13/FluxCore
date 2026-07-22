@@ -10,7 +10,9 @@
 # Required: GNU Make >= 3.82
 
 .PHONY: help setup check-tools python-test lint typecheck check synth-analysis regress \
-        questa-smoke pkg-test isa-pkg-test alu-test imm-gen-test decoder-test regfile-test branch-unit-test \
+        questa-smoke pkg-test isa-pkg-test alu-test imm-gen-test decoder-test regfile-test fp-regfile-test \
+        fp-cvt-test fp-short-test fp-mul-test fp-addsub-test fp-fma-test fp-divsqrt-test fp-sweep-test \
+        fp-arith-test fp-loadstore-test fp-muldiv-test fp-csr-test branch-unit-test \
         pipeline-pkg-test if-id-reg-test id-ex-reg-test ex-mem-reg-test mem-wb-reg-test fetch-unit-test \
         execute-stage-test mem-stage-test wb-stage-test pipeline-ctrl-test forwarding-unit-test \
         integration-test lw-sw-test branch-integ-test jal-jalr-test lui-auipc-test \
@@ -18,7 +20,7 @@
         csr-unit-test ecall-mret-test \
         bram-imem-test bram-dmem-test dcache-sim \
         sim-hello-cpi sim-spmv-csr sim-csr-probe sim-hello-uart sim-timer-irq \
-        sim-misalign-trap sim-xflux sim-hello-cpi-dcache sim-spmv-csr-dcache \
+        sim-misalign-trap sim-xflux sim-fp-kernel sim-hello-cpi-dcache sim-spmv-csr-dcache \
         verilator-lint program-board \
         formal-verify \
         vivado-check vivado-synth vivado-impl vivado-bitstream yosys-check clean distclean show-config \
@@ -329,6 +331,32 @@ isa-pkg-test:
 	     "tb_rv32_isa_pkg"
 
 # ---------------------------------------------------------------------------
+# mem_if_pkg unit test — frozen memory interface contract
+# ---------------------------------------------------------------------------
+mem-if-pkg-test:
+	@echo "--- mem_if_pkg unit test ---"
+	@mkdir -p "build/questa/mem_if_pkg"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/mem_if_pkg" \
+	     "verification/filelists/mem_if_pkg.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_mem_if_pkg"
+
+# ---------------------------------------------------------------------------
+# mem_model unit test — configurable-latency behavioral memory
+# ---------------------------------------------------------------------------
+mem-model-test:
+	@echo "--- mem_model unit test ---"
+	@mkdir -p "build/questa/mem_model"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/mem_model" \
+	     "verification/filelists/mem_model.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_mem_model"
+
+# ---------------------------------------------------------------------------
 # ALU unit test
 # ---------------------------------------------------------------------------
 alu-test:
@@ -379,6 +407,135 @@ regfile-test:
 	     "verification/filelists/regfile.f" \
 	     "sim/questa/run_unit.do" \
 	     "tb_regfile"
+
+# ---------------------------------------------------------------------------
+# FP register file unit test (RV32F: 3 read ports, f0 writable)
+# ---------------------------------------------------------------------------
+FP_REGFILE_BUILD := $(QUESTA_BUILD_DIR)/fp_regfile
+
+fp-regfile-test:
+	@echo "--- FP register file unit test ---"
+	@mkdir -p "$(FP_REGFILE_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_regfile" \
+	     "verification/filelists/fp_regfile.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_regfile"
+
+# ---------------------------------------------------------------------------
+# RV32F FPU unit tests (combinational ops)
+# ---------------------------------------------------------------------------
+fp-cvt-test:
+	@echo "--- FP convert unit test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_cvt"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_cvt" \
+	     "verification/filelists/fp_cvt.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_cvt"
+
+fp-csr-test:
+	@echo "--- FP fcsr flag-accrual end-to-end integration test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_csr"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_csr" \
+	     "verification/filelists/fp_csr.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_csr"
+
+fp-muldiv-test:
+	@echo "--- FP FMA + divide/sqrt end-to-end integration test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_muldiv"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_muldiv" \
+	     "verification/filelists/fp_muldiv.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_muldiv"
+
+fp-loadstore-test:
+	@echo "--- FP load/store end-to-end integration test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_loadstore"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_loadstore" \
+	     "verification/filelists/fp_loadstore.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_loadstore"
+
+fp-arith-test:
+	@echo "--- FP arithmetic end-to-end integration test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_arith"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_arith" \
+	     "verification/filelists/fp_arith.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_arith"
+
+fp-sweep-test:
+	@echo "--- FP compliance sweep (golden RNE vectors) ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_sweep"
+	@python3 verification/scripts/fp_vectors.py 256 verification/unit/execution/fp_sweep_vectors.svh
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_sweep" \
+	     "verification/filelists/fp_sweep.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_sweep"
+
+fp-divsqrt-test:
+	@echo "--- FP divide/sqrt unit test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_divsqrt"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_divsqrt" \
+	     "verification/filelists/fp_divsqrt.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_divsqrt"
+
+fp-fma-test:
+	@echo "--- FP fused multiply-add unit test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_fma"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_fma" \
+	     "verification/filelists/fp_fma.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_fma"
+
+fp-addsub-test:
+	@echo "--- FP add/sub unit test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_addsub"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_addsub" \
+	     "verification/filelists/fp_addsub.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_addsub"
+
+fp-mul-test:
+	@echo "--- FP multiply unit test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_mul"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_mul" \
+	     "verification/filelists/fp_mul.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_mul"
+
+fp-short-test:
+	@echo "--- FP short-op (sgnj/minmax/cmp/class/fmv) unit test ---"
+	@mkdir -p "$(QUESTA_BUILD_DIR)/fp_short"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fp_short" \
+	     "verification/filelists/fp_short.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_short"
 
 # ---------------------------------------------------------------------------
 # Branch unit test
@@ -662,6 +819,16 @@ sim-xflux: $(BUILD_DIR)/sw/xflux_kernel/imem.hex
 	     "$(SOC_BENCH_FLIST)" \
 	     "sim/questa/run_unit.do" \
 	     "tb_xflux_kernel"
+
+sim-fp-kernel: $(BUILD_DIR)/sw/fp_kernel/imem.hex
+	@echo "--- SoC benchmark simulation: fp_kernel (RV32F hard-float from C) ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fp_kernel"
 
 sim-hello-cpi-dcache: $(BUILD_DIR)/sw/hello_cpi/imem.hex
 	@echo "--- SoC benchmark simulation: hello_cpi with USE_DCACHE=1 ---"
@@ -1003,6 +1170,32 @@ $(eval $(call sw_bench,timer_irq,timer_irq.c))
 $(eval $(call sw_bench,misalign_trap,misalign_trap.c))
 $(eval $(call sw_bench,board_hello,board_hello.c))
 $(eval $(call sw_bench,xflux_kernel,xflux_kernel.c))
+
+# RV32F variant: same recipe with the F extension enabled so the compiler
+# emits hard-float instructions for the FP demonstration kernel.
+SW_CFLAGS_FP := -march=rv32imf_zicsr -mabi=$(SW_ABI) \
+                -Os -g \
+                -ffreestanding -fno-builtin -nostdlib -nostartfiles \
+                -Wall -Wextra \
+                -I$(SW_DIR)/runtime
+
+define sw_bench_fp
+$(SW_BUILD)/$(1)/$(1).elf: $(SW_DIR)/benchmarks/$(2) $(SW_STARTUP) $(SW_LINKER) | $(SW_BUILD)/$(1)
+	$(RISCV_CC) $(SW_CFLAGS_FP) $(SW_LDFLAGS) \
+	    $(SW_STARTUP) $$< -o $$@ -lgcc
+	$(RISCV_SIZE) $$@
+
+$(SW_BUILD)/$(1)/imem.hex: $(SW_BUILD)/$(1)/$(1).elf $(ELF2HEX) | $(SW_BUILD)/$(1)
+	python3 $(ELF2HEX) $$< $$@ --base 0x00000000 --depth 4096
+
+$(SW_BUILD)/$(1):
+	@mkdir -p $$@
+
+sw-$(1): $(SW_BUILD)/$(1)/imem.hex
+	@echo "--- sw-$(1): IMEM hex ready at $(SW_BUILD)/$(1)/imem.hex ---"
+endef
+
+$(eval $(call sw_bench_fp,fp_kernel,fp_kernel.c))
 
 sw-spmv: sw-spmv_csr
 

@@ -38,10 +38,20 @@ fi
 DEFAULT_TARGETS=(
     # Packages and combinational units
     isa-pkg-test
+    mem-if-pkg-test
+    mem-model-test
     alu-test
     imm-gen-test
     decoder-test
     regfile-test
+    fp-regfile-test
+    fp-cvt-test
+    fp-short-test
+    fp-mul-test
+    fp-addsub-test
+    fp-fma-test
+    fp-divsqrt-test
+    fp-sweep-test
     branch-unit-test
     pipeline-pkg-test
     # Pipeline stage registers
@@ -72,6 +82,10 @@ DEFAULT_TARGETS=(
     branch-compare-test
     rv32i-alu-test
     rv32m-test
+    fp-arith-test
+    fp-loadstore-test
+    fp-muldiv-test
+    fp-csr-test
     ecall-mret-test
     # Full-SoC benchmark programs (need the RISC-V toolchain)
     sim-hello-cpi
@@ -81,6 +95,7 @@ DEFAULT_TARGETS=(
     sim-timer-irq
     sim-misalign-trap
     sim-xflux
+    sim-fp-kernel
     sim-hello-cpi-dcache
     sim-spmv-csr-dcache
 )
