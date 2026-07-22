@@ -78,6 +78,10 @@ module fluxcore_top
 
     // Cache hierarchy counters into the 0xFC0+ CSRs (defaults for
     // cacheless configurations).
+    // Cache maintenance: CSR 0x7C0 write pulse out / walk-busy poll in.
+    output logic              cacheop_flush_o,
+    input  wire logic         cacheflush_busy_i = 1'b0,
+
     input  wire word_t        dc_hits_i   = '0,
     input  wire word_t        dc_misses_i = '0,
     input  wire word_t        ic_hits_i   = '0,
@@ -449,6 +453,8 @@ module fluxcore_top
         .mret_i       (mret_s),
         .retire_i     (retire_s.valid),
         // RV32F fcsr accrual (from WB stage)
+        .cacheflush_busy_i(cacheflush_busy_i),
+        .cacheop_flush_o  (cacheop_flush_o),
         .dc_hits_i    (dc_hits_i),
         .dc_misses_i  (dc_misses_i),
         .ic_hits_i    (ic_hits_i),

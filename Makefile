@@ -794,6 +794,16 @@ dcache-mshr-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_mshr"
 
+dcache-flush-test:
+	@echo "--- dcache maintenance-flush unit test ---"
+	@mkdir -p "build/questa/dcache_flush"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_flush" \
+	     "verification/filelists/dcache_flush.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_flush"
+
 dcache-latency-test:
 	@echo "--- dcache latency A/B (blocking vs non-blocking) ---"
 	@mkdir -p "build/questa/dcache_latency"

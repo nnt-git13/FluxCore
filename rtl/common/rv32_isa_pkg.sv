@@ -577,6 +577,13 @@ localparam logic [11:0] CSR_DCHITS   = 12'hFC0;  // D$ read hits
 localparam logic [11:0] CSR_DCMISSES = 12'hFC1;  // D$ read misses
 localparam logic [11:0] CSR_ICHITS   = 12'hFC2;  // I$ hit-lookups
 localparam logic [11:0] CSR_ICMISSES = 12'hFC3;  // I$ misses
+
+// Custom machine read/write CSR: cache maintenance. Writing any value
+// triggers a full write-back + invalidate of the data-side hierarchy
+// (D$ now; L2 chained in when it joins the SoC). Read returns bit 0 =
+// maintenance walk still busy — software polls it before relying on
+// memory-visible state (e.g. before signalling the PS).
+localparam logic [11:0] CSR_CACHEOP = 12'h7C0;
 // Zicntr user-mode read-only shadows
 localparam logic [11:0] CSR_CYCLE     = 12'hC00;  // shadow of mcycle
 localparam logic [11:0] CSR_TIME      = 12'hC01;  // CLINT mtime (low)
@@ -604,7 +611,8 @@ function automatic logic csr_addr_valid(input logic [11:0] a);
         CSR_CYCLEH, CSR_TIMEH, CSR_INSTRETH,
         CSR_FFLAGS, CSR_FRM, CSR_FCSR,
         CSR_MVENDORID, CSR_MARCHID, CSR_MIMPID, CSR_MHARTID, CSR_MCONFIGPTR,
-        CSR_DCHITS, CSR_DCMISSES, CSR_ICHITS, CSR_ICMISSES:
+        CSR_DCHITS, CSR_DCMISSES, CSR_ICHITS, CSR_ICMISSES,
+        CSR_CACHEOP:
             return 1'b1;
         default:
             return 1'b0;

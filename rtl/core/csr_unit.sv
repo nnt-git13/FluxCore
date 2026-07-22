@@ -88,6 +88,11 @@ module csr_unit #(
     // instantiations inert.
     // Cache hierarchy counters (read-only CSRs 0xFC0-0xFC3; SoC-wired,
     // zero in cacheless configurations).
+    // Cache maintenance (CSR 0x7C0): any write pulses cacheop_flush_o for
+    // one cycle; reads return bit 0 = the walk is still busy.
+    input  wire logic        cacheflush_busy_i = 1'b0,
+    output logic             cacheop_flush_o,
+
     input  wire word_t       dc_hits_i   = '0,
     input  wire word_t       dc_misses_i = '0,
     input  wire word_t       ic_hits_i   = '0,
@@ -162,6 +167,7 @@ module csr_unit #(
             CSR_MSTATUS : rdata_o = mstatus_compose(mstatus_mie_q, mstatus_mpie_q, fs_q);
             CSR_MIE     : rdata_o = {24'b0, mtie_q, 3'b0, msie_q, 3'b0};
             CSR_MTVEC   : rdata_o = mtvec_q;
+            CSR_CACHEOP : rdata_o = {31'b0, cacheflush_busy_i};
             CSR_DCHITS  : rdata_o = dc_hits_i;
             CSR_DCMISSES: rdata_o = dc_misses_i;
             CSR_ICHITS  : rdata_o = ic_hits_i;
@@ -381,6 +387,14 @@ module csr_unit #(
     assign irq_pending_o = mstatus_mie_q
                          & ((mtip_i & mtie_q) | (msip_i & msie_q));
     assign irq_cause_o   = (msip_i & msie_q) ? IRQ_M_SOFT_CODE : IRQ_M_TIMER_CODE;
+
+    // CACHEOP write pulse (1 cycle, at the synchronous write commit point)
+    logic cacheop_q;
+    always_ff @(posedge clk) begin
+        if (rst) cacheop_q <= 1'b0;
+        else     cacheop_q <= wen_i && (waddr_i == CSR_CACHEOP);
+    end
+    assign cacheop_flush_o = cacheop_q;
 
 endmodule : csr_unit
 

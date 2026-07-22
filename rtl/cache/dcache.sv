@@ -139,6 +139,13 @@ module dcache
     output logic [31:0]      cpu_rdata_o,   // load data, valid in WB cycle
     output logic             dmem_stall_o,  // miss handling: stall pipeline
 
+    // Cache maintenance: pulse flush_req_i to write back every dirty line
+    // and invalidate the whole cache. The pipeline is stalled for the walk
+    // (dmem_stall_o high; flush is rare, simplicity wins). flush_busy_o
+    // stays high until the walk completes.
+    input  wire logic        flush_req_i = 1'b0,
+    output logic             flush_busy_o,
+
     // Non-blocking (MSHR) interface — inert when NONBLOCKING=0.
     input  wire logic        defer_ok_i = 1'b0,  // core allows deferring THIS miss
     output logic             miss_defer_o,  // this cycle's miss was accepted
@@ -172,12 +179,14 @@ module dcache
     localparam mem_id_t ID_FILL  = 4'd1;
 
     // Use localparams instead of an enum for broader tool compatibility
-    localparam logic [1:0] ST_IDLE    = 2'd0;
-    localparam logic [1:0] ST_FILL    = 2'd1;
-    localparam logic [1:0] ST_EVICT   = 2'd2;
-    localparam logic [1:0] ST_FILLREQ = 2'd3;
+    localparam logic [2:0] ST_IDLE    = 3'd0;
+    localparam logic [2:0] ST_FILL    = 3'd1;
+    localparam logic [2:0] ST_EVICT   = 3'd2;
+    localparam logic [2:0] ST_FILLREQ = 3'd3;
+    localparam logic [2:0] ST_FWALK   = 3'd4;  // flush: find next dirty line
+    localparam logic [2:0] ST_FEVICT  = 3'd5;  // flush: write one line back
 
-    logic [1:0]            state_q;
+    logic [2:0]            state_q;
     logic [31:0]           cpu_rdata_q;    // registered load data presented to WB
     logic [INDEX_W-1:0]    miss_index_q;   // saved index for the miss flow
     logic [TAG_W-1:0]      miss_tag_q;     // saved tag for the miss flow
@@ -191,6 +200,8 @@ module dcache
     logic [3:0]            miss_wstrb_q;   // store bytes to merge after fill
     logic [31:0]           miss_wdata_q;
     logic                  miss_deferred_q; // this miss was accepted non-blocking
+    int unsigned           fw_way_q, fw_set_q;  // flush-walk cursor
+    logic                  flush_pend_q;        // request seen while busy
     logic [31:0]           fill_rdata_q;   // deferred read's word (own register:
                                            // cpu_rdata_q keeps serving hits)
     logic                  fill_done_q;    // 1-cycle completion pulse
@@ -369,6 +380,17 @@ module dcache
                 mem_req_o.len = mem_len_for(LINE_WORDS);
                 dmem_stall_o = miss_deferred_q ? nb_busy_stall_s : 1'b1;
             end
+            ST_FWALK: begin
+                dmem_stall_o = 1'b1;
+            end
+            ST_FEVICT: begin
+                // Same burst-write shape as ST_EVICT, walker-addressed.
+                mem_req_valid_o = 1'b1;
+                mem_req_o = mem_write_req(ID_WRITE, evict_base_q, 4'hF,
+                                          data_q[fw_way_q][fw_set_q[INDEX_W-1:0]][ebeat_q]);
+                mem_req_o.len = mem_len_for(LINE_WORDS);
+                dmem_stall_o  = 1'b1;
+            end
             ST_FILLREQ: begin
                 // The request channel was carrying writes until now; issue
                 // the fill burst read (retrying until the backend accepts —
@@ -391,6 +413,9 @@ module dcache
             default: ;
         endcase
     end
+
+    assign flush_busy_o = (state_q == ST_FWALK) || (state_q == ST_FEVICT)
+                        || flush_pend_q;
 
     assign fill_done_o = fill_done_q;
     assign fill_data_o = fill_rdata_q;
@@ -423,6 +448,9 @@ module dcache
             miss_way_q   <= 0;
             miss_is_store_q <= 1'b0;
             miss_deferred_q <= 1'b0;
+            flush_pend_q    <= 1'b0;
+            fw_way_q        <= 0;
+            fw_set_q        <= 0;
             fill_rdata_q    <= '0;
             fill_done_q     <= 1'b0;
             for (int w = 0; w < WAYS; w++) begin
@@ -452,8 +480,19 @@ module dcache
                 lru_touch(hit_way_s, index_s);
             end
 
+            if (flush_req_i)
+                flush_pend_q <= 1'b1;
+
             case (state_q)
                 ST_IDLE: begin
+                    if (flush_pend_q || flush_req_i) begin
+                        // Start the maintenance walk (takes priority over a
+                        // new CPU access; the pipeline is stalled anyway).
+                        flush_pend_q <= 1'b0;
+                        fw_way_q     <= 0;
+                        fw_set_q     <= 0;
+                        state_q      <= ST_FWALK;
+                    end else begin
                     // Count a read miss when its transaction is ACCEPTED —
                     // a miss retrying against a not-ready backend (write-ack
                     // shadow, slow memory) must not count once per retry.
@@ -480,6 +519,45 @@ module dcache
                                                      // write-through store
                         else
                             state_q <= ST_FILL;      // fill beat 0 in flight
+                    end
+                    end  // !flush
+                end
+                ST_FWALK: begin
+                    if (WRITE_BACK && valid_q[fw_way_q][fw_set_q[INDEX_W-1:0]]
+                        && dirty_q[fw_way_q][fw_set_q[INDEX_W-1:0]]) begin
+                        evict_base_q <= (32'(tag_q[fw_way_q][fw_set_q[INDEX_W-1:0]])
+                                          << (INDEX_W + OFF_W + 2))
+                                      | (32'(fw_set_q) << (OFF_W + 2));
+                        ebeat_q <= 0;
+                        state_q <= ST_FEVICT;
+                    end else if (fw_set_q + 1 == NSETS) begin
+                        if (fw_way_q + 1 == WAYS) begin
+                            // Walk complete: invalidate everything.
+                            for (int w = 0; w < WAYS; w++)
+                                for (int i = 0; i < NSETS; i++) begin
+                                    valid_q[w][i] <= 1'b0;
+                                    dirty_q[w][i] <= 1'b0;
+                                end
+                            state_q <= ST_IDLE;
+                        end else begin
+                            fw_way_q <= fw_way_q + 1;
+                            fw_set_q <= 0;
+                        end
+                    end else begin
+                        fw_set_q <= fw_set_q + 1;
+                    end
+                end
+                ST_FEVICT: begin
+                    if (mem_req_ready_i) begin
+                        if (ebeat_q + 1 == LINE_WORDS) begin
+                            dirty_q[fw_way_q][fw_set_q[INDEX_W-1:0]] <= 1'b0;
+                            // Cursor stays put: FWALK re-examines the (now
+                            // clean) line and advances — keeps the wrap /
+                            // completion logic in exactly one place.
+                            state_q <= ST_FWALK;
+                        end else begin
+                            ebeat_q <= ebeat_q + 1;
+                        end
                     end
                 end
                 ST_EVICT: begin

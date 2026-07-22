@@ -76,6 +76,7 @@ DEFAULT_TARGETS=(
     dcache-assoc-test
     dcache-wb-test
     dcache-mshr-test
+    dcache-flush-test
     dcache-latency-test
     dcache-axi-test
     l2-cache-test

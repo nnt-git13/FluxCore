@@ -85,6 +85,7 @@ module fluxcore_soc
     logic           imem_valid;
     logic           fencei_flush;
     word_t          dc_hits, dc_misses, ic_hits, ic_misses;
+    logic           cacheop_flush, cacheflush_busy;
     word_t          dmem_addr, dmem_wdata,     dmem_rdata;
     logic           dmem_ren, dmem_wen;
     logic [3:0]     dmem_wstrb;
@@ -166,6 +167,8 @@ module fluxcore_soc
         .imem_rdata_i   (imem_rdata),
         .imem_valid_i   (imem_valid),
         .fencei_flush_o (fencei_flush),
+        .cacheop_flush_o  (cacheop_flush),
+        .cacheflush_busy_i(cacheflush_busy),
         .dc_hits_i      (dc_hits),
         .dc_misses_i    (dc_misses),
         .ic_hits_i      (ic_hits),
@@ -365,6 +368,8 @@ module fluxcore_soc
             .cpu_wdata_i  (mem_wdata),
             .cpu_rdata_o  (mem_rdata),
             .dmem_stall_o (dmem_stall),
+            .flush_req_i  (cacheop_flush),
+            .flush_busy_o (cacheflush_busy),
             .defer_ok_i   (dmem_defer_ok),
             .miss_defer_o (dmem_defer),
             .fill_done_o  (dmem_fill_done),
@@ -409,6 +414,7 @@ module fluxcore_soc
             .rdata_o (bram_rdata_w)
         );
     end else begin : g_no_dcache
+        assign cacheflush_busy = 1'b0;
         assign dc_hits        = '0;
         assign dc_misses      = '0;
         assign dmem_stall     = 1'b0;

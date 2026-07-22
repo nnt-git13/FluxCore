@@ -54,6 +54,12 @@ module l2_cache
     input  wire logic     clk,
     input  wire logic     rst,
 
+    // Maintenance: pulse flush_req_i to write back every dirty line and
+    // invalidate. Upstream requests are refused (s_req_ready low) for the
+    // duration; flush_busy_o covers the walk.
+    input  wire logic     flush_req_i = 1'b0,
+    output logic          flush_busy_o,
+
     // Upstream — responder (faces L1 / arbiter)
     input  wire logic     s_req_valid_i,
     output logic          s_req_ready_o,
@@ -82,16 +88,18 @@ module l2_cache
     localparam mem_id_t ID_WB   = 4'd8;  // our writeback transactions
     localparam mem_id_t ID_FILL = 4'd9;  // our fill transactions
 
-    localparam logic [2:0] S_IDLE   = 3'd0;
-    localparam logic [2:0] S_RSERVE = 3'd1;
-    localparam logic [2:0] S_WBEATS = 3'd2;
-    localparam logic [2:0] S_WBUF   = 3'd3;
-    localparam logic [2:0] S_WACK   = 3'd4;
-    localparam logic [2:0] S_EVICT  = 3'd5;
-    localparam logic [2:0] S_FILL0  = 3'd6;
-    localparam logic [2:0] S_FILL   = 3'd7;
+    localparam logic [3:0] S_IDLE   = 4'd0;
+    localparam logic [3:0] S_RSERVE = 4'd1;
+    localparam logic [3:0] S_WBEATS = 4'd2;
+    localparam logic [3:0] S_WBUF   = 4'd3;
+    localparam logic [3:0] S_WACK   = 4'd4;
+    localparam logic [3:0] S_EVICT  = 4'd5;
+    localparam logic [3:0] S_FILL0  = 4'd6;
+    localparam logic [3:0] S_FILL   = 4'd7;
+    localparam logic [3:0] S_FWALK  = 4'd8;   // maintenance: find dirty line
+    localparam logic [3:0] S_FEVICT = 4'd9;   // maintenance: write one back
 
-    logic [2:0]  state_q;
+    logic [3:0]  state_q;
     mem_req_t    txn_q;
     int unsigned beat_q;         // upstream beat cursor (serve/absorb/buffer)
     int unsigned fbeat_q;        // downstream fill beat cursor
@@ -99,6 +107,8 @@ module l2_cache
     int unsigned way_q;
     logic        fill_err_q;
     logic        pend_wr_q;      // fill belongs to a write miss
+    int unsigned fw_way_q, fw_set_q;   // maintenance-walk cursor
+    logic        flush_pend_q;
 
     // Write-miss burst buffer (strb=0 words merge nothing)
     logic [3:0]  wbuf_strb_q [0:15];
@@ -167,8 +177,8 @@ module l2_cache
 
     // ---- handshakes / channel drive ----
     always_comb begin
-        s_req_ready_o = (state_q == S_IDLE) || (state_q == S_WBEATS)
-                      || (state_q == S_WBUF);
+        s_req_ready_o = ((state_q == S_IDLE) && !flush_pend_q && !flush_req_i)
+                      || (state_q == S_WBEATS) || (state_q == S_WBUF);
         s_rsp_valid_o = 1'b0;
         s_rsp_o       = '0;
         m_req_valid_o = 1'b0;
@@ -196,6 +206,12 @@ module l2_cache
                 m_req_valid_o = 1'b1;
                 m_req_o = mem_write_req(ID_WB, evict_base_q, 4'hF,
                                         data_q[way_q][tindex_q][ebeat_q]);
+                m_req_o.len = mem_len_for(LINE_WORDS);
+            end
+            S_FEVICT: begin
+                m_req_valid_o = 1'b1;
+                m_req_o = mem_write_req(ID_WB, evict_base_q, 4'hF,
+                                        data_q[fw_way_q][fw_set_q[INDEX_W-1:0]][ebeat_q]);
                 m_req_o.len = mem_len_for(LINE_WORDS);
             end
             S_FILL0: begin
@@ -236,6 +252,9 @@ module l2_cache
             way_q        <= 0;
             fill_err_q   <= 1'b0;
             pend_wr_q    <= 1'b0;
+            flush_pend_q <= 1'b0;
+            fw_way_q     <= 0;
+            fw_set_q     <= 0;
             hit_count_q  <= '0;
             miss_count_q <= '0;
             for (int w = 0; w < WAYS; w++)
@@ -245,9 +264,17 @@ module l2_cache
                     age_q[w][i]   <= AGE_W'(w);
                 end
         end else begin
+            if (flush_req_i)
+                flush_pend_q <= 1'b1;
+
             case (state_q)
                 S_IDLE: begin
-                    if (s_req_valid_i) begin
+                    if (flush_pend_q || flush_req_i) begin
+                        flush_pend_q <= 1'b0;
+                        fw_way_q     <= 0;
+                        fw_set_q     <= 0;
+                        state_q      <= S_FWALK;
+                    end else if (s_req_valid_i) begin
                         txn_q        <= s_req_i;
                         tindex_q     <= index_s;
                         ttag_q       <= tag_s;
@@ -358,6 +385,41 @@ module l2_cache
                     end
                 end
 
+                S_FWALK: begin
+                    if (valid_q[fw_way_q][fw_set_q[INDEX_W-1:0]]
+                        && dirty_q[fw_way_q][fw_set_q[INDEX_W-1:0]]) begin
+                        evict_base_q <= (32'(tag_q[fw_way_q][fw_set_q[INDEX_W-1:0]])
+                                          << (INDEX_W + OFF_W + 2))
+                                      | (32'(fw_set_q) << (OFF_W + 2));
+                        ebeat_q <= 0;
+                        state_q <= S_FEVICT;
+                    end else if (fw_set_q + 1 == NSETS) begin
+                        if (fw_way_q + 1 == WAYS) begin
+                            for (int w = 0; w < WAYS; w++)
+                                for (int i = 0; i < NSETS; i++) begin
+                                    valid_q[w][i] <= 1'b0;
+                                    dirty_q[w][i] <= 1'b0;
+                                end
+                            state_q <= S_IDLE;
+                        end else begin
+                            fw_way_q <= fw_way_q + 1;
+                            fw_set_q <= 0;
+                        end
+                    end else begin
+                        fw_set_q <= fw_set_q + 1;
+                    end
+                end
+                S_FEVICT: begin
+                    if (m_req_ready_i) begin
+                        if (ebeat_q + 1 == LINE_WORDS) begin
+                            dirty_q[fw_way_q][fw_set_q[INDEX_W-1:0]] <= 1'b0;
+                            state_q <= S_FWALK;   // re-examine, then advance
+                        end else begin
+                            ebeat_q <= ebeat_q + 1;
+                        end
+                    end
+                end
+
                 S_FILL0: begin
                     if (m_req_ready_i)
                         state_q <= S_FILL;
@@ -399,6 +461,9 @@ module l2_cache
             endcase
         end
     end
+
+    assign flush_busy_o = (state_q == S_FWALK) || (state_q == S_FEVICT)
+                        || flush_pend_q;
 
     assign hit_count_o  = hit_count_q;
     assign miss_count_o = miss_count_q;
