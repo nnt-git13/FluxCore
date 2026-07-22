@@ -19,6 +19,7 @@ An ADR contains:
 |--------|--------------------------------|---------------------------------------------|
 | 0001   | BRAM-first memory strategy     | [0001-bram-first.md](0001-bram-first.md)    |
 | 0002   | Board model unconfirmed        | [0002-board-model-unconfirmed.md](0002-board-model-unconfirmed.md) |
+| 0003   | Memory hierarchy build-out (supersedes 0001) | [0003-memory-hierarchy.md](0003-memory-hierarchy.md) |
 
 ## Writing New ADRs
 

@@ -1,7 +1,7 @@
 # ADR 0001 — BRAM-First Memory Strategy
 
 **Date:** 2026-06-29
-**Status:** Accepted
+**Status:** Superseded by [ADR 0003](0003-memory-hierarchy.md) (2026-07-22)
 
 ---
 
