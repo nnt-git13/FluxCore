@@ -86,6 +86,10 @@ module pipeline_ctrl
     // ready. Same freeze pattern as muldiv_stall_i.
     input  wire logic             fpu_stall_i,
 
+    // AMO read phase in MEM: freeze all 5 stages for the one extra cycle the
+    // read-modify-write needs (plus any miss fill under it). Same pattern.
+    input  wire logic             amo_stall_i = 1'b0,
+
     // Stall outputs
     output logic             stall_if_o,
     output logic             stall_id_o,
@@ -182,7 +186,8 @@ module pipeline_ctrl
             redirect_valid_o  = 1'b1;
             redirect_target_o = ex_mem_i.pc + 32'd4;
         end else if ((load_use_stall_i | csr_raw_stall_i)
-                     & ~(dmem_stall_i | muldiv_stall_i | fpu_stall_i)) begin
+                     & ~(dmem_stall_i | muldiv_stall_i | fpu_stall_i
+                         | amo_stall_i)) begin
             // Partial stall: hold IF+ID, bubble ID/EX.  Suppressed while a
             // full-freeze stall is active — during a freeze the whole pipeline
             // is already held, and flushing ID/EX (which outranks a stall in the
@@ -212,6 +217,14 @@ module pipeline_ctrl
         end
         // FPU divide/sqrt stall: identical freeze while the iterative unit runs.
         if (fpu_stall_i) begin
+            stall_if_o  = 1'b1;
+            stall_id_o  = 1'b1;
+            stall_ex_o  = 1'b1;
+            stall_mem_o = 1'b1;
+            stall_wb_o  = 1'b1;
+        end
+        // AMO read-phase freeze: identical pattern.
+        if (amo_stall_i) begin
             stall_if_o  = 1'b1;
             stall_id_o  = 1'b1;
             stall_ex_o  = 1'b1;

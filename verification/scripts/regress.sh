@@ -83,6 +83,7 @@ DEFAULT_TARGETS=(
     l2-chain-test
     icache-test
     fencei-test
+    amo-test
     dcache-e2e-test
     # Core integration
     integration-test

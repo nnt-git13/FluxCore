@@ -864,6 +864,16 @@ fencei-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_fencei"
 
+amo-test:
+	@echo "--- RV32A integration test ---"
+	@mkdir -p "build/questa/amo"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/amo" \
+	     "verification/filelists/amo.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_amo"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

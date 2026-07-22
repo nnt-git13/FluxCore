@@ -66,6 +66,15 @@ module mem_stage
     // delivers the data later. Tied off in blocking configurations.
     input  wire logic            dmem_defer_i = 1'b0,
 
+    // RV32A (raw-detected from ex_mem_i.instr; decoder marked legality):
+    //   amo_phase_w_i — 1 during an AMO's write phase (top-level FSM).
+    //   res_*        — LR/SC reservation state (register lives in the top).
+    input  wire logic            amo_phase_w_i = 1'b0,
+    input  wire logic            res_valid_i   = 1'b0,
+    input  wire word_t           res_addr_i    = '0,
+    output logic                 res_set_o,    // LR completing: set reservation
+    output logic                 res_clr_o,    // committed store / any SC: clear
+
     // CSR write interface (wire to csr_unit in fluxcore_top)
     output logic            csr_wen_o,    // CSR write enable
     output logic [11:0]     csr_waddr_o,  // CSR write address
@@ -134,6 +143,43 @@ module mem_stage
     // Replicating rs2_data to all lanes means the controller can blindly
     // write all four bytes and rely solely on wstrb for selection.
     // -----------------------------------------------------------------------
+    // ---- RV32A decode-from-raw (FENCE.I precedent: no payload change) ----
+    logic       amo_class_s, amo_is_lr_s, amo_is_sc_s, amo_is_op_s, sc_ok_s;
+    logic [4:0] amo_f5_s;
+    assign amo_f5_s    = ex_mem_i.instr[31:27];
+    assign amo_class_s = ex_mem_i.valid
+                       & (ex_mem_i.instr[6:0] == OPCODE_AMO)
+                       & ex_mem_i.decoded.legal
+                       & ~ex_mem_i.decoded.exception.valid;
+    assign amo_is_lr_s = amo_class_s & (amo_f5_s == 5'b00010);
+    assign amo_is_sc_s = amo_class_s & (amo_f5_s == 5'b00011);
+    assign amo_is_op_s = amo_class_s & ~amo_is_lr_s & ~amo_is_sc_s;
+    // SC succeeds iff the reservation covers this word address.
+    assign sc_ok_s     = res_valid_i & (res_addr_i == ex_mem_i.alu_result);
+
+    // AMO ALU: new = f(old, rs2). Old value = mem_rdata_i, which still
+    // presents the phase-R capture during the write phase (no read between).
+    word_t amo_old_s, amo_result_s;
+    assign amo_old_s = mem_rdata_i;
+    always_comb begin
+        unique case (amo_f5_s)
+            5'b00001: amo_result_s = ex_mem_i.rs2_data;                 // SWAP
+            5'b00000: amo_result_s = amo_old_s + ex_mem_i.rs2_data;     // ADD
+            5'b00100: amo_result_s = amo_old_s ^ ex_mem_i.rs2_data;     // XOR
+            5'b01100: amo_result_s = amo_old_s & ex_mem_i.rs2_data;     // AND
+            5'b01000: amo_result_s = amo_old_s | ex_mem_i.rs2_data;     // OR
+            5'b10000: amo_result_s = ($signed(amo_old_s) < $signed(ex_mem_i.rs2_data))
+                                   ? amo_old_s : ex_mem_i.rs2_data;     // MIN
+            5'b10100: amo_result_s = ($signed(amo_old_s) > $signed(ex_mem_i.rs2_data))
+                                   ? amo_old_s : ex_mem_i.rs2_data;     // MAX
+            5'b11000: amo_result_s = (amo_old_s < ex_mem_i.rs2_data)
+                                   ? amo_old_s : ex_mem_i.rs2_data;     // MINU
+            5'b11100: amo_result_s = (amo_old_s > ex_mem_i.rs2_data)
+                                   ? amo_old_s : ex_mem_i.rs2_data;     // MAXU
+            default:  amo_result_s = ex_mem_i.rs2_data;
+        endcase
+    end
+
     logic [3:0] wstrb_s;
     word_t      wdata_s;
     // Store data source: FSW (uses_fs2) writes the FP operand fp_store_data;
@@ -195,7 +241,10 @@ module mem_stage
                         if (ex_mem_i.alu_result[1:0] != 2'b00) begin
                             new_exc_s   = 1'b1;
                             exc_s.valid = 1'b1;
-                            exc_s.cause = EXC_LOAD_ADDR_MISALIGNED;
+                            // AMO*.W raise the store/AMO cause (spec); LR.W
+                            // and plain loads the load cause.
+                            exc_s.cause = amo_is_op_s ? EXC_STORE_ADDR_MISALIGNED
+                                                      : EXC_LOAD_ADDR_MISALIGNED;
                             exc_s.tval  = ex_mem_i.alu_result;
                         end
                     end
@@ -233,12 +282,18 @@ module mem_stage
     // -----------------------------------------------------------------------
     assign mem_addr_o  = ex_mem_i.alu_result;
     assign mem_wen_o   = ex_mem_i.valid
-                       & ex_mem_i.decoded.is_store
                        & ex_mem_i.decoded.legal
                        & ~ex_mem_i.decoded.exception.valid
-                       & ~new_exc_s;
-    assign mem_wstrb_o = wstrb_s;
-    assign mem_wdata_o = wdata_s;
+                       & ~new_exc_s
+                       & ( (ex_mem_i.decoded.is_store & ~amo_is_sc_s)  // plain
+                         | (amo_is_sc_s & sc_ok_s)                     // SC ok
+                         | (amo_is_op_s & amo_phase_w_i) );            // AMO W
+    assign mem_wstrb_o = (amo_is_op_s & amo_phase_w_i) ? 4'hF : wstrb_s;
+    assign mem_wdata_o = (amo_is_op_s & amo_phase_w_i) ? amo_result_s : wdata_s;
+
+    // Reservation control (committed by the top when MEM completes unflushed)
+    assign res_set_o = amo_is_lr_s & ~new_exc_s;
+    assign res_clr_o = mem_wen_o | amo_is_sc_s;   // any SC clears, even a failed one
 
     // -----------------------------------------------------------------------
     // Writeback data mux
@@ -307,7 +362,8 @@ module mem_stage
                            & ~new_exc_s
                            & ~mem_wb_o.deferred;
         mem_wb_o.rd_addr   = ex_mem_i.decoded.rd;
-        mem_wb_o.rd_data   = rd_data_s;
+        // SC.W: rd is the success flag (0 = stored), not a datapath value.
+        mem_wb_o.rd_data   = amo_is_sc_s ? {31'b0, ~sc_ok_s} : rd_data_s;
         mem_wb_o.rd_from_mem  = ex_mem_i.valid
                               & ex_mem_i.decoded.legal
                               & ~new_exc_s

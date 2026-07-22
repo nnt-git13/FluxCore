@@ -286,6 +286,7 @@ module fluxcore_top
     reg_idx_t sb_rd_s;
 
     assign dmem_defer_ok_o = ex_mem_q.valid
+                           & (ex_mem_q.instr[6:0] != OPCODE_AMO)  // atomics block
                            & (ex_mem_q.decoded.is_store
                               | (ex_mem_q.decoded.is_load
                                  & ~ex_mem_q.decoded.writes_frd));
@@ -309,6 +310,59 @@ module fluxcore_top
             sb_rd_q      <= ex_mem_q.decoded.rd;
         end else if (dmem_fill_done_i) begin
             sb_pending_q <= 1'b0;
+        end
+    end
+
+    // =========================================================================
+    // RV32A: AMO two-phase sequencing + LR/SC reservation.
+    //
+    // An AMO*.W in MEM freezes the pipeline for its READ phase (plus any
+    // blocking miss fill under it); the write phase issues in the released
+    // cycle using the captured old value — cpu_rdata is not disturbed by the
+    // write, so the old value then flows to rd through the normal load
+    // writeback path. LR.W and SC.W are single-phase (plain load / gated
+    // store). Atomics never defer through the MSHR.
+    // =========================================================================
+    logic  amo_phase_q;         // 0 = read phase, 1 = write phase
+    logic  amo_op_in_mem_s, amo_stall_s;
+    logic  res_set_s, res_clr_s;
+    logic  res_valid_q;
+    word_t res_addr_q;
+
+    assign amo_op_in_mem_s = ex_mem_q.valid
+                           & ex_mem_q.decoded.legal
+                           & ~ex_mem_q.decoded.exception.valid
+                           & (ex_mem_q.instr[6:0]   == OPCODE_AMO)
+                           & (ex_mem_q.instr[31:27] != 5'b00010)   // not LR
+                           & (ex_mem_q.instr[31:27] != 5'b00011);  // not SC
+
+    assign amo_stall_s = amo_op_in_mem_s & ~amo_phase_q;
+
+    always_ff @(posedge clk) begin
+        if (rst)
+            amo_phase_q <= 1'b0;
+        else
+            // Enter the write phase once the read completes; one cycle later
+            // the AMO leaves MEM and the phase clears by construction.
+            amo_phase_q <= amo_op_in_mem_s & ~amo_phase_q
+                         & ~dmem_stall_i & ~flush_ex_mem_s;
+    end
+
+    // Reservation register: set by a completing LR, cleared by any committed
+    // store / any SC / a trap flush (conservative, spec-permitted).
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            res_valid_q <= 1'b0;
+            res_addr_q  <= '0;
+        end else if (flush_ex_mem_s) begin
+            res_valid_q <= 1'b0;
+        end else if (~stall_mem_s) begin   // MEM completing this cycle
+            if (res_set_s) begin
+                res_valid_q <= 1'b1;
+                res_addr_q  <= dmem_addr_o;
+            end else if (res_clr_s) begin
+                res_valid_q <= 1'b0;
+            end
         end
     end
 
@@ -604,6 +658,11 @@ module fluxcore_top
         .mem_wdata_o(dmem_wdata_o),
         .mem_rdata_i(dmem_rdata_i),
         .dmem_defer_i(dmem_defer_i),
+        .amo_phase_w_i(amo_phase_q),
+        .res_valid_i (res_valid_q),
+        .res_addr_i  (res_addr_q),
+        .res_set_o   (res_set_s),
+        .res_clr_o   (res_clr_s),
         .csr_wen_o  (csr_wen_s),
         .csr_waddr_o(csr_waddr_s),
         .csr_wdata_o(csr_wdata_s),
@@ -629,9 +688,26 @@ module fluxcore_top
     // WB stage — register file write and retirement
     // =========================================================================
 
+    // WB-cycle read-data hold: an instruction frozen in WB (e.g. by the NEXT
+    // AMO's read phase, which re-drives the memory port) must keep the read
+    // word it saw in its first WB cycle — the live dmem_rdata_i changes under
+    // it mid-freeze. Captured once per stall episode, released with it.
+    logic  wb_rdata_held_q;
+    word_t wb_rdata_hold_q;
+    always_ff @(posedge clk) begin
+        if (rst || !stall_wb_s) begin
+            wb_rdata_held_q <= 1'b0;
+        end else if (!wb_rdata_held_q) begin
+            wb_rdata_hold_q <= dmem_rdata_i;
+            wb_rdata_held_q <= 1'b1;
+        end
+    end
+    word_t wb_rdata_eff_s;
+    assign wb_rdata_eff_s = wb_rdata_held_q ? wb_rdata_hold_q : dmem_rdata_i;
+
     wb_stage u_wb (
         .mem_wb_i      (mem_wb_q),
-        .dmem_rdata_i  (dmem_rdata_i),
+        .dmem_rdata_i  (wb_rdata_eff_s),
         .stall_i       (stall_wb_s),
         .rd_addr_o     (rd_addr_s),
         .rd_data_o     (rd_data_s),
@@ -654,7 +730,9 @@ module fluxcore_top
     assign retire_o    = retire_s;
     assign exception_o = exception_s;
     // Load-in-MEM indicator: used by dcache to assert cpu_ren_i correctly.
-    assign dmem_ren_o  = ex_mem_q.valid & ex_mem_q.decoded.is_load & ~exception_s.valid;
+    assign dmem_ren_o  = ex_mem_q.valid & ex_mem_q.decoded.is_load
+                       & ~exception_s.valid
+                       & ~amo_phase_q;   // AMO write phase: port carries the store
 
     // =========================================================================
     // Pipeline control unit
@@ -684,6 +762,7 @@ module fluxcore_top
         .csr_raw_stall_i (csr_raw_stall_s),
         .dmem_stall_i    (dmem_stall_i),
         .muldiv_stall_i  (muldiv_busy_s),
+        .amo_stall_i     (amo_stall_s),
         .fpu_stall_i     (fpu_busy_s),
         .stall_if_o      (stall_if_s),
         .stall_id_o      (stall_id_s),

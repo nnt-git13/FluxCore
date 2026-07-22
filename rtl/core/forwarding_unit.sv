@@ -128,6 +128,12 @@ module forwarding_unit
                         & ex_mem_i.decoded.legal
                         & (ex_mem_i.decoded.rd != '0)
                         & ~ex_mem_i.decoded.is_load
+                        // SC.W: is_store & writes_rd — its rd (the success
+                        // flag) is computed in MEM; alu_result here is the
+                        // ADDRESS. Never forward it; the load-use-style
+                        // stall + MEM/WB path handles SC consumers.
+                        & ~(ex_mem_i.decoded.is_store
+                            & ex_mem_i.decoded.writes_rd)
                         & id_ex_i.decoded.uses_rs1
                         & (ex_mem_i.decoded.rd == id_ex_i.decoded.rs1);
 
@@ -136,6 +142,12 @@ module forwarding_unit
                         & ex_mem_i.decoded.legal
                         & (ex_mem_i.decoded.rd != '0)
                         & ~ex_mem_i.decoded.is_load
+                        // SC.W: is_store & writes_rd — its rd (the success
+                        // flag) is computed in MEM; alu_result here is the
+                        // ADDRESS. Never forward it; the load-use-style
+                        // stall + MEM/WB path handles SC consumers.
+                        & ~(ex_mem_i.decoded.is_store
+                            & ex_mem_i.decoded.writes_rd)
                         & id_ex_i.decoded.uses_rs2
                         & (ex_mem_i.decoded.rd == id_ex_i.decoded.rs2);
 
@@ -229,8 +241,15 @@ module forwarding_unit
     // -----------------------------------------------------------------------
     logic ldu_rs1_s, ldu_rs2_s;
 
+    // "late-rd" producers: loads, and SC.W (the only store that writes rd,
+    // whose flag also materialises in MEM).
+    logic id_ex_late_rd_s;
+    assign id_ex_late_rd_s = id_ex_i.decoded.is_load
+                           | (id_ex_i.decoded.is_store
+                              & id_ex_i.decoded.writes_rd);
+
     assign ldu_rs1_s = id_ex_i.valid
-                     & id_ex_i.decoded.is_load
+                     & id_ex_late_rd_s
                      & id_ex_i.decoded.writes_rd
                      & (id_ex_i.decoded.rd != '0)
                      & id_valid_i
@@ -238,7 +257,7 @@ module forwarding_unit
                      & (id_ex_i.decoded.rd == id_decoded_i.rs1);
 
     assign ldu_rs2_s = id_ex_i.valid
-                     & id_ex_i.decoded.is_load
+                     & id_ex_late_rd_s
                      & id_ex_i.decoded.writes_rd
                      & (id_ex_i.decoded.rd != '0)
                      & id_valid_i
@@ -265,7 +284,7 @@ module forwarding_unit
     // and the late fill write clobbers the younger addi result.
     logic ldu_waw_s;
     assign ldu_waw_s = id_ex_i.valid
-                     & id_ex_i.decoded.is_load
+                     & id_ex_late_rd_s
                      & id_ex_i.decoded.writes_rd
                      & (id_ex_i.decoded.rd != '0)
                      & id_valid_i

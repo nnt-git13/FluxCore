@@ -187,7 +187,7 @@ module csr_unit #(
             CSR_FRM     : rdata_o = {29'b0, frm_q};
             CSR_FCSR    : rdata_o = {24'b0, frm_q, fflags_q};
             // Machine information / configuration registers
-            CSR_MISA    : rdata_o = 32'h4000_1120;   // RV32IMF (I|M|F)
+            CSR_MISA    : rdata_o = 32'h4000_1121;   // RV32IMAF (A|I|M|F)
             CSR_MVENDORID : rdata_o = '0;            // non-commercial
             CSR_MARCHID   : rdata_o = '0;            // not registered
             CSR_MIMPID    : rdata_o = 32'h2026_0702; // implementation date

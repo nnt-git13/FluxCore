@@ -519,7 +519,7 @@ module tb_csr_unit;
         // G21: machine information CSRs + mcountinhibit
         // -------------------------------------------------------------------
         $display("[CSR] G21: info CSRs + mcountinhibit");
-        chk_read(CSR_MISA,      32'h4000_1120, "G21 misa RV32IMF");
+        chk_read(CSR_MISA,      32'h4000_1121, "G21 misa RV32IMAF");
         chk_read(CSR_MVENDORID, 32'h0,         "G21 mvendorid");
         chk_read(CSR_MARCHID,   32'h0,         "G21 marchid");
         chk_read(CSR_MIMPID,    32'h2026_0702, "G21 mimpid");

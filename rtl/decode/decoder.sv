@@ -232,6 +232,77 @@ module decoder
             end
 
             // ============================================================
+            // AMO — RV32A atomics (funct3 must be 010 = word).
+            //
+            // Decode strategy: mark legality and reuse the EXISTING decoded
+            // fields so no payload widths change — mem_stage re-derives the
+            // atomic class from the raw instruction word (the FENCE.I
+            // precedent):
+            //   LR.W / AMO*.W : is_load=1, wb_src=WB_MEM — rd gets the OLD
+            //     memory word through the normal load-writeback path, the
+            //     load-use hazard guards consumers, and the MSHR path is
+            //     excluded at the core (atomics never defer).
+            //   SC.W          : is_store=1 + writes_rd=1 — mem_stage
+            //     overrides rd_data with the success flag and suppresses
+            //     the store when the reservation is gone.
+            // Effective address is rs1 itself (no immediate): alu_op=COPY? —
+            // the EX adder computes rs1 + imm with imm forced to 0 by IFMT_R
+            // (R-format has no immediate; imm_gen yields 0), so ALU_ADD
+            // produces rs1 + 0 = rs1. aq/rl bits are accepted and ignored.
+            // ============================================================
+            OPCODE_AMO: begin
+                fmt_s               = IFMT_R;
+                decoded_o.alu_op    = ALU_ADD;      // addr = rs1 + 0
+                decoded_o.mem_op    = MEM_LW;       // word access, misalign checked
+                if (funct3_s != 3'b010) begin
+                    decoded_o = make_illegal(instr_i);
+                end else begin
+                    case (instr_i[31:27])
+                        5'b00010: begin // LR.W (rs2 must be 0)
+                            if (rs2_s != '0) decoded_o = make_illegal(instr_i);
+                            else begin
+                                decoded_o.legal     = 1'b1;
+                                decoded_o.op_class  = OPCLASS_LOAD;
+                                decoded_o.wb_src    = WB_MEM;
+                                decoded_o.uses_rs1  = 1'b1;
+                                decoded_o.writes_rd = 1'b1;
+                                decoded_o.is_load   = 1'b1;
+                            end
+                        end
+                        5'b00011: begin // SC.W
+                            decoded_o.mem_op    = MEM_SW;
+                            decoded_o.legal     = 1'b1;
+                            decoded_o.op_class  = OPCLASS_STORE;
+                            decoded_o.wb_src    = WB_ALU;   // overridden in MEM
+                            decoded_o.uses_rs1  = 1'b1;
+                            decoded_o.uses_rs2  = 1'b1;
+                            decoded_o.writes_rd = 1'b1;
+                            decoded_o.is_store  = 1'b1;
+                        end
+                        5'b00001,           // AMOSWAP.W
+                        5'b00000,           // AMOADD.W
+                        5'b00100,           // AMOXOR.W
+                        5'b01100,           // AMOAND.W
+                        5'b01000,           // AMOOR.W
+                        5'b10000,           // AMOMIN.W
+                        5'b10100,           // AMOMAX.W
+                        5'b11000,           // AMOMINU.W
+                        5'b11100: begin     // AMOMAXU.W
+                            decoded_o.legal     = 1'b1;
+                            decoded_o.op_class  = OPCLASS_LOAD;
+                            decoded_o.wb_src    = WB_MEM;   // rd = old value
+                            decoded_o.uses_rs1  = 1'b1;
+                            decoded_o.uses_rs2  = 1'b1;     // the operand
+                            decoded_o.writes_rd = 1'b1;
+                            decoded_o.is_load   = 1'b1;     // phase R; phase W
+                                                            // is mem_stage's
+                        end
+                        default: decoded_o = make_illegal(instr_i);
+                    endcase
+                end
+            end
+
+            // ============================================================
             // STORE — memory store
             // Effective address = rs1 + imm; data source is rs2.
             // ============================================================

@@ -72,8 +72,12 @@ module execute_stage
     // ALU operand B: register rs2, or sign-extended immediate.
     // Stores (is_store=1) set uses_rs2=1 (for forwarding detection) but the
     // ALU must compute the address using the immediate, not rs2 (store data).
+    // RV32A ops likewise: rs2 is the atomic OPERAND, the address is rs1 + 0
+    // (IFMT_R immediate). XLIDX keeps rs2 — its ALU op IS the address math.
     // -----------------------------------------------------------------------
-    assign opb_s = (id_ex_i.decoded.uses_rs2 && !id_ex_i.decoded.is_store)
+    assign opb_s = (id_ex_i.decoded.uses_rs2
+                    && !id_ex_i.decoded.is_store
+                    && (id_ex_i.instr[6:0] != OPCODE_AMO))
                    ? id_ex_i.rs2_data : id_ex_i.decoded.imm;
 
     // -----------------------------------------------------------------------

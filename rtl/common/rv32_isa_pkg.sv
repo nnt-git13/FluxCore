@@ -87,6 +87,11 @@ localparam opcode_t OPCODE_MISC_MEM= 7'b000_1111;  // FENCE (NOP in initial impl
 // XFlux custom-0 opcode (RISC-V CUSTOM_0 space): indexed load and data ops.
 localparam opcode_t OPCODE_CUSTOM_0 = 7'b000_1011;  // XLIDX/XABS/XMIN/XMAX/XCLZ
 
+// RV32A atomics. funct3 = 010 (word); funct5 = instr[31:27] selects the op;
+// aq/rl (instr[26:25]) are legal but ignored — a single-hart in-order core
+// with no store buffer already provides the strongest ordering.
+localparam opcode_t OPCODE_AMO      = 7'b010_1111;  // LR.W SC.W AMO*.W
+
 // RV32F single-precision floating-point opcodes.
 // FLW/FSW share the LOAD/STORE address computation but target the FP register
 // file. OP-FP covers all register-register FP arithmetic and the FP↔int
