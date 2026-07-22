@@ -25,10 +25,13 @@ class spike(pluginTemplate):
         self.suite = suite
         self.work_dir = work_dir
         self.objdump_cmd = 'riscv64-unknown-elf-objdump -D {0} > {1};'
+        # The REF must run the SAME binary environment as the DUT: link
+        # script and model_test.h come from the fluxcore plugin's env.
+        dut_env = os.path.join(self.pluginpath, '..', 'fluxcore', 'env')
         self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0}_zicsr_zifencei -mabi=ilp32 '
             '-static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles '
-            '-g -T ' + self.pluginpath + '/env/link.ld '
-            '-I ' + self.pluginpath + '/env/ '
+            '-g -T ' + dut_env + '/link.ld '
+            '-I ' + dut_env + '/ '
             '-I ' + archtest_env + ' {1} -o {2} {3}')
 
     def build(self, isa_yaml, platform_yaml):

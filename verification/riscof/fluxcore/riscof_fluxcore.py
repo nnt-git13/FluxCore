@@ -75,7 +75,7 @@ class fluxcore(pluginTemplate):
             hexf = os.path.join(test_dir, 'image.hex')
             utils.shellCommand(
                 'cd {repo} && python3 scripts/elf2hex.py {elf} {hex} '
-                '--base 0x80000000 --depth 16384'.format(
+                '--base 0x80000000 --depth 1048576'.format(
                     repo=self.repo, elf=elf, hex=hexf)).run()
             nm = utils.shellCommand(
                 'riscv64-unknown-elf-nm {0}'.format(elf)).run(shell=True)

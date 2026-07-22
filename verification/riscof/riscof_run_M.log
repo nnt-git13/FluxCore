@@ -1,0 +1,22 @@
+[32m    INFO[0m | [32m****** RISCOF: RISC-V Architectural Test Framework 1.25.3 *******[0m
+[32m    INFO[0m | [32musing riscv_isac version : 0.18.0[0m
+[32m    INFO[0m | [32musing riscv_config version : 3.18.3[0m
+[32m    INFO[0m | [32mReading configuration from: /home/lnx-141209/Desktop/FluxCore/verification/riscof/config.ini[0m
+[32m    INFO[0m | [32mPreparing Models[0m
+[32m    INFO[0m | [32mInput-ISA file[0m
+[32m    INFO[0m | [32mISACheck: Loading input file: /home/lnx-141209/Desktop/FluxCore/verification/riscof/fluxcore/fluxcore_isa.yaml[0m
+[32m    INFO[0m | [32mISACheck: Load Schema /home/lnx-141209/Desktop/FluxCore/.venv/lib/python3.13/site-packages/riscv_config/schemas/schema_isa.yaml[0m
+[32m    INFO[0m | [32mISACheck: Processing Hart:0[0m
+[32m    INFO[0m | [32mISACheck: Initiating Validation for Hart:0[0m
+[32m    INFO[0m | [32mISACheck: No errors for Hart:0[0m
+[32m    INFO[0m | [32mISACheck:  Updating fields node for each CSR in Hart:0[0m
+[32m    INFO[0m | [32mISACheck: Dumping out Normalized Checked YAML: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/fluxcore_isa_checked.yaml[0m
+[32m    INFO[0m | [32mInput-Platform file[0m
+[32m    INFO[0m | [32mLoading input file: /home/lnx-141209/Desktop/FluxCore/verification/riscof/fluxcore/fluxcore_platform.yaml[0m
+[32m    INFO[0m | [32mLoad Schema /home/lnx-141209/Desktop/FluxCore/.venv/lib/python3.13/site-packages/riscv_config/schemas/schema_platform.yaml[0m
+[32m    INFO[0m | [32mInitiating Validation[0m
+[32m    INFO[0m | [32mNo Syntax errors in Input Platform Yaml. :)[0m
+[32m    INFO[0m | [32mDumping out Normalized Checked YAML: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/fluxcore_platform_checked.yaml[0m
+[32m    INFO[0m | [32mGenerating database for suite: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M[0m
+[32m    INFO[0m | [32mDatabase File Generated: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/database.yaml[0m
+[32m    INFO[0m | [32mEnv path set to/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/env[0m
