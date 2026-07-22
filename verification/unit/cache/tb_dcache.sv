@@ -14,6 +14,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+import fluxcore_pkg::*;
+import mem_if_pkg::*;
+
 module tb_dcache;
 
     // -----------------------------------------------------------------------
@@ -36,27 +39,19 @@ module tb_dcache;
     logic [31:0] cpu_wdata;
     logic [31:0] cpu_rdata;
     logic        dmem_stall;
-    logic [31:0] mem_addr;
-    logic        mem_ren;
-    logic        mem_wen;
-    logic [3:0]  mem_wstrb;
-    logic [31:0] mem_wdata;
-    logic [31:0] mem_rdata;
+    logic        req_valid, req_ready, rsp_valid, rsp_ready;
+    mem_req_t    req;
+    mem_rsp_t    rsp;
     logic [31:0] hit_count;
     logic [31:0] miss_count;
 
-    // Fake 1-cycle registered BRAM model
-    logic [31:0] bram [0:255];
-    always_ff @(posedge clk) begin
-        // Write-through: update bram model on store
-        if (mem_wen) begin
-            if (mem_wstrb[0]) bram[mem_addr[9:2]][7:0]   <= mem_wdata[7:0];
-            if (mem_wstrb[1]) bram[mem_addr[9:2]][15:8]  <= mem_wdata[15:8];
-            if (mem_wstrb[2]) bram[mem_addr[9:2]][23:16] <= mem_wdata[23:16];
-            if (mem_wstrb[3]) bram[mem_addr[9:2]][31:24] <= mem_wdata[31:24];
-        end
-        mem_rdata <= bram[mem_addr[9:2]];
-    end
+    // Backing store: the P0 sim memory at LATENCY=1 — timing-equivalent to
+    // the bare BRAM the original TB modeled (accept at N, data during N+1).
+    mem_model #(.MEM_WORDS(256), .LATENCY(1)) u_mem (
+        .clk(clk), .rst(rst),
+        .req_valid_i(req_valid), .req_ready_o(req_ready), .req_i(req),
+        .rsp_valid_o(rsp_valid), .rsp_ready_i(rsp_ready), .rsp_o(rsp)
+    );
 
     dcache #(.NSETS(NSETS)) dut (
         .clk         (clk),
@@ -68,12 +63,12 @@ module tb_dcache;
         .cpu_wdata_i (cpu_wdata),
         .cpu_rdata_o (cpu_rdata),
         .dmem_stall_o(dmem_stall),
-        .mem_addr_o  (mem_addr),
-        .mem_ren_o   (mem_ren),
-        .mem_wen_o   (mem_wen),
-        .mem_wstrb_o (mem_wstrb),
-        .mem_wdata_o (mem_wdata),
-        .mem_rdata_i (mem_rdata),
+        .mem_req_valid_o(req_valid),
+        .mem_req_ready_i(req_ready),
+        .mem_req_o      (req),
+        .mem_rsp_valid_i(rsp_valid),
+        .mem_rsp_ready_o(rsp_ready),
+        .mem_rsp_i      (rsp),
         .hit_count_o (hit_count),
         .miss_count_o(miss_count)
     );
@@ -119,8 +114,8 @@ module tb_dcache;
     // DUT reset
     // -----------------------------------------------------------------------
     initial begin
-        // Initialize BRAM
-        for (int i = 0; i < 256; i++) bram[i] = 32'hA000_0000 | i;
+        // Initialize backing memory (hierarchical: sim-only preload)
+        for (int i = 0; i < 256; i++) u_mem.mem[i] = 32'hA000_0000 | i;
 
         cpu_addr = '0; cpu_ren = 0; cpu_wen = 0; cpu_wstrb = '0; cpu_wdata = '0;
         rst = 1;
@@ -176,9 +171,9 @@ module tb_dcache;
         cpu_wdata = 32'hDEAD_BEEF;
         #0;  // flush scheduler so always@(*) sees updated inputs
         check("S3.no_stall_store", dmem_stall === 1'b0);
-        check("S3.bram_wen",       mem_wen    === 1'b1);
-        check("S3.bram_addr",      mem_addr   === 32'h0000_0008);
-        check("S3.bram_wdata",     mem_wdata  === 32'hDEAD_BEEF);
+        check("S3.req_is_write",   req_valid === 1'b1 && req.op === MEM_WRITE);
+        check("S3.req_addr",       req.addr  === 32'h0000_0008);
+        check("S3.req_wdata",      req.wdata === 32'hDEAD_BEEF);
         @(posedge clk); #1;  // bram gets updated; cache gets updated
 
         cpu_wen = 0; cpu_addr = '0; cpu_wstrb = '0;
@@ -205,7 +200,7 @@ module tb_dcache;
         cpu_wdata = 32'h1234_5678;
         #0;  // flush scheduler so always@(*) sees updated inputs
         check("S4.no_stall", dmem_stall === 1'b0);
-        check("S4.wen_to_bram",  mem_wen  === 1'b1);
+        check("S4.write_req",    req_valid === 1'b1 && req.op === MEM_WRITE);
         @(posedge clk); #1;
         cpu_wen = 0; cpu_addr = '0;
 

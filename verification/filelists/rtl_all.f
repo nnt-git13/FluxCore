@@ -1,5 +1,6 @@
 # All synthesizable RTL, packages first — for Verilator lint and CI.
 rtl/common/fluxcore_pkg.sv
+rtl/common/mem_if_pkg.sv
 rtl/common/rv32_isa_pkg.sv
 rtl/common/pipeline_pkg.sv
 rtl/common/fp_pkg.sv
@@ -35,6 +36,7 @@ rtl/core/pipeline_ctrl.sv
 rtl/core/wb_stage.sv
 rtl/core/fluxcore_top.sv
 rtl/cache/dcache.sv
+rtl/memory/mem_if_bram.sv
 rtl/peripherals/uart_tx.sv
 rtl/peripherals/gpio.sv
 rtl/peripherals/clint.sv

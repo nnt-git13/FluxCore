@@ -25,6 +25,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+import fluxcore_pkg::*;
+import mem_if_pkg::*;
+
 module tb_dcache_wb;
 
     logic clk = 0;
@@ -47,27 +50,28 @@ module tb_dcache_wb;
     // =======================================================================
     // DUT A: write-back + write-allocate, 2-word lines
     // =======================================================================
-    logic [31:0] a_addr, a_wdata, a_rdata, a_maddr, a_mwdata, a_mrdata;
-    logic        a_ren, a_wen, a_stall, a_mren, a_mwen;
-    logic [3:0]  a_wstrb, a_mwstrb;
+    logic [31:0] a_addr, a_wdata, a_rdata;
+    logic        a_ren, a_wen, a_stall;
+    logic [3:0]  a_wstrb;
     logic [31:0] a_hits, a_misses;
+    logic        a_req_valid, a_req_ready, a_rsp_valid, a_rsp_ready;
+    mem_req_t    a_req;
+    mem_rsp_t    a_rsp;
     int          a_memwrites;
 
-    logic [31:0] brama [0:1023];
-    always_ff @(posedge clk) begin
-        if (a_mwen) begin
-            if (a_mwstrb[0]) brama[a_maddr[11:2]][7:0]   <= a_mwdata[7:0];
-            if (a_mwstrb[1]) brama[a_maddr[11:2]][15:8]  <= a_mwdata[15:8];
-            if (a_mwstrb[2]) brama[a_maddr[11:2]][23:16] <= a_mwdata[23:16];
-            if (a_mwstrb[3]) brama[a_maddr[11:2]][31:24] <= a_mwdata[31:24];
-        end
-        a_mrdata <= brama[a_maddr[11:2]];
-    end
+    // Backing store: P0 sim memory, LATENCY=1 = bare-BRAM timing.
+    mem_model #(.MEM_WORDS(1024), .LATENCY(1)) u_mema (
+        .clk(clk), .rst(rst),
+        .req_valid_i(a_req_valid), .req_ready_o(a_req_ready), .req_i(a_req),
+        .rsp_valid_o(a_rsp_valid), .rsp_ready_i(a_rsp_ready), .rsp_o(a_rsp)
+    );
 
-    // Memory-write pulse counter (separate block: single procedural driver)
+    // Memory-write counter: accepted write request beats on the mem_if
+    // channel (burst evictions count one per beat, same as before).
     always_ff @(posedge clk) begin
-        if (rst)         a_memwrites <= 0;
-        else if (a_mwen) a_memwrites <= a_memwrites + 1;
+        if (rst)                                              a_memwrites <= 0;
+        else if (a_req_valid && a_req_ready
+                 && a_req.op == MEM_WRITE)                    a_memwrites <= a_memwrites + 1;
     end
 
     dcache #(.NSETS(4), .LINE_WORDS(2), .WAYS(1),
@@ -76,8 +80,9 @@ module tb_dcache_wb;
         .cpu_addr_i(a_addr), .cpu_ren_i(a_ren), .cpu_wen_i(a_wen),
         .cpu_wstrb_i(a_wstrb), .cpu_wdata_i(a_wdata),
         .cpu_rdata_o(a_rdata), .dmem_stall_o(a_stall),
-        .mem_addr_o(a_maddr), .mem_ren_o(a_mren), .mem_wen_o(a_mwen),
-        .mem_wstrb_o(a_mwstrb), .mem_wdata_o(a_mwdata), .mem_rdata_i(a_mrdata),
+        .mem_req_valid_o(a_req_valid), .mem_req_ready_i(a_req_ready),
+        .mem_req_o(a_req), .mem_rsp_valid_i(a_rsp_valid),
+        .mem_rsp_ready_o(a_rsp_ready), .mem_rsp_i(a_rsp),
         .hit_count_o(a_hits), .miss_count_o(a_misses)
     );
 
@@ -109,21 +114,20 @@ module tb_dcache_wb;
     // =======================================================================
     // DUT B: write-through + write-allocate, 1-word lines
     // =======================================================================
-    logic [31:0] b_addr, b_wdata, b_rdata, b_maddr, b_mwdata, b_mrdata;
-    logic        b_ren, b_wen, b_stall, b_mren, b_mwen;
-    logic [3:0]  b_wstrb, b_mwstrb;
+    logic [31:0] b_addr, b_wdata, b_rdata;
+    logic        b_ren, b_wen, b_stall;
+    logic [3:0]  b_wstrb;
     logic [31:0] b_hits, b_misses;
+    logic        b_req_valid, b_req_ready, b_rsp_valid, b_rsp_ready;
+    mem_req_t    b_req;
+    mem_rsp_t    b_rsp;
 
-    logic [31:0] bramb [0:1023];
-    always_ff @(posedge clk) begin
-        if (b_mwen) begin
-            if (b_mwstrb[0]) bramb[b_maddr[11:2]][7:0]   <= b_mwdata[7:0];
-            if (b_mwstrb[1]) bramb[b_maddr[11:2]][15:8]  <= b_mwdata[15:8];
-            if (b_mwstrb[2]) bramb[b_maddr[11:2]][23:16] <= b_mwdata[23:16];
-            if (b_mwstrb[3]) bramb[b_maddr[11:2]][31:24] <= b_mwdata[31:24];
-        end
-        b_mrdata <= bramb[b_maddr[11:2]];
-    end
+    // Backing store: P0 sim memory, LATENCY=1 = bare-BRAM timing.
+    mem_model #(.MEM_WORDS(1024), .LATENCY(1)) u_memb (
+        .clk(clk), .rst(rst),
+        .req_valid_i(b_req_valid), .req_ready_o(b_req_ready), .req_i(b_req),
+        .rsp_valid_o(b_rsp_valid), .rsp_ready_i(b_rsp_ready), .rsp_o(b_rsp)
+    );
 
     dcache #(.NSETS(4), .LINE_WORDS(1), .WAYS(1),
              .WRITE_ALLOCATE(1'b1), .WRITE_BACK(1'b0)) dut_b (
@@ -131,8 +135,9 @@ module tb_dcache_wb;
         .cpu_addr_i(b_addr), .cpu_ren_i(b_ren), .cpu_wen_i(b_wen),
         .cpu_wstrb_i(b_wstrb), .cpu_wdata_i(b_wdata),
         .cpu_rdata_o(b_rdata), .dmem_stall_o(b_stall),
-        .mem_addr_o(b_maddr), .mem_ren_o(b_mren), .mem_wen_o(b_mwen),
-        .mem_wstrb_o(b_mwstrb), .mem_wdata_o(b_mwdata), .mem_rdata_i(b_mrdata),
+        .mem_req_valid_o(b_req_valid), .mem_req_ready_i(b_req_ready),
+        .mem_req_o(b_req), .mem_rsp_valid_i(b_rsp_valid),
+        .mem_rsp_ready_o(b_rsp_ready), .mem_rsp_i(b_rsp),
         .hit_count_o(b_hits), .miss_count_o(b_misses)
     );
 
@@ -173,8 +178,8 @@ module tb_dcache_wb;
 
     initial begin
         for (int i = 0; i < 1024; i++) begin
-            brama[i] = 32'hAB00_0000 | i;
-            bramb[i] = 32'hCD00_0000 | i;
+            u_mema.mem[i] = 32'hAB00_0000 | i;
+            u_memb.mem[i] = 32'hCD00_0000 | i;
         end
         a_addr='0; a_ren=0; a_wen=0; a_wstrb='0; a_wdata='0;
         b_addr='0; b_ren=0; b_wen=0; b_wstrb='0; b_wdata='0;
@@ -191,7 +196,7 @@ module tb_dcache_wb;
         wra(LA, 32'h1111_1111, st);
         check("W1.store_stalls_for_fill", st == 2);          // clean victim, W=2
         check("W1.no_mem_write", a_memwrites == wr_before);  // absorbed
-        check("W1.bram_untouched", brama[LA >> 2] === (32'hAB00_0000 | (LA >> 2)));
+        check("W1.bram_untouched", u_mema.mem[LA >> 2] === (32'hAB00_0000 | (LA >> 2)));
         rda(LA, rd, st);
         check("W1.line_hits", st == 0);
         check("W1.stored_data", rd === 32'h1111_1111);
@@ -216,10 +221,10 @@ module tb_dcache_wb;
         $display("\n--- W3: dirty eviction writes the line back ---");
         wr_before = a_memwrites;
         rda(LB, rd, st);
-        check("W3.evict_stalls", st == 4);   // evict 2 + fillreq 1 + fill 1
+        check("W3.evict_stalls", st == 5);   // evict 2 + ack shadow 1 + fillreq 1 + fill 1
         check("W3.two_writeback_beats", a_memwrites == wr_before + 2);
-        check("W3.mem_word0", brama[LA  >> 2] === 32'h1111_1111);
-        check("W3.mem_word1", brama[LA1 >> 2] === 32'h2222_2222);
+        check("W3.mem_word0", u_mema.mem[LA  >> 2] === 32'h1111_1111);
+        check("W3.mem_word1", u_mema.mem[LA1 >> 2] === 32'h2222_2222);
         check("W3.read_data_ok", rd === (32'hAB00_0000 | (LB >> 2)));
         // Original line comes back from memory with the stored values.
         rda(LA, rd, st);
@@ -240,8 +245,8 @@ module tb_dcache_wb;
         // ===================================================================
         $display("\n--- T1: write-through store-miss allocation ---");
         wrb(32'h0000_0008, 32'h3333_3333, st);
-        check("T1.store_stalls", st == 2);   // WT write cycle + FILLREQ
-        check("T1.mem_has_it_now", bramb[2] === 32'h3333_3333);
+        check("T1.store_stalls", st == 3);   // WT write + ack shadow + FILLREQ
+        check("T1.mem_has_it_now", u_memb.mem[2] === 32'h3333_3333);
         rdb(32'h0000_0008, rd, st);
         check("T1.line_hits", st == 0);
         check("T1.data", rd === 32'h3333_3333);

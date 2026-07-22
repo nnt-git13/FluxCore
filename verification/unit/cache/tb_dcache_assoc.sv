@@ -29,6 +29,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+import fluxcore_pkg::*;
+import mem_if_pkg::*;
+
 module tb_dcache_assoc;
 
     logic clk = 0;
@@ -51,29 +54,29 @@ module tb_dcache_assoc;
     // =======================================================================
     // 2-way DUT (NSETS=4, LINE_WORDS=1): index bits [3:2], tag [31:4].
     // =======================================================================
-    logic [31:0] a2_addr, a2_wdata, a2_rdata, a2_maddr, a2_mwdata, a2_mrdata;
-    logic        a2_ren, a2_wen, a2_stall, a2_mren, a2_mwen;
-    logic [3:0]  a2_wstrb, a2_mwstrb;
+    logic [31:0] a2_addr, a2_wdata, a2_rdata;
+    logic        a2_ren, a2_wen, a2_stall;
+    logic [3:0]  a2_wstrb;
     logic [31:0] a2_hits, a2_misses;
+    logic        a2_req_valid, a2_req_ready, a2_rsp_valid, a2_rsp_ready;
+    mem_req_t    a2_req;
+    mem_rsp_t    a2_rsp;
 
-    logic [31:0] bram2 [0:1023];
-    always_ff @(posedge clk) begin
-        if (a2_mwen) begin
-            if (a2_mwstrb[0]) bram2[a2_maddr[11:2]][7:0]   <= a2_mwdata[7:0];
-            if (a2_mwstrb[1]) bram2[a2_maddr[11:2]][15:8]  <= a2_mwdata[15:8];
-            if (a2_mwstrb[2]) bram2[a2_maddr[11:2]][23:16] <= a2_mwdata[23:16];
-            if (a2_mwstrb[3]) bram2[a2_maddr[11:2]][31:24] <= a2_mwdata[31:24];
-        end
-        a2_mrdata <= bram2[a2_maddr[11:2]];
-    end
+    // Backing store: P0 sim memory, LATENCY=1 = bare-BRAM timing.
+    mem_model #(.MEM_WORDS(1024), .LATENCY(1)) u_mem2 (
+        .clk(clk), .rst(rst),
+        .req_valid_i(a2_req_valid), .req_ready_o(a2_req_ready), .req_i(a2_req),
+        .rsp_valid_o(a2_rsp_valid), .rsp_ready_i(a2_rsp_ready), .rsp_o(a2_rsp)
+    );
 
     dcache #(.NSETS(4), .LINE_WORDS(1), .WAYS(2)) dut2 (
         .clk(clk), .rst(rst),
         .cpu_addr_i(a2_addr), .cpu_ren_i(a2_ren), .cpu_wen_i(a2_wen),
         .cpu_wstrb_i(a2_wstrb), .cpu_wdata_i(a2_wdata),
         .cpu_rdata_o(a2_rdata), .dmem_stall_o(a2_stall),
-        .mem_addr_o(a2_maddr), .mem_ren_o(a2_mren), .mem_wen_o(a2_mwen),
-        .mem_wstrb_o(a2_mwstrb), .mem_wdata_o(a2_mwdata), .mem_rdata_i(a2_mrdata),
+        .mem_req_valid_o(a2_req_valid), .mem_req_ready_i(a2_req_ready),
+        .mem_req_o(a2_req), .mem_rsp_valid_i(a2_rsp_valid),
+        .mem_rsp_ready_o(a2_rsp_ready), .mem_rsp_i(a2_rsp),
         .hit_count_o(a2_hits), .miss_count_o(a2_misses)
     );
 
@@ -101,29 +104,29 @@ module tb_dcache_assoc;
     // =======================================================================
     // 4-way DUT (NSETS=2, LINE_WORDS=1): index bit [2], tag [31:3].
     // =======================================================================
-    logic [31:0] a4_addr, a4_wdata, a4_rdata, a4_maddr, a4_mwdata, a4_mrdata;
-    logic        a4_ren, a4_wen, a4_stall, a4_mren, a4_mwen;
-    logic [3:0]  a4_wstrb, a4_mwstrb;
+    logic [31:0] a4_addr, a4_wdata, a4_rdata;
+    logic        a4_ren, a4_wen, a4_stall;
+    logic [3:0]  a4_wstrb;
     logic [31:0] a4_hits, a4_misses;
+    logic        a4_req_valid, a4_req_ready, a4_rsp_valid, a4_rsp_ready;
+    mem_req_t    a4_req;
+    mem_rsp_t    a4_rsp;
 
-    logic [31:0] bram4 [0:1023];
-    always_ff @(posedge clk) begin
-        if (a4_mwen) begin
-            if (a4_mwstrb[0]) bram4[a4_maddr[11:2]][7:0]   <= a4_mwdata[7:0];
-            if (a4_mwstrb[1]) bram4[a4_maddr[11:2]][15:8]  <= a4_mwdata[15:8];
-            if (a4_mwstrb[2]) bram4[a4_maddr[11:2]][23:16] <= a4_mwdata[23:16];
-            if (a4_mwstrb[3]) bram4[a4_maddr[11:2]][31:24] <= a4_mwdata[31:24];
-        end
-        a4_mrdata <= bram4[a4_maddr[11:2]];
-    end
+    // Backing store: P0 sim memory, LATENCY=1 = bare-BRAM timing.
+    mem_model #(.MEM_WORDS(1024), .LATENCY(1)) u_mem4 (
+        .clk(clk), .rst(rst),
+        .req_valid_i(a4_req_valid), .req_ready_o(a4_req_ready), .req_i(a4_req),
+        .rsp_valid_o(a4_rsp_valid), .rsp_ready_i(a4_rsp_ready), .rsp_o(a4_rsp)
+    );
 
     dcache #(.NSETS(2), .LINE_WORDS(1), .WAYS(4)) dut4 (
         .clk(clk), .rst(rst),
         .cpu_addr_i(a4_addr), .cpu_ren_i(a4_ren), .cpu_wen_i(a4_wen),
         .cpu_wstrb_i(a4_wstrb), .cpu_wdata_i(a4_wdata),
         .cpu_rdata_o(a4_rdata), .dmem_stall_o(a4_stall),
-        .mem_addr_o(a4_maddr), .mem_ren_o(a4_mren), .mem_wen_o(a4_mwen),
-        .mem_wstrb_o(a4_mwstrb), .mem_wdata_o(a4_mwdata), .mem_rdata_i(a4_mrdata),
+        .mem_req_valid_o(a4_req_valid), .mem_req_ready_i(a4_req_ready),
+        .mem_req_o(a4_req), .mem_rsp_valid_i(a4_rsp_valid),
+        .mem_rsp_ready_o(a4_rsp_ready), .mem_rsp_i(a4_rsp),
         .hit_count_o(a4_hits), .miss_count_o(a4_misses)
     );
 
@@ -154,8 +157,8 @@ module tb_dcache_assoc;
 
     initial begin
         for (int i = 0; i < 1024; i++) begin
-            bram2[i] = 32'hB200_0000 | i;
-            bram4[i] = 32'hB400_0000 | i;
+            u_mem2.mem[i] = 32'hB200_0000 | i;
+            u_mem4.mem[i] = 32'hB400_0000 | i;
         end
         a2_addr='0; a2_ren=0; a2_wen=0; a2_wstrb='0; a2_wdata='0;
         a4_addr='0; a4_ren=0; a4_wen=0; a4_wstrb='0; a4_wdata='0;

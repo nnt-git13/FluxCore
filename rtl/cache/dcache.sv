@@ -118,6 +118,7 @@
 `default_nettype none
 
 module dcache
+    import mem_if_pkg::*;
 #(
     parameter int NSETS          = 64,
     parameter int LINE_WORDS     = 1,
@@ -144,13 +145,15 @@ module dcache
     output logic             fill_done_o,   // deferred READ completed (1 cycle)
     output logic [31:0]      fill_data_o,   // its data, valid with fill_done_o
 
-    // Backing BRAM-side
-    output logic [31:0]      mem_addr_o,
-    output logic             mem_ren_o,     // ignored by bram_dmem but useful for debug
-    output logic             mem_wen_o,
-    output logic [3:0]       mem_wstrb_o,
-    output logic [31:0]      mem_wdata_o,
-    input  wire  logic [31:0] mem_rdata_i,
+    // Backing store — mem_if requester (wire to mem_if_bram, mem_model,
+    // or the AXI adapter). Evictions are one burst write transaction,
+    // fills one burst read; write acks are discarded on arrival.
+    output logic             mem_req_valid_o,
+    input  wire logic        mem_req_ready_i,
+    output mem_req_t         mem_req_o,
+    input  wire logic        mem_rsp_valid_i,
+    output logic             mem_rsp_ready_o,
+    input  wire mem_rsp_t    mem_rsp_i,
 
     // Hit/miss counters (32-bit wrapping, read traffic only)
     output logic [31:0]      hit_count_o,
@@ -162,6 +165,11 @@ module dcache
     localparam int TAG_W   = 32 - INDEX_W - OFF_W - 2;  // 2 byte-offset bits
     // Age field width (1 bit at WAYS = 1 so the arrays stay legal).
     localparam int AGE_W   = (WAYS == 1) ? 1 : $clog2(WAYS);
+
+    // mem_if transaction ids: fills are the only responses the FSM waits on;
+    // everything else (write acks) is discarded by id on arrival.
+    localparam mem_id_t ID_WRITE = 4'd0;
+    localparam mem_id_t ID_FILL  = 4'd1;
 
     // Use localparams instead of an enum for broader tool compatibility
     localparam logic [1:0] ST_IDLE    = 2'd0;
@@ -203,6 +211,7 @@ module dcache
     int unsigned         hit_way_s;       // way that hit (valid when hit_s)
     logic                defer_now_s;     // an IDLE miss would defer, not stall
     logic                nb_busy_stall_s; // busy-MSHR stall for this access
+    logic                fill_rsp_s;      // a fill beat is on the rsp channel
     int unsigned         victim_way_s;    // way to fill on a miss
     logic                victim_dirty_s;  // victim line needs write-back
     logic [31:0]         victim_base_s;   // byte address of victim word 0
@@ -280,7 +289,7 @@ module dcache
 
         // Fill beat with the allocating store's bytes merged in (idempotent
         // in write-through mode, where memory was already updated).
-        fill_word_s = mem_rdata_i;
+        fill_word_s = mem_rsp_i.rdata;
         if (miss_is_store_q && beat_q == miss_woff_q) begin
             if (miss_wstrb_q[0]) fill_word_s[ 7: 0] = miss_wdata_q[ 7: 0];
             if (miss_wstrb_q[1]) fill_word_s[15: 8] = miss_wdata_q[15: 8];
@@ -298,77 +307,86 @@ module dcache
         nb_busy_stall_s = (cpu_ren_i && !hit_s)
                         | (cpu_wen_i && !(hit_s && WRITE_BACK));
 
+        // A fill beat is available on the response channel this cycle.
+        // Write acks (ID_WRITE) are absorbed by the always-high rsp_ready.
+        fill_rsp_s = mem_rsp_valid_i && (mem_rsp_i.id == ID_FILL);
+
         // Output defaults
-        dmem_stall_o = 1'b0;
-        miss_defer_o = 1'b0;
-        mem_addr_o   = cpu_addr_i;
-        mem_ren_o    = 1'b0;
-        mem_wen_o    = 1'b0;
-        mem_wstrb_o  = cpu_wstrb_i;
-        mem_wdata_o  = cpu_wdata_i;
+        dmem_stall_o    = 1'b0;
+        miss_defer_o    = 1'b0;
+        mem_req_valid_o = 1'b0;
+        mem_req_o       = mem_read_req(ID_FILL, line_base_s);
+        mem_rsp_ready_o = 1'b1;   // never backpressure: acks are discarded,
+                                  // fill beats are always consumable
 
         case (state_q)
             ST_IDLE: begin
                 if (alloc_miss_s) begin
-                    dmem_stall_o = !defer_now_s;
-                    miss_defer_o = defer_now_s;
+                    // The miss's first transaction goes out this cycle; if
+                    // the backend is not ready the miss (and any would-be
+                    // deferral) simply retries next cycle under stall.
+                    mem_req_valid_o = 1'b1;
+                    dmem_stall_o    = !(defer_now_s && mem_req_ready_i);
+                    miss_defer_o    = defer_now_s && mem_req_ready_i;
                     if (victim_dirty_s) begin
-                        // Evict beat 0 goes out right now.
-                        mem_addr_o  = victim_base_s;
-                        mem_wen_o   = 1'b1;
-                        mem_wstrb_o = 4'hF;
-                        mem_wdata_o = data_q[victim_way_s][index_s][0];
+                        // Eviction: burst write, beat 0 now.
+                        mem_req_o = mem_write_req(ID_WRITE, victim_base_s,
+                                                  4'hF,
+                                                  data_q[victim_way_s][index_s][0]);
+                        mem_req_o.len = mem_len_for(LINE_WORDS);
                     end else if (cpu_wen_i && !WRITE_BACK) begin
                         // Allocating store, write-through: memory write first
-                        // (occupies the address slot → fill starts in FILLREQ).
-                        mem_wen_o   = 1'b1;
-                        mem_wstrb_o = cpu_wstrb_i;
-                        mem_wdata_o = cpu_wdata_i;
+                        // (owns the request channel → fill starts in FILLREQ).
+                        mem_req_o = mem_write_req(ID_WRITE, cpu_addr_i,
+                                                  cpu_wstrb_i, cpu_wdata_i);
                     end else begin
                         // Clean-victim read miss (the legacy fast path) or
-                        // write-back allocating store: fill word 0 read now.
-                        mem_addr_o = line_base_s;
-                        mem_ren_o  = 1'b1;
+                        // write-back allocating store: burst read now.
+                        mem_req_o     = mem_read_req(ID_FILL, line_base_s);
+                        mem_req_o.len = mem_len_for(LINE_WORDS);
                     end
                 end else if (cpu_wen_i) begin
                     // Store hit, or store miss without allocation.
                     // Memory is written unless a write-back HIT absorbs it.
                     if (!(WRITE_BACK && hit_s)) begin
-                        mem_wen_o   = 1'b1;
-                        mem_wstrb_o = cpu_wstrb_i;
-                        mem_wdata_o = cpu_wdata_i;
+                        mem_req_valid_o = 1'b1;
+                        mem_req_o = mem_write_req(ID_WRITE, cpu_addr_i,
+                                                  cpu_wstrb_i, cpu_wdata_i);
+                        // The store commits only when accepted; hold it in
+                        // MEM otherwise (a 1-cycle backend is always ready
+                        // here except in a write-ack shadow).
+                        dmem_stall_o = !mem_req_ready_i;
                     end
                 end
             end
             ST_EVICT: begin
-                // Write victim beats 1..W-1 (beat 0 went out in IDLE).
-                mem_addr_o   = evict_base_q + 32'(ebeat_q * 4);
-                mem_wen_o    = 1'b1;
-                mem_wstrb_o  = 4'hF;
-                mem_wdata_o  = data_q[miss_way_q][miss_index_q][ebeat_q];
+                // Remaining beats of the eviction burst (beat 0 went out in
+                // IDLE). Header fields repeat the accepted transaction; only
+                // strb/wdata advance per the burst-write contract.
+                mem_req_valid_o = 1'b1;
+                mem_req_o = mem_write_req(ID_WRITE, evict_base_q, 4'hF,
+                                          data_q[miss_way_q][miss_index_q][ebeat_q]);
+                mem_req_o.len = mem_len_for(LINE_WORDS);
                 dmem_stall_o = miss_deferred_q ? nb_busy_stall_s : 1'b1;
             end
             ST_FILLREQ: begin
-                // The address slot was carrying writes until now; issue the
-                // first fill read.
-                mem_addr_o   = miss_base_q;
-                mem_ren_o    = 1'b1;
+                // The request channel was carrying writes until now; issue
+                // the fill burst read (retrying until the backend accepts —
+                // with mem_if_bram that is one write-ack shadow cycle).
+                mem_req_valid_o = 1'b1;
+                mem_req_o       = mem_read_req(ID_FILL, miss_base_q);
+                mem_req_o.len   = mem_len_for(LINE_WORDS);
                 dmem_stall_o = miss_deferred_q ? nb_busy_stall_s : 1'b1;
             end
             ST_FILL: begin
-                // Data for beat_q arrives this cycle; issue the next beat's
-                // address (or hold the last one — the re-registration is
-                // harmless, see header).
-                if (beat_q + 1 < LINE_WORDS)
-                    mem_addr_o = miss_base_q + 32'((beat_q + 1) * 4);
-                else
-                    mem_addr_o = miss_base_q + 32'((LINE_WORDS - 1) * 4);
-                mem_ren_o = 1'b1;
-                // Blocking: stall until the final beat's cycle, in which the
-                // frozen MEM stage completes. Non-blocking: nothing is
-                // waiting on this fill — stall only unservable CPU accesses.
-                dmem_stall_o = miss_deferred_q ? nb_busy_stall_s
-                                               : (beat_q + 1 < LINE_WORDS);
+                // Consume fill beats as the backend produces them. Blocking:
+                // the frozen MEM stage completes in the cycle the final beat
+                // arrives — stall drops exactly then, preserving the legacy
+                // count against a 1-cycle backend. Non-blocking: nothing
+                // waits on this fill; stall only unservable CPU accesses.
+                dmem_stall_o = miss_deferred_q
+                             ? nb_busy_stall_s
+                             : !(fill_rsp_s && (beat_q + 1 == LINE_WORDS));
             end
             default: ;
         endcase
@@ -436,10 +454,13 @@ module dcache
 
             case (state_q)
                 ST_IDLE: begin
-                    if (cpu_ren_i && !hit_s)
+                    // Count a read miss when its transaction is ACCEPTED —
+                    // a miss retrying against a not-ready backend (write-ack
+                    // shadow, slow memory) must not count once per retry.
+                    if (cpu_ren_i && !hit_s && mem_req_ready_i)
                         miss_count_q <= miss_count_q + 1;
 
-                    if (alloc_miss_s) begin
+                    if (alloc_miss_s && mem_req_ready_i) begin
                         miss_index_q    <= index_s;
                         miss_tag_q      <= tag_s;
                         miss_base_q     <= line_base_s;
@@ -462,23 +483,27 @@ module dcache
                     end
                 end
                 ST_EVICT: begin
-                    if (ebeat_q + 1 == LINE_WORDS)
-                        state_q <= ST_FILLREQ;
-                    else
-                        ebeat_q <= ebeat_q + 1;
+                    if (mem_req_ready_i) begin
+                        if (ebeat_q + 1 == LINE_WORDS)
+                            state_q <= ST_FILLREQ;
+                        else
+                            ebeat_q <= ebeat_q + 1;
+                    end
                 end
                 ST_FILLREQ: begin
-                    state_q <= ST_FILL;   // fill beat 0 address now in flight
+                    if (mem_req_ready_i)
+                        state_q <= ST_FILL;   // fill burst accepted
                 end
                 ST_FILL: begin
-                    // Capture the beat that arrived this cycle (store bytes
-                    // merged in for an allocating store). A deferred read's
-                    // word goes to its own register — cpu_rdata_q belongs to
-                    // whatever hit is being served under the miss.
+                    if (fill_rsp_s) begin
+                    // Capture the beat on the channel (store bytes merged in
+                    // for an allocating store). A deferred read's word goes
+                    // to its own register — cpu_rdata_q belongs to whatever
+                    // hit is being served under the miss.
                     data_q[miss_way_q][miss_index_q][beat_q] <= fill_word_s;
                     if (!miss_is_store_q && beat_q == miss_woff_q) begin
-                        if (miss_deferred_q) fill_rdata_q <= mem_rdata_i;
-                        else                 cpu_rdata_q  <= mem_rdata_i;
+                        if (miss_deferred_q) fill_rdata_q <= mem_rsp_i.rdata;
+                        else                 cpu_rdata_q  <= mem_rsp_i.rdata;
                     end
                     if (beat_q + 1 == LINE_WORDS) begin
                         // Line complete: publish tag/valid/dirty, touch.
@@ -498,6 +523,7 @@ module dcache
                     end else begin
                         beat_q <= beat_q + 1;
                     end
+                    end  // fill_rsp_s
                 end
                 default: state_q <= ST_IDLE;
             endcase

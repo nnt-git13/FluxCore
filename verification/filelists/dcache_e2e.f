@@ -1,4 +1,5 @@
 rtl/common/fluxcore_pkg.sv
+rtl/common/mem_if_pkg.sv
 rtl/common/rv32_isa_pkg.sv
 rtl/common/pipeline_pkg.sv
 rtl/common/imm_gen.sv
@@ -35,4 +36,5 @@ rtl/execution/fp/fpu.sv
 rtl/core/fluxcore_top.sv
 rtl/top/bram_dmem.sv
 rtl/cache/dcache.sv
+rtl/memory/mem_if_bram.sv
 verification/integration/tb_dcache_e2e.sv

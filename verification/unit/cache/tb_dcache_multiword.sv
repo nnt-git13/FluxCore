@@ -23,6 +23,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+import fluxcore_pkg::*;
+import mem_if_pkg::*;
+
 module tb_dcache_multiword;
 
     localparam int NSETS      = 8;
@@ -41,26 +44,18 @@ module tb_dcache_multiword;
     logic [31:0] cpu_wdata;
     logic [31:0] cpu_rdata;
     logic        dmem_stall;
-    logic [31:0] mem_addr;
-    logic        mem_ren;
-    logic        mem_wen;
-    logic [3:0]  mem_wstrb;
-    logic [31:0] mem_wdata;
-    logic [31:0] mem_rdata;
+    logic        req_valid, req_ready, rsp_valid, rsp_ready;
+    mem_req_t    req;
+    mem_rsp_t    rsp;
     logic [31:0] hit_count;
     logic [31:0] miss_count;
 
-    // Fake 1-cycle registered BRAM model (1024 words = 4 KiB)
-    logic [31:0] bram [0:1023];
-    always_ff @(posedge clk) begin
-        if (mem_wen) begin
-            if (mem_wstrb[0]) bram[mem_addr[11:2]][7:0]   <= mem_wdata[7:0];
-            if (mem_wstrb[1]) bram[mem_addr[11:2]][15:8]  <= mem_wdata[15:8];
-            if (mem_wstrb[2]) bram[mem_addr[11:2]][23:16] <= mem_wdata[23:16];
-            if (mem_wstrb[3]) bram[mem_addr[11:2]][31:24] <= mem_wdata[31:24];
-        end
-        mem_rdata <= bram[mem_addr[11:2]];
-    end
+    // Backing store: P0 sim memory, LATENCY=1 = bare-BRAM timing.
+    mem_model #(.MEM_WORDS(1024), .LATENCY(1)) u_mem (
+        .clk(clk), .rst(rst),
+        .req_valid_i(req_valid), .req_ready_o(req_ready), .req_i(req),
+        .rsp_valid_o(rsp_valid), .rsp_ready_i(rsp_ready), .rsp_o(rsp)
+    );
 
     dcache #(.NSETS(NSETS), .LINE_WORDS(LINE_WORDS)) dut (
         .clk         (clk),
@@ -72,12 +67,12 @@ module tb_dcache_multiword;
         .cpu_wdata_i (cpu_wdata),
         .cpu_rdata_o (cpu_rdata),
         .dmem_stall_o(dmem_stall),
-        .mem_addr_o  (mem_addr),
-        .mem_ren_o   (mem_ren),
-        .mem_wen_o   (mem_wen),
-        .mem_wstrb_o (mem_wstrb),
-        .mem_wdata_o (mem_wdata),
-        .mem_rdata_i (mem_rdata),
+        .mem_req_valid_o(req_valid),
+        .mem_req_ready_i(req_ready),
+        .mem_req_o      (req),
+        .mem_rsp_valid_i(rsp_valid),
+        .mem_rsp_ready_o(rsp_ready),
+        .mem_rsp_i      (rsp),
         .hit_count_o (hit_count),
         .miss_count_o(miss_count)
     );
@@ -120,21 +115,24 @@ module tb_dcache_multiword;
 
     logic [31:0] rd;
     int          st;
-    logic [31:0] fill_addrs [0:LINE_WORDS-1];
-    int          beat_seen;
-
-    // Record the fill-beat addresses the cache issues to the BRAM.
+    // Record accepted read requests: with mem_if the whole line is ONE burst
+    // transaction — check its base address and length instead of per-beat
+    // addresses.
+    logic [31:0] fill_req_addr;
+    logic [3:0]  fill_req_len;
+    int          fill_reqs_seen;
     always @(posedge clk) begin
-        if (!rst && mem_ren && beat_seen < LINE_WORDS) begin
-            fill_addrs[beat_seen] <= mem_addr;
-            beat_seen             <= beat_seen + 1;
+        if (!rst && req_valid && req_ready && req.op == MEM_READ) begin
+            fill_req_addr  <= req.addr;
+            fill_req_len   <= req.len;
+            fill_reqs_seen <= fill_reqs_seen + 1;
         end
     end
 
     initial begin
         // BRAM: word i holds 0xA0000000 | i (word index)
-        for (int i = 0; i < 1024; i++) bram[i] = 32'hA000_0000 | i;
-        beat_seen = 0;
+        for (int i = 0; i < 1024; i++) u_mem.mem[i] = 32'hA000_0000 | i;
+        fill_reqs_seen = 0;
 
         cpu_addr = '0; cpu_ren = 0; cpu_wen = 0; cpu_wstrb = '0; cpu_wdata = '0;
         rst = 1;
@@ -146,15 +144,14 @@ module tb_dcache_multiword;
         // M1: Miss on word 0 of line at 0x40 (index 4). 4 stall cycles.
         // ===================================================================
         $display("\n--- M1: 4-beat fill on read miss ---");
-        beat_seen = 0;
+        fill_reqs_seen = 0;
         read_and_wait(32'h0000_0040, rd, st);
         check("M1.stall_cycles_eq_4", st == 4);
         check("M1.rdata", rd === (32'hA000_0000 | 'h10));   // word idx 0x10
         idle_cycle;
-        check("M1.beat0_addr", fill_addrs[0] === 32'h0000_0040);
-        check("M1.beat1_addr", fill_addrs[1] === 32'h0000_0044);
-        check("M1.beat2_addr", fill_addrs[2] === 32'h0000_0048);
-        check("M1.beat3_addr", fill_addrs[3] === 32'h0000_004C);
+        check("M1.one_burst_req",  fill_reqs_seen == 1);
+        check("M1.burst_base",     fill_req_addr === 32'h0000_0040);
+        check("M1.burst_len_4",    fill_req_len  === mem_len_for(4));
 
         // ===================================================================
         // M2: Spatial locality — words 1..3 of the same line all hit.
@@ -190,7 +187,8 @@ module tb_dcache_multiword;
         cpu_wdata = 32'hDEAD_BEEF;
         #1;
         check("M4.no_stall_store", dmem_stall === 1'b0);
-        check("M4.writethrough",   mem_wen === 1'b1 && mem_addr === 32'h0000_0048);
+        check("M4.writethrough",   req_valid === 1'b1 && req.op === MEM_WRITE
+                                   && req.addr === 32'h0000_0048);
         @(posedge clk); #1;
         cpu_wen = 0; cpu_wstrb = '0; cpu_addr = '0;
         idle_cycle;

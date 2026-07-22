@@ -784,6 +784,16 @@ dcache-mshr-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_mshr"
 
+dcache-latency-test:
+	@echo "--- dcache latency A/B (blocking vs non-blocking) ---"
+	@mkdir -p "build/questa/dcache_latency"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_latency" \
+	     "verification/filelists/dcache_latency.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_latency"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

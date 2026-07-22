@@ -14,6 +14,7 @@
 # The matching XDC constrains clk/rst for the Zybo Z7-20 and marks internal
 # retire/exception nets for debug visibility.
 rtl/common/fluxcore_pkg.sv
+rtl/common/mem_if_pkg.sv
 rtl/common/rv32_isa_pkg.sv
 rtl/common/pipeline_pkg.sv
 rtl/common/imm_gen.sv
@@ -35,6 +36,7 @@ rtl/core/pipeline_ctrl.sv
 rtl/core/csr_unit.sv
 rtl/core/fluxcore_top.sv
 rtl/cache/dcache.sv
+rtl/memory/mem_if_bram.sv
 rtl/peripherals/uart_tx.sv
 rtl/peripherals/gpio.sv
 rtl/peripherals/clint.sv

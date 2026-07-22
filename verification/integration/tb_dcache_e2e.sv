@@ -133,9 +133,13 @@ module tb_dcache_e2e;
     // dcache — sits between CPU and bram_dmem
     // -----------------------------------------------------------------------
     word_t bram_addr, bram_wdata, bram_rdata;
-    logic  bram_ren, bram_wen;
+    logic  bram_wen;
     logic [3:0] bram_wstrb;
     word_t hit_count, miss_count;
+    // dcache <-> mem_if_bram (frozen protocol)
+    logic  m_req_valid, m_req_ready, m_rsp_valid, m_rsp_ready;
+    mem_if_pkg::mem_req_t m_req;
+    mem_if_pkg::mem_rsp_t m_rsp;
 
     dcache #(
         .NSETS(64)
@@ -149,14 +153,31 @@ module tb_dcache_e2e;
         .cpu_wdata_i  (dmem_wdata),
         .cpu_rdata_o  (cpu_rdata),
         .dmem_stall_o (dmem_stall),
-        .mem_addr_o   (bram_addr),
-        .mem_ren_o    (bram_ren),
-        .mem_wen_o    (bram_wen),
-        .mem_wstrb_o  (bram_wstrb),
-        .mem_wdata_o  (bram_wdata),
-        .mem_rdata_i  (bram_rdata),
+        .mem_req_valid_o(m_req_valid),
+        .mem_req_ready_i(m_req_ready),
+        .mem_req_o      (m_req),
+        .mem_rsp_valid_i(m_rsp_valid),
+        .mem_rsp_ready_o(m_rsp_ready),
+        .mem_rsp_i      (m_rsp),
         .hit_count_o  (hit_count),
         .miss_count_o (miss_count)
+    );
+
+    // Protocol-to-BRAM adapter (bare-BRAM response timing)
+    mem_if_bram u_memif (
+        .clk         (clk),
+        .rst         (rst),
+        .req_valid_i (m_req_valid),
+        .req_ready_o (m_req_ready),
+        .req_i       (m_req),
+        .rsp_valid_o (m_rsp_valid),
+        .rsp_ready_i (m_rsp_ready),
+        .rsp_o       (m_rsp),
+        .bram_addr_o (bram_addr),
+        .bram_wen_o  (bram_wen),
+        .bram_wstrb_o(bram_wstrb),
+        .bram_wdata_o(bram_wdata),
+        .bram_rdata_i(bram_rdata)
     );
 
     // -----------------------------------------------------------------------

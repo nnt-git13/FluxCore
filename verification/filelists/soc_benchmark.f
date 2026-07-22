@@ -11,6 +11,7 @@
 
 # Core packages
 rtl/common/fluxcore_pkg.sv
+rtl/common/mem_if_pkg.sv
 rtl/common/rv32_isa_pkg.sv
 rtl/common/pipeline_pkg.sv
 
@@ -52,6 +53,7 @@ rtl/core/fluxcore_top.sv
 rtl/top/bram_imem.sv
 rtl/top/bram_dmem.sv
 rtl/cache/dcache.sv
+rtl/memory/mem_if_bram.sv
 rtl/peripherals/uart_tx.sv
 rtl/peripherals/gpio.sv
 rtl/peripherals/clint.sv

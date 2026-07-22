@@ -24,6 +24,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+import fluxcore_pkg::*;
+import mem_if_pkg::*;
+
 module tb_dcache_mshr;
 
     logic clk = 0;
@@ -43,23 +46,22 @@ module tb_dcache_mshr;
         end
     endtask
 
-    logic [31:0] c_addr, c_wdata, c_rdata, m_addr, m_wdata, m_rdata;
-    logic        c_ren, c_wen, c_stall, m_ren, m_wen;
-    logic [3:0]  c_wstrb, m_wstrb;
+    logic [31:0] c_addr, c_wdata, c_rdata;
+    logic        c_ren, c_wen, c_stall;
+    logic [3:0]  c_wstrb;
+    logic        m_req_valid, m_req_ready, m_rsp_valid, m_rsp_ready;
+    mem_req_t    m_req;
+    mem_rsp_t    m_rsp;
     logic        defer_ok, miss_defer, fill_done;
     logic [31:0] fill_data;
     logic [31:0] hits, misses;
 
-    logic [31:0] bram [0:1023];
-    always_ff @(posedge clk) begin
-        if (m_wen) begin
-            if (m_wstrb[0]) bram[m_addr[11:2]][7:0]   <= m_wdata[7:0];
-            if (m_wstrb[1]) bram[m_addr[11:2]][15:8]  <= m_wdata[15:8];
-            if (m_wstrb[2]) bram[m_addr[11:2]][23:16] <= m_wdata[23:16];
-            if (m_wstrb[3]) bram[m_addr[11:2]][31:24] <= m_wdata[31:24];
-        end
-        m_rdata <= bram[m_addr[11:2]];
-    end
+    // Backing store: P0 sim memory, LATENCY=1 = bare-BRAM timing.
+    mem_model #(.MEM_WORDS(1024), .LATENCY(1)) u_mem (
+        .clk(clk), .rst(rst),
+        .req_valid_i(m_req_valid), .req_ready_o(m_req_ready), .req_i(m_req),
+        .rsp_valid_o(m_rsp_valid), .rsp_ready_i(m_rsp_ready), .rsp_o(m_rsp)
+    );
 
     dcache #(.NSETS(4), .LINE_WORDS(4), .WAYS(2),
              .WRITE_ALLOCATE(1'b1), .WRITE_BACK(1'b1), .NONBLOCKING(1'b1)) dut (
@@ -69,8 +71,9 @@ module tb_dcache_mshr;
         .cpu_rdata_o(c_rdata), .dmem_stall_o(c_stall),
         .defer_ok_i(defer_ok), .miss_defer_o(miss_defer),
         .fill_done_o(fill_done), .fill_data_o(fill_data),
-        .mem_addr_o(m_addr), .mem_ren_o(m_ren), .mem_wen_o(m_wen),
-        .mem_wstrb_o(m_wstrb), .mem_wdata_o(m_wdata), .mem_rdata_i(m_rdata),
+        .mem_req_valid_o(m_req_valid), .mem_req_ready_i(m_req_ready),
+        .mem_req_o(m_req), .mem_rsp_valid_i(m_rsp_valid),
+        .mem_rsp_ready_o(m_rsp_ready), .mem_rsp_i(m_rsp),
         .hit_count_o(hits), .miss_count_o(misses)
     );
 
@@ -122,7 +125,7 @@ module tb_dcache_mshr;
     // Index-1 lines (bits [5:4]=01): 0x10, 0x50, 0x90 conflict at 2 ways.
     // Index-2 line: 0x20 (the hit-under-miss target).
     initial begin
-        for (int i = 0; i < 1024; i++) bram[i] = 32'hE000_0000 | i;
+        for (int i = 0; i < 1024; i++) u_mem.mem[i] = 32'hE000_0000 | i;
         c_addr='0; c_ren=0; c_wen=0; c_wstrb='0; c_wdata='0; defer_ok = 1;
         rst = 1;
         repeat (3) @(posedge clk); #1;

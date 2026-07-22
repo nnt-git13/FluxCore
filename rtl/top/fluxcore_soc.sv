@@ -273,6 +273,10 @@ module fluxcore_soc
         logic [31:0] bram_addr_w, bram_wdata_w, bram_rdata_w;
         logic        bram_wen_w;
         logic [3:0]  bram_wstrb_w;
+        // dcache <-> mem_if_bram (frozen protocol; ADR 0003)
+        logic            m_req_valid, m_req_ready, m_rsp_valid, m_rsp_ready;
+        mem_if_pkg::mem_req_t m_req;
+        mem_if_pkg::mem_rsp_t m_rsp;
 
         dcache #(
             .NSETS         (DCACHE_SETS),
@@ -295,14 +299,32 @@ module fluxcore_soc
             .miss_defer_o (dmem_defer),
             .fill_done_o  (dmem_fill_done),
             .fill_data_o  (dmem_fill_data),
-            .mem_addr_o   (bram_addr_w),
-            .mem_ren_o    (/* debug only */),
-            .mem_wen_o    (bram_wen_w),
-            .mem_wstrb_o  (bram_wstrb_w),
-            .mem_wdata_o  (bram_wdata_w),
-            .mem_rdata_i  (bram_rdata_w),
+            .mem_req_valid_o(m_req_valid),
+            .mem_req_ready_i(m_req_ready),
+            .mem_req_o      (m_req),
+            .mem_rsp_valid_i(m_rsp_valid),
+            .mem_rsp_ready_o(m_rsp_ready),
+            .mem_rsp_i      (m_rsp),
             .hit_count_o  (/* connect to CSR or ILA */),
             .miss_count_o (/* connect to CSR or ILA */)
+        );
+
+        // Protocol-to-BRAM adapter: bare-BRAM response timing, so the cache's
+        // legacy cycle behavior against BRAM is preserved (see mem_if_bram).
+        mem_if_bram u_memif (
+            .clk         (clk),
+            .rst         (core_rst),
+            .req_valid_i (m_req_valid),
+            .req_ready_o (m_req_ready),
+            .req_i       (m_req),
+            .rsp_valid_o (m_rsp_valid),
+            .rsp_ready_i (m_rsp_ready),
+            .rsp_o       (m_rsp),
+            .bram_addr_o (bram_addr_w),
+            .bram_wen_o  (bram_wen_w),
+            .bram_wstrb_o(bram_wstrb_w),
+            .bram_wdata_o(bram_wdata_w),
+            .bram_rdata_i(bram_rdata_w)
         );
 
         bram_dmem #(
