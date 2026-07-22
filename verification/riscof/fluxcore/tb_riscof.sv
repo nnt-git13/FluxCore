@@ -74,6 +74,19 @@ module tb_riscof;
         dmem_rdata <= mem[dmem_addr[21:2]];
     end
 
+    // Debug trace (enabled with +trace): every dmem write near sigb
+    logic trace_en;
+    initial trace_en = $test$plusargs("trace");
+    always_ff @(posedge clk)
+        if (!rst && trace_en && dmem_wen)
+            $display("[W] t=%0t addr=%h data=%h strb=%b", $time, dmem_addr,
+                     dmem_wdata, dmem_wstrb);
+    always_ff @(posedge clk)
+        if (!rst && trace_en && dut.u_regfile.rd_wen_i)
+            $display("[RF] t=%0t x%0d <= %h (rdata_live=%h ren=%b addr=%h)",
+                     $time, dut.u_regfile.rd_addr_i, dut.u_regfile.rd_data_i,
+                     dmem_rdata, dmem_ren, dmem_addr);
+
     // Halt watch
     logic done = 0;
     always_ff @(posedge clk)

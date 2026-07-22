@@ -17,7 +17,7 @@
 [32m    INFO[0m | [32mInitiating Validation[0m
 [32m    INFO[0m | [32mNo Syntax errors in Input Platform Yaml. :)[0m
 [32m    INFO[0m | [32mDumping out Normalized Checked YAML: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/fluxcore_platform_checked.yaml[0m
-[32m    INFO[0m | [32mGenerating database for suite: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M[0m
+[32m    INFO[0m | [32mGenerating database for suite: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A[0m
 [32m    INFO[0m | [32mDatabase File Generated: /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/database.yaml[0m
 [32m    INFO[0m | [32mEnv path set to/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/env[0m
 [32m    INFO[0m | [32mRunning Build for DUT[0m
@@ -26,15 +26,16 @@
 [32m    INFO[0m | [32mRunning Tests on DUT.[0m
 [32m    INFO[0m | [32mRunning Tests on Reference Model.[0m
 [32m    INFO[0m | [32mInitiating signature checking.[0m
-[32m    INFO[0m | [32mFollowing 8 tests have been run :
+[32m    INFO[0m | [32mFollowing 9 tests have been run :
 [0m
 [32m    INFO[0m | [32mTEST NAME                                          : COMMIT ID                                : STATUS[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/div-01.S : eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981 : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/divu-01.S : eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981 : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mul-01.S : 3c7e9d41d4efb9dcb9c0af83e0eecbe28327bf3c : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mulh-01.S : 3c7e9d41d4efb9dcb9c0af83e0eecbe28327bf3c : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mulhsu-01.S : a02feaee118fbea01fbb8fdcdf62bce6f7067478 : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mulhu-01.S : 3c7e9d41d4efb9dcb9c0af83e0eecbe28327bf3c : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/rem-01.S : eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981 : Passed[0m
-[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/remu-01.S : eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amoadd.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amoand.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amomax.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amomaxu.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amomin.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amominu.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amoor.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amoswap.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
+[32m    INFO[0m | [32m/home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/A/src/amoxor.w-01.S : 522da8ce564e25d002952d91052b0e9dc242c028 : Passed[0m
 [32m    INFO[0m | [32mTest report generated at /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscof_work/report.html.[0m

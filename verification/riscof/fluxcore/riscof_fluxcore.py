@@ -30,7 +30,7 @@ class fluxcore(pluginTemplate):
     def initialise(self, suite, work_dir, archtest_env):
         self.work_dir = work_dir
         self.suite_dir = suite
-        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0}_zicsr_zifencei -mabi=ilp32 '
+        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0} -mabi=ilp32 '
             '-static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles '
             '-g -T ' + self.pluginpath + '/env/link.ld '
             '-I ' + self.pluginpath + '/env/ '
@@ -64,6 +64,8 @@ class fluxcore(pluginTemplate):
             sig_file = os.path.join(test_dir, self.name[:-1] + '.signature')
             compile_macros = ' -D' + ' -D'.join(testentry['macros'])
             marchstr = testentry['isa'].lower()
+            if 'zicsr' not in marchstr:    marchstr += '_zicsr'
+            if 'zifencei' not in marchstr: marchstr += '_zifencei'
 
             cmd = self.compile_cmd.format(marchstr, test, elf, compile_macros)
             utils.shellCommand('cd {0}; {1}'.format(test_dir, cmd)).run()

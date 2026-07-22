@@ -28,7 +28,7 @@ class spike(pluginTemplate):
         # The REF must run the SAME binary environment as the DUT: link
         # script and model_test.h come from the fluxcore plugin's env.
         dut_env = os.path.join(self.pluginpath, '..', 'fluxcore', 'env')
-        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0}_zicsr_zifencei -mabi=ilp32 '
+        self.compile_cmd = ('riscv64-unknown-elf-gcc -march={0} -mabi=ilp32 '
             '-static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles '
             '-g -T ' + dut_env + '/link.ld '
             '-I ' + dut_env + '/ '
@@ -54,6 +54,8 @@ class spike(pluginTemplate):
             sig_file = os.path.join(test_dir, self.name[:-1] + ".signature")
             compile_macros = ' -D' + " -D".join(testentry['macros'])
             marchstr = testentry['isa'].lower()
+            if 'zicsr' not in marchstr:    marchstr += '_zicsr'
+            if 'zifencei' not in marchstr: marchstr += '_zifencei'
             cmd = self.compile_cmd.format(marchstr, test, elf, compile_macros)
             simcmd = (self.ref_exe + ' --isa={0} +signature={1} '
                       '+signature-granularity=4 {2}').format(self.isa, sig_file, elf)

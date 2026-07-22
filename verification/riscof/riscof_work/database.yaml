@@ -1,106 +1,16 @@
-# database generated on 2026-07-22 18:34 GMT
+# database generated on 2026-07-22 18:45 GMT
 !!omap
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/div-01.S:
-    commit_id: eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981
+- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/Zifencei/src/Fencei.S:
+    commit_id: 274b6cd787d4d5b0b6c41424b9b7dcca495a9d4b
     isa:
-    - RV32IM
+    - RV32I_Zifencei
     parts: !!omap
-    - '0':
+    - '1':
         check:
         - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
+        - check ISA:=regex(.*I.*)
+        - check ISA:=regex(.*Zifencei.*)
         define:
         - def TEST_CASE_1=True
         coverage_labels:
-        - div
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/divu-01.S:
-    commit_id: eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - divu
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mul-01.S:
-    commit_id: 3c7e9d41d4efb9dcb9c0af83e0eecbe28327bf3c
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - mul
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mulh-01.S:
-    commit_id: 3c7e9d41d4efb9dcb9c0af83e0eecbe28327bf3c
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - mulh
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mulhsu-01.S:
-    commit_id: a02feaee118fbea01fbb8fdcdf62bce6f7067478
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - mulhsu
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/mulhu-01.S:
-    commit_id: 3c7e9d41d4efb9dcb9c0af83e0eecbe28327bf3c
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - mulhu
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/rem-01.S:
-    commit_id: eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - rem
-- /home/lnx-141209/Desktop/FluxCore/verification/riscof/riscv-arch-test/riscv-test-suite/rv32i_m/M/src/remu-01.S:
-    commit_id: eeae630a4eb9cabf1407f5a0d8ca2d3c0f640981
-    isa:
-    - RV32IM
-    parts: !!omap
-    - '0':
-        check:
-        - check ISA:=regex(.*32.*)
-        - check ISA:=regex(.*I.*M.*)
-        define:
-        - def TEST_CASE_1=True
-        coverage_labels:
-        - remu
+        - fencei

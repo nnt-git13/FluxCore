@@ -70,6 +70,7 @@ module mem_stage
     //   amo_phase_w_i — 1 during an AMO's write phase (top-level FSM).
     //   res_*        — LR/SC reservation state (register lives in the top).
     input  wire logic            amo_phase_w_i = 1'b0,
+    input  wire word_t           amo_old_i     = '0,  // phase-R capture
     input  wire logic            res_valid_i   = 1'b0,
     input  wire word_t           res_addr_i    = '0,
     output logic                 res_set_o,    // LR completing: set reservation
@@ -159,6 +160,12 @@ module mem_stage
 
     // AMO ALU: new = f(old, rs2). Old value = mem_rdata_i, which still
     // presents the phase-R capture during the write phase (no read between).
+    // The phase-R read's data arrives on mem_rdata_i DURING phase W (one
+    // BRAM cycle after the address) — that is when both the ALU consumes it
+    // and the MEM/WB payload latches it as rd_data. It must NOT be re-read
+    // live in the WB cycle (rd_from_mem=0): by then the same address has
+    // been re-registered under the write, and read-old-vs-new at that edge
+    // is BRAM-mode dependent (found by the RISCOF A-suite).
     word_t amo_old_s, amo_result_s;
     assign amo_old_s = mem_rdata_i;
     always_comb begin
@@ -363,11 +370,16 @@ module mem_stage
                            & ~mem_wb_o.deferred;
         mem_wb_o.rd_addr   = ex_mem_i.decoded.rd;
         // SC.W: rd is the success flag (0 = stored), not a datapath value.
-        mem_wb_o.rd_data   = amo_is_sc_s ? {31'b0, ~sc_ok_s} : rd_data_s;
+        // AMO*.W: rd is the CAPTURED old value — never the live memory word,
+        // which by WB time holds the freshly written result.
+        mem_wb_o.rd_data   = amo_is_sc_s               ? {31'b0, ~sc_ok_s}
+                           : (amo_is_op_s & amo_phase_w_i) ? amo_old_s
+                           : rd_data_s;
         mem_wb_o.rd_from_mem  = ex_mem_i.valid
                               & ex_mem_i.decoded.legal
                               & ~new_exc_s
-                              & (ex_mem_i.decoded.wb_src == WB_MEM);
+                              & (ex_mem_i.decoded.wb_src == WB_MEM)
+                              & ~amo_is_op_s;   // AMO rd rides the payload
         mem_wb_o.mem_byte_off = ex_mem_i.alu_result[1:0];
         mem_wb_o.exception = exc_s;
         // ---- RV32F writeback ----
