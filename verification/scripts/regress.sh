@@ -40,6 +40,7 @@ DEFAULT_TARGETS=(
     isa-pkg-test
     mem-if-pkg-test
     mem-model-test
+    dram-model-test
     alu-test
     imm-gen-test
     decoder-test

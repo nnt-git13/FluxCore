@@ -356,6 +356,16 @@ mem-model-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_mem_model"
 
+dram-model-test:
+	@echo "--- DRAM timing model unit test ---"
+	@mkdir -p "build/questa/dram_model"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dram_model" \
+	     "verification/filelists/dram_model.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dram_model"
+
 # ---------------------------------------------------------------------------
 # ALU unit test
 # ---------------------------------------------------------------------------
