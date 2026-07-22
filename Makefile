@@ -774,6 +774,16 @@ dcache-wb-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_wb"
 
+dcache-mshr-test:
+	@echo "--- dcache MSHR/hit-under-miss unit test ---"
+	@mkdir -p "build/questa/dcache_mshr"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_mshr" \
+	     "verification/filelists/dcache_mshr.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_mshr"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------

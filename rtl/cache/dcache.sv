@@ -69,6 +69,30 @@
 //   Accumulate on READ requests only (the original definition — store
 //   traffic is not counted, keeping legacy counter expectations intact).
 //
+// Non-blocking mode (NONBLOCKING=1) — the 1-entry MSHR / hit-under-miss:
+//   The miss FSM itself is the MSHR: one outstanding miss. A read or
+//   allocating-store miss in IDLE with defer_ok_i=1 is ACCEPTED instead of
+//   stalling: miss_defer_o pulses for that cycle, the pipeline moves on, and
+//   the fill (evict + refill) runs in the background. While busy:
+//     - read hits and (write-back) store hits to OTHER lines are served
+//       normally — hit-under-miss;
+//     - any access to the line being replaced (old tag still matching during
+//       EVICT) stalls: its data is in flux;
+//     - further misses, and store hits that need the memory port
+//       (write-through), stall until the MSHR frees — miss-under-miss is
+//       structural.
+//   A deferred READ's word is captured into a dedicated register and
+//   announced with a 1-cycle fill_done_o pulse + fill_data_o (the cpu_rdata_o
+//   register keeps serving hits-under-miss untouched). Deferred STORES are
+//   fire-and-forget: the store data is merged during the fill; no pulse.
+//   defer_ok_i is sampled at accept time: 0 forces the legacy blocking
+//   behavior for that miss (the core uses this for FP loads and anything
+//   else it cannot scoreboard).
+//   The CORE is responsible for: scoreboarding the deferred load's rd,
+//   stalling readers AND writers of it (RAW + WAW), suppressing the WB-stage
+//   write of the deferred load, and writing fill_data_o to the register file
+//   when fill_done_o pulses. See fluxcore_top.
+//
 // Parameters:
 //   NSETS          — number of SETS. Power of two. Capacity in words is
 //                    NSETS * WAYS * LINE_WORDS. Default 64.
@@ -78,6 +102,8 @@
 //   WRITE_ALLOCATE — allocate a line on store miss. Default 0.
 //   WRITE_BACK     — dirty-line write-back instead of write-through.
 //                    Default 0.
+//   NONBLOCKING    — hit-under-miss with a 1-entry MSHR. Default 0 (all
+//                    misses stall the pipeline, the original behavior).
 
 `default_nettype none
 
@@ -87,7 +113,8 @@ module dcache
     parameter int LINE_WORDS     = 1,
     parameter int WAYS           = 1,
     parameter bit WRITE_ALLOCATE = 1'b0,
-    parameter bit WRITE_BACK     = 1'b0
+    parameter bit WRITE_BACK     = 1'b0,
+    parameter bit NONBLOCKING    = 1'b0
 ) (
     input  wire logic        clk,
     input  wire logic        rst,
@@ -100,6 +127,12 @@ module dcache
     input  wire logic [31:0] cpu_wdata_i,
     output logic [31:0]      cpu_rdata_o,   // load data, valid in WB cycle
     output logic             dmem_stall_o,  // miss handling: stall pipeline
+
+    // Non-blocking (MSHR) interface — inert when NONBLOCKING=0.
+    input  wire logic        defer_ok_i = 1'b0,  // core allows deferring THIS miss
+    output logic             miss_defer_o,  // this cycle's miss was accepted
+    output logic             fill_done_o,   // deferred READ completed (1 cycle)
+    output logic [31:0]      fill_data_o,   // its data, valid with fill_done_o
 
     // Backing BRAM-side
     output logic [31:0]      mem_addr_o,
@@ -139,6 +172,10 @@ module dcache
     logic                  miss_is_store_q;
     logic [3:0]            miss_wstrb_q;   // store bytes to merge after fill
     logic [31:0]           miss_wdata_q;
+    logic                  miss_deferred_q; // this miss was accepted non-blocking
+    logic [31:0]           fill_rdata_q;   // deferred read's word (own register:
+                                           // cpu_rdata_q keeps serving hits)
+    logic                  fill_done_q;    // 1-cycle completion pulse
 
     logic                  valid_q [0:WAYS-1][0:NSETS-1];
     logic                  dirty_q [0:WAYS-1][0:NSETS-1];
@@ -154,6 +191,8 @@ module dcache
     logic [TAG_W-1:0]    tag_s;
     logic                hit_s;
     int unsigned         hit_way_s;       // way that hit (valid when hit_s)
+    logic                defer_now_s;     // an IDLE miss would defer, not stall
+    logic                nb_busy_stall_s; // busy-MSHR stall for this access
     int unsigned         victim_way_s;    // way to fill on a miss
     logic                victim_dirty_s;  // victim line needs write-back
     logic [31:0]         victim_base_s;   // byte address of victim word 0
@@ -181,12 +220,18 @@ module dcache
         // Byte address of word 0 of the addressed line
         line_base_s = cpu_addr_i & ~32'((LINE_WORDS * 4) - 1);
 
-        // Hit detection across ways (tags are unique per set, at most one hit)
+        // Hit detection across ways (tags are unique per set, at most one hit).
+        // Blocking mode: hits exist only in IDLE (the pipeline is frozen
+        // during a miss anyway). Non-blocking: hits are also served while the
+        // MSHR is busy — EXCEPT on the line being replaced, whose old tag
+        // still matches during EVICT but whose data is in flux.
         hit_s     = 1'b0;
         hit_way_s = 0;
         for (int w = 0; w < WAYS; w++) begin
-            if ((state_q == ST_IDLE) && valid_q[w][index_s]
-                && (tag_q[w][index_s] == tag_s)) begin
+            if (valid_q[w][index_s] && (tag_q[w][index_s] == tag_s)
+                && ((state_q == ST_IDLE)
+                    || (NONBLOCKING && !((w == int'(miss_way_q))
+                                         && (index_s == miss_index_q))))) begin
                 hit_s     = 1'b1;
                 hit_way_s = w;
             end
@@ -233,8 +278,19 @@ module dcache
             if (miss_wstrb_q[3]) fill_word_s[31:24] = miss_wdata_q[31:24];
         end
 
+        // Would THIS miss be accepted non-blocking?
+        defer_now_s = NONBLOCKING && defer_ok_i;
+
+        // While the MSHR is busy (non-blocking transaction), a CPU access
+        // stalls unless it is a servable hit: read hits always; store hits
+        // only under write-back (a write-through store hit needs the memory
+        // port, which the fill owns).
+        nb_busy_stall_s = (cpu_ren_i && !hit_s)
+                        | (cpu_wen_i && !(hit_s && WRITE_BACK));
+
         // Output defaults
         dmem_stall_o = 1'b0;
+        miss_defer_o = 1'b0;
         mem_addr_o   = cpu_addr_i;
         mem_ren_o    = 1'b0;
         mem_wen_o    = 1'b0;
@@ -244,7 +300,8 @@ module dcache
         case (state_q)
             ST_IDLE: begin
                 if (alloc_miss_s) begin
-                    dmem_stall_o = 1'b1;
+                    dmem_stall_o = !defer_now_s;
+                    miss_defer_o = defer_now_s;
                     if (victim_dirty_s) begin
                         // Evict beat 0 goes out right now.
                         mem_addr_o  = victim_base_s;
@@ -279,14 +336,14 @@ module dcache
                 mem_wen_o    = 1'b1;
                 mem_wstrb_o  = 4'hF;
                 mem_wdata_o  = data_q[miss_way_q][miss_index_q][ebeat_q];
-                dmem_stall_o = 1'b1;
+                dmem_stall_o = miss_deferred_q ? nb_busy_stall_s : 1'b1;
             end
             ST_FILLREQ: begin
                 // The address slot was carrying writes until now; issue the
                 // first fill read.
                 mem_addr_o   = miss_base_q;
                 mem_ren_o    = 1'b1;
-                dmem_stall_o = 1'b1;
+                dmem_stall_o = miss_deferred_q ? nb_busy_stall_s : 1'b1;
             end
             ST_FILL: begin
                 // Data for beat_q arrives this cycle; issue the next beat's
@@ -297,13 +354,18 @@ module dcache
                 else
                     mem_addr_o = miss_base_q + 32'((LINE_WORDS - 1) * 4);
                 mem_ren_o = 1'b1;
-                // Stall until the final beat's cycle: in that cycle the MEM
-                // stage completes (its data is captured at the closing edge).
-                dmem_stall_o = (beat_q + 1 < LINE_WORDS);
+                // Blocking: stall until the final beat's cycle, in which the
+                // frozen MEM stage completes. Non-blocking: nothing is
+                // waiting on this fill — stall only unservable CPU accesses.
+                dmem_stall_o = miss_deferred_q ? nb_busy_stall_s
+                                               : (beat_q + 1 < LINE_WORDS);
             end
             default: ;
         endcase
     end
+
+    assign fill_done_o = fill_done_q;
+    assign fill_data_o = fill_rdata_q;
 
     // -----------------------------------------------------------------------
     // LRU touch: touched way → age 0; every way younger than it ages by one.
@@ -332,6 +394,9 @@ module dcache
             miss_woff_q  <= 0;
             miss_way_q   <= 0;
             miss_is_store_q <= 1'b0;
+            miss_deferred_q <= 1'b0;
+            fill_rdata_q    <= '0;
+            fill_done_q     <= 1'b0;
             for (int w = 0; w < WAYS; w++) begin
                 for (int i = 0; i < NSETS; i++) begin
                     valid_q[w][i] <= 1'b0;
@@ -340,13 +405,27 @@ module dcache
                 end
             end
         end else begin
+            fill_done_q <= 1'b0;   // 1-cycle pulse
+
+            // Hit servicing — state-independent: always in IDLE, and under a
+            // busy MSHR in non-blocking mode (there hit_s already excludes
+            // the in-flux line; in blocking mode hit_s is 0 outside IDLE).
+            // A write-through store hit is only serviceable in IDLE: its
+            // memory write needs the port the fill owns.
+            if (cpu_ren_i && hit_s) begin
+                cpu_rdata_q <= data_q[hit_way_s][index_s][woff_s];
+                hit_count_q <= hit_count_q + 1;
+                lru_touch(hit_way_s, index_s);
+            end
+            if (cpu_wen_i && hit_s && ((state_q == ST_IDLE) || WRITE_BACK)) begin
+                data_q[hit_way_s][index_s][woff_s] <= store_merged_s;
+                if (WRITE_BACK)
+                    dirty_q[hit_way_s][index_s] <= 1'b1;
+                lru_touch(hit_way_s, index_s);
+            end
+
             case (state_q)
                 ST_IDLE: begin
-                    if (cpu_ren_i && hit_s) begin
-                        cpu_rdata_q <= data_q[hit_way_s][index_s][woff_s];
-                        hit_count_q <= hit_count_q + 1;
-                        lru_touch(hit_way_s, index_s);
-                    end
                     if (cpu_ren_i && !hit_s)
                         miss_count_q <= miss_count_q + 1;
 
@@ -360,6 +439,7 @@ module dcache
                         miss_is_store_q <= cpu_wen_i;
                         miss_wstrb_q    <= cpu_wstrb_i;
                         miss_wdata_q    <= cpu_wdata_i;
+                        miss_deferred_q <= defer_now_s;
                         beat_q          <= 0;
                         ebeat_q         <= 1;
                         if (victim_dirty_s)
@@ -369,11 +449,6 @@ module dcache
                                                      // write-through store
                         else
                             state_q <= ST_FILL;      // fill beat 0 in flight
-                    end else if (cpu_wen_i && hit_s) begin
-                        data_q[hit_way_s][index_s][woff_s] <= store_merged_s;
-                        if (WRITE_BACK)
-                            dirty_q[hit_way_s][index_s] <= 1'b1;
-                        lru_touch(hit_way_s, index_s);
                     end
                 end
                 ST_EVICT: begin
@@ -387,17 +462,28 @@ module dcache
                 end
                 ST_FILL: begin
                     // Capture the beat that arrived this cycle (store bytes
-                    // merged in for an allocating store).
+                    // merged in for an allocating store). A deferred read's
+                    // word goes to its own register — cpu_rdata_q belongs to
+                    // whatever hit is being served under the miss.
                     data_q[miss_way_q][miss_index_q][beat_q] <= fill_word_s;
-                    if (!miss_is_store_q && beat_q == miss_woff_q)
-                        cpu_rdata_q <= mem_rdata_i;
+                    if (!miss_is_store_q && beat_q == miss_woff_q) begin
+                        if (miss_deferred_q) fill_rdata_q <= mem_rdata_i;
+                        else                 cpu_rdata_q  <= mem_rdata_i;
+                    end
                     if (beat_q + 1 == LINE_WORDS) begin
                         // Line complete: publish tag/valid/dirty, touch.
                         valid_q[miss_way_q][miss_index_q] <= 1'b1;
                         dirty_q[miss_way_q][miss_index_q] <=
                             WRITE_BACK && miss_is_store_q;
                         tag_q[miss_way_q][miss_index_q]   <= miss_tag_q;
-                        lru_touch(miss_way_q, miss_index_q);
+                        fill_done_q <= miss_deferred_q && !miss_is_store_q;
+                        // LRU: skip the completion touch when a same-set hit
+                        // touched this cycle — two touches in one edge would
+                        // break the age permutation; leaving the filled way
+                        // as LRU is merely suboptimal, never incorrect.
+                        if (!(hit_s && (index_s == miss_index_q)
+                              && (cpu_ren_i || (cpu_wen_i && WRITE_BACK))))
+                            lru_touch(miss_way_q, miss_index_q);
                         state_q <= ST_IDLE;
                     end else begin
                         beat_q <= beat_q + 1;
