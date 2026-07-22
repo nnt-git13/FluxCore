@@ -51,10 +51,15 @@ module fluxcore_soc
     parameter int    DMEM_DEPTH   = 2048,
     parameter        IMEM_INIT    = "",
     parameter        DMEM_INIT    = "",
-    // Set USE_DCACHE=1 to insert a direct-mapped write-through data cache
-    // between the CPU and bram_dmem. Default 0 = direct BRAM path (no stalls).
+    // Set USE_DCACHE=1 to insert a data cache between the CPU and bram_dmem.
+    // Default 0 = direct BRAM path (no stalls). Cache geometry/policy below;
+    // the defaults give a 2 KiB 2-way write-back cache with 16 B lines.
     parameter int    USE_DCACHE   = 0,
-    parameter int    DCACHE_SETS  = 64,  // cache lines; must be a power of two
+    parameter int    DCACHE_SETS  = 64,  // sets; must be a power of two
+    parameter int    DCACHE_LINE_WORDS = 4,   // words per line (power of two)
+    parameter int    DCACHE_WAYS       = 2,   // associativity (power of two)
+    parameter bit    DCACHE_WRITE_ALLOCATE = 1'b1,
+    parameter bit    DCACHE_WRITE_BACK     = 1'b1,
     // Simulation override for the UART divisor (0 = derive from CLK_HZ/BAUD)
     parameter int    UART_BAUD_DIV = 0
 )
@@ -261,7 +266,11 @@ module fluxcore_soc
         logic [3:0]  bram_wstrb_w;
 
         dcache #(
-            .NSETS(DCACHE_SETS)
+            .NSETS         (DCACHE_SETS),
+            .LINE_WORDS    (DCACHE_LINE_WORDS),
+            .WAYS          (DCACHE_WAYS),
+            .WRITE_ALLOCATE(DCACHE_WRITE_ALLOCATE),
+            .WRITE_BACK    (DCACHE_WRITE_BACK)
         ) u_dcache (
             .clk          (clk),
             .rst          (core_rst),
