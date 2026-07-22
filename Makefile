@@ -754,6 +754,16 @@ dcache-multiword-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_dcache_multiword"
 
+dcache-assoc-test:
+	@echo "--- dcache associativity/LRU unit test ---"
+	@mkdir -p "build/questa/dcache_assoc"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/dcache_assoc" \
+	     "verification/filelists/dcache_assoc.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_dcache_assoc"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------
