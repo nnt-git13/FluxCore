@@ -1,21 +1,6 @@
-# verification/filelists/soc_benchmark.f
-#
-# Filelist for full-SoC benchmark simulation (tb_hello_cpi, tb_spmv_csr).
-#
-# Compiles the complete fluxcore_soc hierarchy — CPU core, BRAMs, optional
-# dcache — plus the benchmark testbench.
-#
-# Usage:
-#   make sim-hello-cpi
-#   make sim-spmv-csr
-
-# Core packages
 rtl/common/fluxcore_pkg.sv
-rtl/common/mem_if_pkg.sv
 rtl/common/rv32_isa_pkg.sv
 rtl/common/pipeline_pkg.sv
-
-# Core RTL
 rtl/common/imm_gen.sv
 rtl/common/regfile.sv
 rtl/decode/decoder.sv
@@ -48,21 +33,4 @@ rtl/execution/fp/fp_fma.sv
 rtl/execution/fp/fp_divsqrt.sv
 rtl/execution/fp/fpu.sv
 rtl/core/fluxcore_top.sv
-
-# Memory and cache
-rtl/top/bram_imem.sv
-rtl/top/bram_dmem.sv
-rtl/cache/dcache.sv
-rtl/cache/icache.sv
-rtl/memory/mem_if_bram.sv
-rtl/peripherals/uart_tx.sv
-rtl/peripherals/gpio.sv
-rtl/peripherals/clint.sv
-rtl/top/soc_bus.sv
-
-# SOC top
-rtl/top/fluxcore_soc.sv
-
-# Benchmark testbenches
-verification/integration/tb_soc_benchmarks.sv
-verification/integration/tb_soc_uart.sv
+verification/integration/tb_fencei.sv

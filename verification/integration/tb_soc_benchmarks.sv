@@ -32,6 +32,7 @@ module soc_bench_runner #(
     parameter int    EXP_CHECKSUM  = -1,         // -1 = skip correctness check
     parameter int    TIMEOUT_CYCS  = 200_000,    // simulation cycle budget
     parameter int    USE_DCACHE    = 0,          // 1 = insert the write-through dcache
+    parameter int    USE_ICACHE    = 0,          // 1 = insert the I-cache
     // Must match software/runtime/fluxcore.h
     parameter logic [31:0] RESULT_BASE  = 32'h0000_1FE0,
     parameter logic [31:0] RESULT_MAGIC = 32'hF10C_CAFE,
@@ -50,7 +51,8 @@ module soc_bench_runner #(
     // -----------------------------------------------------------------------
     fluxcore_soc #(
         .IMEM_INIT (IMEM_INIT),
-        .USE_DCACHE(USE_DCACHE)
+        .USE_DCACHE(USE_DCACHE),
+        .USE_ICACHE(USE_ICACHE)
     ) u_soc (
         .clk(clk),
         .rst(rst)
@@ -290,5 +292,30 @@ module tb_spmv_csr_dcache;
         .USE_DCACHE   (1)
     ) runner ();
 endmodule : tb_spmv_csr_dcache
+
+// Both caches in front of their BRAMs: the full L1 topology. Fetch stalls
+// on I-miss via the imem_valid pin; data side is the 2-way WB non-blocking
+// dcache. Checksums prove correctness; CPI shows the cold-start I$ cost.
+module tb_hello_cpi_caches;
+    soc_bench_runner #(
+        .BENCH_NAME   ("hello_cpi_caches"),
+        .IMEM_INIT    ("build/sw/hello_cpi/imem.hex"),
+        .EXP_CHECKSUM (499500),
+        .TIMEOUT_CYCS (200_000),
+        .USE_DCACHE   (1),
+        .USE_ICACHE   (1)
+    ) runner ();
+endmodule : tb_hello_cpi_caches
+
+module tb_spmv_csr_caches;
+    soc_bench_runner #(
+        .BENCH_NAME   ("spmv_csr_caches"),
+        .IMEM_INIT    ("build/sw/spmv_csr/imem.hex"),
+        .EXP_CHECKSUM (416),
+        .TIMEOUT_CYCS (200_000),
+        .USE_DCACHE   (1),
+        .USE_ICACHE   (1)
+    ) runner ();
+endmodule : tb_spmv_csr_caches
 
 `default_nettype wire

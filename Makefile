@@ -834,6 +834,16 @@ icache-test:
 	     "sim/questa/run_unit.do" \
 	     "tb_icache"
 
+fencei-test:
+	@echo "--- FENCE.I integration test ---"
+	@mkdir -p "build/questa/fencei"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "build/questa/fencei" \
+	     "verification/filelists/fencei.f" \
+	     "sim/questa/run_unit.do" \
+	     "tb_fencei"
+
 # ---------------------------------------------------------------------------
 # Full-SoC benchmark simulations (loads real imem.hex, checks result block)
 # ---------------------------------------------------------------------------
@@ -939,6 +949,26 @@ sim-spmv-csr-dcache: $(BUILD_DIR)/sw/spmv_csr/imem.hex
 	     "$(SOC_BENCH_FLIST)" \
 	     "sim/questa/run_unit.do" \
 	     "tb_spmv_csr_dcache"
+
+sim-hello-cpi-caches: $(BUILD_DIR)/sw/hello_cpi/imem.hex
+	@echo "--- SoC benchmark simulation: hello_cpi with I\$$ + D\$$ ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_hello_cpi_caches"
+
+sim-spmv-csr-caches: $(BUILD_DIR)/sw/spmv_csr/imem.hex
+	@echo "--- SoC benchmark simulation: spmv_csr with I\$$ + D\$$ ---"
+	@mkdir -p "$(SOC_BENCH_BUILD)"
+	@VLOG="$(VLOG)" VSIM="$(VSIM)" \
+	 bash "$(SIM_RUN)" \
+	     "$(SOC_BENCH_BUILD)" \
+	     "$(SOC_BENCH_FLIST)" \
+	     "sim/questa/run_unit.do" \
+	     "tb_spmv_csr_caches"
 
 # ---------------------------------------------------------------------------
 # BRAM instruction memory unit test (1-cycle latency, sequential reads)

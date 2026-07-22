@@ -70,6 +70,11 @@ module pipeline_ctrl
     // Same action as load-use; the two signals are OR'd in the stall block.
     input  wire logic             csr_raw_stall_i,
 
+    // FENCE.I in EX (detected in fluxcore_top from the raw encoding):
+    // restart the front end at pc+4 so post-fence fetches re-consult the
+    // (just-flushed) I-cache. Same flush shape as a taken branch.
+    input  wire logic             fencei_i = 1'b0,
+
     // Data-cache miss: stall all 5 stages until cache fills
     input  wire logic             dmem_stall_i,
 
@@ -169,6 +174,13 @@ module pipeline_ctrl
             flush_id_ex_o     = 1'b1;
             redirect_valid_o  = 1'b1;
             redirect_target_o = ex_mem_i.branch_target;
+        end else if (fencei_i) begin
+            // FENCE.I: squash the two stale fetches behind it and refetch
+            // from pc+4 — those fetches may predate the I$ flush.
+            flush_if_id_o     = 1'b1;
+            flush_id_ex_o     = 1'b1;
+            redirect_valid_o  = 1'b1;
+            redirect_target_o = ex_mem_i.pc + 32'd4;
         end else if ((load_use_stall_i | csr_raw_stall_i)
                      & ~(dmem_stall_i | muldiv_stall_i | fpu_stall_i)) begin
             // Partial stall: hold IF+ID, bubble ID/EX.  Suppressed while a

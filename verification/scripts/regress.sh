@@ -80,6 +80,7 @@ DEFAULT_TARGETS=(
     l2-cache-test
     l2-chain-test
     icache-test
+    fencei-test
     dcache-e2e-test
     # Core integration
     integration-test
@@ -107,6 +108,8 @@ DEFAULT_TARGETS=(
     sim-fp-kernel
     sim-hello-cpi-dcache
     sim-spmv-csr-dcache
+    sim-hello-cpi-caches
+    sim-spmv-csr-caches
 )
 
 if [[ $# -gt 0 ]]; then

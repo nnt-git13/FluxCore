@@ -61,6 +61,13 @@ module fluxcore_soc
     parameter bit    DCACHE_WRITE_ALLOCATE = 1'b1,
     parameter bit    DCACHE_WRITE_BACK     = 1'b1,
     parameter bit    DCACHE_NONBLOCKING    = 1'b1,  // hit-under-miss MSHR
+    // Set USE_ICACHE=1 to insert an instruction cache between fetch and
+    // bram_imem (fetch stalls on I-miss via the imem_valid pin). Default 0 =
+    // direct BRAM path, no fetch stalls, unchanged behavior.
+    parameter int    USE_ICACHE   = 0,
+    parameter int    ICACHE_SETS       = 64,
+    parameter int    ICACHE_LINE_WORDS = 4,
+    parameter int    ICACHE_WAYS       = 2,
     // Simulation override for the UART divisor (0 = derive from CLK_HZ/BAUD)
     parameter int    UART_BAUD_DIV = 0
 )
@@ -75,6 +82,8 @@ module fluxcore_soc
     // CPU ↔ memory wires
     // -----------------------------------------------------------------------
     word_t          imem_addr, imem_addr_next, imem_rdata;
+    logic           imem_valid;
+    logic           fencei_flush;
     word_t          dmem_addr, dmem_wdata,     dmem_rdata;
     logic           dmem_ren, dmem_wen;
     logic [3:0]     dmem_wstrb;
@@ -154,6 +163,8 @@ module fluxcore_soc
         .imem_addr_o    (imem_addr),
         .imem_addr_next_o(imem_addr_next),
         .imem_rdata_i   (imem_rdata),
+        .imem_valid_i   (imem_valid),
+        .fencei_flush_o (fencei_flush),
         .dmem_addr_o    (dmem_addr),
         .dmem_ren_o     (dmem_ren),
         .dmem_wen_o     (dmem_wen),
@@ -177,6 +188,57 @@ module fluxcore_soc
     // Instruction BRAM
     // Addressed via imem_addr_next so output is ready when imem_addr_o = PC.
     // -----------------------------------------------------------------------
+    if (USE_ICACHE) begin : g_icache
+        // fetch -> icache (combinational hit) -> mem_if_bram -> bram_imem.
+        // The BRAM behind the I-cache serves fill bursts, addressed by the
+        // adapter, so the addr_next prefetch port is unused here.
+        logic        i_req_valid, i_req_ready, i_rsp_valid, i_rsp_ready;
+        mem_if_pkg::mem_req_t i_req;
+        mem_if_pkg::mem_rsp_t i_rsp;
+        word_t       ibram_addr, ibram_wdata, ibram_rdata;
+        logic        ibram_wen;
+        logic [3:0]  ibram_wstrb;
+
+        icache #(
+            .NSETS(ICACHE_SETS), .LINE_WORDS(ICACHE_LINE_WORDS),
+            .WAYS(ICACHE_WAYS)
+        ) u_icache (
+            .clk(clk), .rst(core_rst),
+            .pc_i(imem_addr),
+            .instr_o(imem_rdata),
+            .instr_valid_o(imem_valid),
+            .flush_i(fencei_flush),
+            .mem_req_valid_o(i_req_valid), .mem_req_ready_i(i_req_ready),
+            .mem_req_o(i_req),
+            .mem_rsp_valid_i(i_rsp_valid), .mem_rsp_ready_o(i_rsp_ready),
+            .mem_rsp_i(i_rsp),
+            .hit_count_o(), .miss_count_o()
+        );
+
+        mem_if_bram u_imemif (
+            .clk(clk), .rst(core_rst),
+            .req_valid_i(i_req_valid), .req_ready_o(i_req_ready), .req_i(i_req),
+            .rsp_valid_o(i_rsp_valid), .rsp_ready_i(i_rsp_ready), .rsp_o(i_rsp),
+            .bram_addr_o(ibram_addr), .bram_wen_o(ibram_wen),
+            .bram_wstrb_o(ibram_wstrb), .bram_wdata_o(ibram_wdata),
+            .bram_rdata_i(ibram_rdata)
+        );
+
+        // Fill store: bram_imem (word-array ROM). Its addr_next_i registers
+        // at the posedge and presents rdata next cycle — exactly the 1-cycle
+        // contract mem_if_bram assumes. The adapter's write pins go nowhere:
+        // instruction memory is a ROM on this side of the Harvard split.
+        bram_imem #(
+            .DEPTH    (IMEM_DEPTH),
+            .INIT_FILE(IMEM_INIT)
+        ) u_imem (
+            .clk        (clk),
+            .addr_next_i(ibram_addr),
+            .rdata_o    (ibram_rdata)
+        );
+    end else begin : g_no_icache
+        assign imem_valid = 1'b1;
+
     bram_imem #(
         .DEPTH    (IMEM_DEPTH),
         .INIT_FILE(IMEM_INIT)
@@ -185,6 +247,7 @@ module fluxcore_soc
         .addr_next_i(imem_addr_next),
         .rdata_o    (imem_rdata)
     );
+    end
 
     // -----------------------------------------------------------------------
     // SoC bus: decodes the CPU data port into {memory path, CLINT, UART, GPIO}

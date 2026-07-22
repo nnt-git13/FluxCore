@@ -56,6 +56,9 @@ module fluxcore_top
     output word_t             imem_addr_o,      // current PC (4-byte aligned)
     output word_t             imem_addr_next_o, // next PC, for BRAM prefetch
     input  wire instr_t            imem_rdata_i,     // instruction word for imem_addr_o
+    // 0 = instruction not available this cycle (I-cache miss): fetch holds
+    // the PC and emits bubbles. Default 1 = original always-valid behavior.
+    input  wire logic         imem_valid_i = 1'b1,
 
     // --- Data memory (word-wide with byte enables) ---
     output word_t             dmem_addr_o,   // effective byte address
@@ -69,6 +72,10 @@ module fluxcore_top
     // Non-blocking dcache handshake (all tied off for blocking configs).
     // defer_ok: the access now in MEM may be deferred (int load or store —
     // FP loads keep blocking, the FP regfile has no fill port).
+    // FENCE.I flush pulse for an external I-cache (1+ cycles while the
+    // FENCE.I sits in EX). Unconnected in cacheless configurations.
+    output logic              fencei_flush_o,
+
     output logic              dmem_defer_ok_o,
     input  wire logic         dmem_defer_i     = 1'b0,  // miss accepted this cycle
     input  wire logic         dmem_fill_done_i = 1'b0,  // deferred read completed
@@ -219,6 +226,7 @@ module fluxcore_top
         .fetch_addr_o     (imem_addr_o),
         .fetch_addr_next_o(imem_addr_next_o),
         .instr_i          (imem_rdata_i),
+        .instr_valid_i    (imem_valid_i),
         .if_id_o          (if_id_s)
     );
 
@@ -639,8 +647,19 @@ module fluxcore_top
     // resolves, producing the correct 2-cycle penalty without an extra delay.
     // =========================================================================
 
+    // FENCE.I detection from the raw encoding in EX (MISC_MEM, funct3=001).
+    // No decoder/payload change needed: the instruction word rides in every
+    // pipeline payload. Uses the tagged EX view so an interrupt-tagged
+    // FENCE.I traps instead of flushing.
+    assign fencei_flush_o = ex_mem_tag_s.valid
+                          & ex_mem_tag_s.decoded.legal
+                          & ~ex_mem_tag_s.decoded.exception.valid
+                          & (ex_mem_tag_s.instr[6:0]   == 7'b0001111)
+                          & (ex_mem_tag_s.instr[14:12] == 3'b001);
+
     pipeline_ctrl u_pctrl (
         .ex_mem_i        (ex_mem_tag_s),
+        .fencei_i        (fencei_flush_o),
         .exception_i     (exception_s),
         .trap_vector_i   (mtvec_s),
         .mepc_i          (mepc_s),
